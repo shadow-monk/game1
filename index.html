@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<title>スパイラルタワー - V2.30 3コマアニメ版 -</title>
+<title>スパイラルタワー - V2.31 安定動作アニメ版 -</title>
 <style>
 /* <![CDATA[ */
 /* 各種アニメーション */
@@ -70,7 +70,7 @@
   40% { transform: translateY(0px) scaleX(1.4); opacity: 1; filter: brightness(2); }
   100% { transform: translateY(10px) scaleX(1); opacity: 1; filter: brightness(1); }
 }
-@keyframes particleBoom {
+@keyframes pulseBoom {
   0% { transform: translate(0, 0) scale(1) rotate(0deg); opacity: 1; }
   100% { transform: translate(var(--tx), var(--ty)) scale(0.1) rotate(360deg); opacity: 0; }
 }
@@ -105,15 +105,15 @@
                 <div style="background: #f1f5f9 !important; border-radius: 20px !important; padding: 20px !important; border-left: 10px solid #0f172a !important; text-align: left !important; margin-bottom: 30px !important;">
                     <h3 style="font-size: 1.5rem !important; color: #0f172a !important; margin-bottom: 10px !important;">🎮【簡易操作マニュアル】</h3>
                     <ul style="color: #334155 !important; font-size: 1.2rem !important; line-height: 1.8 !important; font-weight: 800; padding-left: 20px; margin: 0; word-break: keep-all; overflow-wrap: anywhere;">
-                        <li><span style="color: #e11d48;">ファイア</span>：炎属性（重低音爆発ノイズ＆火炎弾）➔ [弱点：1階スライム等]</li>
-                        <li><span style="color: #0284c7;">❄️ アイス</span>：氷結術式（高周波パルス結晶音＆高速氷錐）➔ [弱点：ワイバーン等]</li>
+                        <li><span style="color: #e11d48;">ファイア</span>：基本炎属性（重低音ノイズ爆発音＆追尾火炎弾エフェクト）➔ [弱点：1階スライム等]</li>
+                        <li><span style="color: #0284c7;">❄️ アイス</span>：氷結術式（高周波パルス結晶音＆高速追尾氷錐）➔ [弱点：ワイバーン等]</li>
                         <li><span style="color: #ca8a04;">✨ ホーリー</span>：神聖光線（サイン波急上昇音＆天界槍）➔ [弱点：悪魔・ゾンビ等]</li>
                         <li><span style="color: #059669;">シールド</span>：敵の残像分身突進を受け流し被ダメージを極限カット</li>
                         <li><span style="color: #4f46e5;">チャージ</span>：次ターンの威力【2.5倍】（魔導オーラが自動発動）</li>
                     </ul>
                 </div>
 
-                <button onclick="nextStage()" style="background: linear-gradient(135deg, #4f46e5, #6366f1) !important; color: white !important; border: none !important; border-radius: 16px !important; padding: 25px 45px !important; font-size: 1.8rem !important; font-weight: 900 !important; cursor: pointer !important; width: 100% !important; box-shadow: 0 10px 25px rgba(79, 70, 229, 0.3) !important;">冒険を始める</button>
+                <button onclick="nextStage()" style="background: linear-gradient(135deg, #4f46e5, #6366f1) !important; color: white !important; border: none !important; border-radius: 16px !important; padding: 25px 45px !important; font-size: 1.8rem !important; font-weight: 900 !important; cursor: pointer !important; width: 100% !important; box-shadow: 0 10px 25px rgba(79,70,229,0.3) !important;">冒険を始める</button>
             </div>
 
             <div id="scr-intro" style="display: none; padding: 20px 10px !important;">
@@ -165,7 +165,6 @@
                                 background-position: center !important;
                                 image-rendering: pixelated !important;
                                 display: block !important;
-                                transition: transform 0.1s ease-out;
                             "></div>
                         </div>
                     </div>
@@ -212,8 +211,8 @@
     </div>
     
     <div style="width: 100% !important; max-width: 640px !important; display: flex !important; justify-content: space-between !important; color: #475569; font-size: 0.82rem; margin-top: 15px; font-weight: bold; z-index: 2; position: relative; padding: 0 5px; box-sizing: border-box; margin-left: auto; margin-right: auto;">
-        <span>改訂 #V2.30（1階3コマド派手パラパラスライム駆動・外部画像リンク連携完了版）</span>
-        <span style="font-size: 0.78rem !important; font-weight: 700 !important; color: #64748b !important;">改訂時間: 2026年5月22日 00:11:45</span>
+        <span>改訂 V2.31（スタートロック解消・直列表示画面切り替え完全修復版）</span>
+        <span style="font-size: 0.78rem !important; font-weight: 700 !important; color: #64748b !important;">改訂時間: 2026年5月22日 01:59:16</span>
     </div>
 </div>
 
@@ -251,8 +250,7 @@ function checkDevPassword() {
     const debugBtn = document.getElementById("btn-debug-death");
     
     if (inputVal === "1192") {
-        badge.innerText = "UNLOCKED"; badge.style.color = '#10b981';
-        msg.style.display = "block";
+        badge.innerText = "UNLOCKED"; badge.style.color = '#10b981'; msg.style.display = "block";
         if (document.getElementById("scr-battle").style.display === "block" && debugBtn) {
             debugBtn.style.setProperty('display', 'block', 'important');
         }
@@ -262,47 +260,47 @@ function checkDevPassword() {
     }
 }
 
-// 🔧 【1階配置スライム】GitHubの3パターン画像Rawリンク配列
+// 1階スライムの3連モーション外部画像リンク
 const SLIME_FRAMES = [
   "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/imagesX/Slime%20(1).png",
   "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/imagesX/Slime%20(2).png",
   "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/imagesX/Slime%20(3).png"
 ];
 
-// 2階以降のテクスチャアトラス切り出し用シートマップ
 const MASTER_SHEET_URL = "https://raw.githubusercontent.com/shadow-monk/game1/main/SPY01.jpg";
 
-// 全10階層ゲームマスター設計リスト
 const STAGES = [
   { floor: 1,  name: "グリーンスライム", hp: 65,  atk: 10, weak: "fire", isCustom: true,  eMod: "rgba(34,197,94,0.4)",  txt: "1階。通路を塞ぐ酸性の巨大ドット絵スライム！熱に弱く【炎(ファイア)】の術式が特効爆発する！" },
   { floor: 2,  name: "スカイバット",     hp: 80,  atk: 13, weak: "ice",  isCustom: false, eMod: "rgba(148,163,184,0.4)", txt: "2階。螺旋の塔の通路に巣食う吸血コウモリ。冷気に弱く【氷(アイス)】の術式が有効だ！", bgX: "0%",   bgY: "0%" },
   { floor: 3,  name: "スケルトン武者",   hp: 120, atk: 16, weak: "holy", isCustom: false, eMod: "rgba(241,245,149,0.4)", txt: "3階。古剣を携えて迫り来る不死の骸骨兵。邪悪な魔物には【聖(ホーリー)】の光槍が刺さる！", bgX: "25%",  bgY: "0%" },
   { floor: 4,  name: "ハーピィ怪鳥",     hp: 160, atk: 20, weak: "ice",  isCustom: false, eMod: "rgba(236,72,153,0.4)",  txt: "4階。鋭い爪を持つ半人半鳥の怪鳥。羽をフリーズさせる【氷(アイス)】の術式が大きな弱点だ！", bgX: "50%",  bgY: "0%" },
   { floor: 5,  name: "ミノタウロス",     hp: 240, atk: 25, weak: "fire", isCustom: false, eMod: "rgba(239,68,68,0.5)",   txt: "5階。侵入者を切り刻む迷宮の牛頭鬼。分厚い毛皮は【炎(ファイア)】の猛火で一網打尽に燃え上がる！", bgX: "75%",  bgY: "0%" },
-  { floor: 6,  name: "マッドクモ",       hp: 210, atk: 22, weak: "fire", isCustom: false, eMod: "rgba(168,85,247,0.4)",  txt: "6階。天井から急降下してくる大蜘蛛。巣ごと焼き払える【炎(ファイア)】の術式が効果的！", bgX: "100%", bgY: "0%" },
+  { floor: 6,  name: "マッドクモ",       hp: 210, atk: 22, weak: "fire", isCustom: false, eMod: "rgba(168,85,247,0.4)",  txt: "6階。天井から急降下してくる大蜘蛛。巣ごと焼き払える【炎(ファイア)】の術式が効果力！", bgX: "100%", bgY: "0%" },
   { floor: 7,  name: "ゾンビソルジャー", hp: 280, atk: 26, weak: "holy", isCustom: false, eMod: "rgba(22,163,74,0.5)",   txt: "7階。いくら肉体を切り刻まれようとも立ち上がる。聖なる【聖(ホーリー)】の力で浄化せよ！", bgX: "0%",   bgY: "100%" },
   { floor: 8,  name: "アイアンゴーレム", hp: 320, atk: 32, weak: "ice",  isCustom: false, eMod: "rgba(100,116,139,0.5)", txt: "8階。肉塊をつなぎ合わされた禁忌の怪物。接合部を凍らせ脆くする【氷(アイス)】が弱点だ！", bgX: "25%",  bgY: "100%" },
-  { floor: 9,  name: "イビル魔眼",       hp: 390, atk: 38, weak: "holy", isCustom: false, eMod: "rgba(219,39,119,0.5)",  txt: "9階。空間に浮かぶ巨大な単眼の魔物。邪悪な視線はまばゆい【聖(ホーリー)】の光にひるむ！", bgX: "50%",  bgY: "100%" },
+  { floor: 9,  name: "イビル魔眼",       hp: 390, atk: 38, weak: "holy", isCustom: false, eMod: "rgba(219,39,119,0.5)",  txt: "9階。空間に浮かぶ巨大な単眼の魔物。邪悪な魔眼の視界をまばゆい【聖(ホーリー)】の光で遮れ！", bgX: "50%",  bgY: "100%" },
   { floor: 10, name: "竜王バハムート",   hp: 550, atk: 52, weak: "holy", isCustom: false, eMod: "rgba(0,0,0,1)",         txt: "10階。螺旋の頂上に君臨する最終暗黒竜王。賢者の集大成たる【聖(ホーリー)】の神光を叩き込め！", bgX: "75%",  bgY: "100%" }
 ];
 
 let animeTimer = null;
 let currentFrameIdx = 0;
-let animeSpeed = 220; // 通常のゆったりした跳躍羽ばたき速度(ms)
+let animeSpeed = 220;
 
-// 🔧 1階スライムの3パターン・パラパラマンガスレッド開始関数
 function startSlimeAnimation() {
     stopSlimeAnimation();
     currentFrameIdx = 0;
     const graphicEl = document.getElementById("e-sprite-graphic");
+    if (!graphicEl) return;
     
+    // 初回フレームを瞬時に適用して白いチラつきを防ぐ
+    graphicEl.style.backgroundImage = `url('${SLIME_FRAMES[0]}')`;
+    graphicEl.style.backgroundSize = "contain";
+    graphicEl.style.backgroundPosition = "center";
+
     animeTimer = setInterval(() => {
         if(STAGES[curIdx] && STAGES[curIdx].isCustom) {
             currentFrameIdx = (currentFrameIdx + 1) % SLIME_FRAMES.length;
-            // インラインスタイルをリセットし、直接背景画像としてマッピング
             graphicEl.style.backgroundImage = `url('${SLIME_FRAMES[currentFrameIdx]}')`;
-            graphicEl.style.backgroundSize = "contain";
-            graphicBox座標リセット(graphicEl);
         }
     }, animeSpeed);
 }
@@ -311,25 +309,17 @@ function stopSlimeAnimation() {
     if(animeTimer) { clearInterval(animeTimer); animeTimer = null; }
 }
 
-function graphicBox座標リセット(el) {
-    el.style.backgroundPosition = "center";
-}
-
-// 魔法被弾時、スライムの伸縮を一時的に「超高速」にするバースト拡張
 function burstSlimeAnimation() {
     if(STAGES[curIdx] && STAGES[curIdx].isCustom) {
-        stopSlimeAnimation();
-        animeSpeed = 70; // 急加速
-        startSlimeAnimation();
+        stopSlimeAnimation(); animeSpeed = 70; startSlimeAnimation();
         setTimeout(() => {
-            stopSlimeAnimation();
-            animeSpeed = 220; // 通常に復帰
+            stopSlimeAnimation(); animeSpeed = 220;
             if(document.getElementById("scr-battle").style.display === "block") startSlimeAnimation();
         }, 500);
     }
 }
 
-// --- 🎧 シンセサイザー音響回路 ---
+// --- 🎧 音響回路 ---
 let audioCtx = null; let bgmTimer = null; let bgmStep = 0; let currentBgmType = "title";
 function initAudio() { if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
 
@@ -406,7 +396,7 @@ function playSE(type) {
       let osc = audioCtx.createOscillator(); osc.type = 'square';
       osc.frequency.setValueAtTime(1600, now); osc.frequency.exponentialRampToValueAtTime(350, now + 0.38);
       let gain = audioCtx.createGain(); gain.gain.setValueAtTime(0.18, now); gain.gain.linearRampToValueAtTime(0.001, now + 0.38);
-      osc.connect(gain); gain.connect(audioCtx.destination); osc.start(now); osc.stop(now + 0.38);
+      osc.connect(gain); gain.connect(gain); gain.connect(audioCtx.destination); osc.start(now); osc.stop(now + 0.38);
     } 
     else if (type === 'holy') {
       let osc = audioCtx.createOscillator(); osc.type = 'sine';
@@ -461,49 +451,97 @@ function triggerShake(shakeType) {
   }, 16);
 }
 
-const HIT_LAND_EFFECTS = {
-  fire: `<div style="position:absolute; width:140px; height:140px; top:50%; left:50%; margin-top:-70px; margin-left:-70px; display:flex; align-items:center; justify-content:center; animation: fireBoomBlock 0.25s ease-out forwards; z-index:11;"><svg viewBox="0 0 100 100" width="100%" height="100%"><circle cx="50" cy="50" r="40" fill="#ef4444" opacity="0.85"/><circle cx="50" cy="50" r="26" fill="#f97316"/><circle cx="50" cy="50" r="13" fill="#ffffff"/></svg></div>`,
-  ice: `<div style="position:absolute; width:160px; height:160px; top:50%; left:50%; margin-top:-95px; margin-left:-80px; display:flex; align-items:center; justify-content:center; animation: iceSpike 0.32s ease-out forwards; transform-origin: bottom center; z-index:11;"><svg viewBox="0 0 100 100" width="100%" height="100%"><path d="M50 10l10 25h-20zm-25 40l25-10v20zm50 0l-25-10v20zm-25 40l10-25h-20z" fill="#38bdf8"/><path d="M50 25l5 15h-10zm-15 25l15-5v10zm30 0l-15-5v10zm-15 15l5-15h-10z" fill="#e0f2fe"/></svg></div>`,
-  holy: `<div style="position:absolute; width:100px; height:280px; top:50%; left:50%; margin-top:-220px; margin-left:-50px; display:flex; align-items:center; justify-content:center; animation: holyDown 0.35s ease-in forwards; z-index:11;"><svg viewBox="0 0 40 120" width="100%" height="100%"><path d="M18 0h4v80h-4zm-4 40h12v6h-12zm4 45l2 15l2-15z" fill="#facc15"/><path d="M19 10h2v60h-2zm-2 32h6v2h-6z" fill="#ffffff"/></svg></div>`
-};
-
-function createDmgPop(dmg, isWeak, isPlayer) {
-    const layer = document.getElementById("dmg-layer");
-    const pop = document.createElement("div");
-    pop.style.position = "absolute";
-    pop.style.fontSize = isWeak ? "3.2rem" : "2.4rem";
-    pop.style.fontWeight = "900"; pop.style.fontStyle = "italic";
-    if (isPlayer) {
-        pop.style.left = "130px"; pop.style.top = "120px"; pop.style.color = "#ef4444"; pop.innerText = `-${dmg}`;
-    } else {
-        pop.style.right = "110px"; pop.style.top = "90px"; pop.style.color = isWeak ? "#facc15" : "#ffffff";
-        pop.style.textShadow = "3px 3px 0px #000"; pop.innerText = isWeak ? `CRITICAL!\n${dmg}` : dmg;
-    }
-    let yIdx = 0; let xIdx = 0; let opacity = 1;
-    const upTimer = setInterval(() => {
-        yIdx -= 3; xIdx += isPlayer ? -0.5 : 0.8;
-        pop.style.transform = `translate(${xIdx}px, ${yIdx}px)`; opacity -= 0.04; pop.style.opacity = opacity;
-        if(opacity <= 0) { clearInterval(upTimer); pop.remove(); }
-    }, 20);
-    layer.appendChild(pop);
+function triggerEnemyHitPulse() {
+  const box = document.getElementById('e-sprite-graphic');
+  let pCount = 0;
+  const pulseTimer = setInterval(() => {
+    if (pCount > 4) { box.style.transform = "none"; clearInterval(pulseTimer); return; }
+    box.style.transform = `translate3d(${(pCount % 2 === 0 ? 8 : -8)}px, 0px, 0px) scale(0.95)`;
+    pCount++;
+  }, 45);
 }
 
+function flashScreen(color) {
+  const screen = document.getElementById('eff-scr');
+  screen.style.setProperty('background-color', color, 'important');
+  setTimeout(() => {
+    const isCrisis = (pHp <= 30);
+    screen.style.setProperty('background-color', isCrisis ? 'rgba(239, 68, 68, 0.1)' : '#0f172a', 'important');
+  }, 140);
+}
+
+function flashCritical(color) {
+  const screen = document.getElementById('eff-scr');
+  screen.style.setProperty('background-color', color, 'important');
+  setTimeout(() => {
+    screen.style.setProperty('background-color', '#0f172a', 'important');
+    setTimeout(() => {
+      screen.style.setProperty('background-color', color, 'important');
+      setTimeout(() => {
+        const isCrisis = (pHp <= 30);
+        screen.style.setProperty('background-color', isCrisis ? 'rgba(239, 68, 68, 0.1)' : '#0f172a', 'important');
+      }, 70);
+    }, 50);
+  }, 70);
+}
+
+function createExplosionParticles(castType) {
+  const parent = document.getElementById('eff-scr');
+  const container = document.getElementById('e-sprite-container');
+  const rect = container.getBoundingClientRect();
+  const parentRect = parent.getBoundingClientRect();
+  const startX = (rect.left - parentRect.left) + rect.width / 2;
+  const startY = (rect.top - parentRect.top) + rect.height / 2;
+
+  let colorPrimary = '#ffd700'; let colorSecondary = '#ffffff';
+  if (castType === 'fire') { colorPrimary = '#ef4444'; colorSecondary = '#f97316'; }
+  else if (castType === 'ice') { colorPrimary = '#38bdf8'; colorSecondary = '#e0f2fe'; }
+  else if (castType === 'holy') { colorPrimary = '#facc15'; colorSecondary = '#ffffff'; }
+
+  for (let i = 0; i < 50; i++) {
+    const p = document.createElement('div');
+    p.style.position = 'absolute'; p.style.width = `${Math.floor(Math.random() * 8) + 6}px`; p.style.height = p.style.width;
+    p.style.backgroundColor = Math.random() > 0.4 ? colorPrimary : colorSecondary;
+    p.style.left = `${startX}px`; p.style.top = `${startY}px`; p.style.zIndex = '12'; p.style.pointerEvents = 'none';
+    
+    const tx = (Math.random() * 340 - 170); const ty = (Math.random() * -260 - 40);
+    p.style.setProperty('--tx', `${tx}px`); p.style.setProperty('--ty', `${ty}px`);
+    p.style.animation = 'particleBoom 0.68s cubic-bezier(0.1, 0.8, 0.25, 1) forwards';
+    
+    parent.appendChild(p);
+    setTimeout(() => p.remove(), 680);
+  }
+}
+
+function hideAll() { 
+    ['scr-start','scr-intro','scr-battle','scr-result'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.style.setProperty('display', 'none', 'important');
+    }); 
+}
+
+// 🔧 V2.31：進行管理画面の完全同期スイッチ機構
 function nextStage() {
+    playSE('click');
     curIdx++;
     if (curIdx >= STAGES.length) { 
         curIdx = -1; resetGame(); hideAll(); 
-        document.getElementById('scr-start').style.display='block'; 
+        document.getElementById('scr-start').style.setProperty('display', 'block', 'important'); 
         document.getElementById('floor-indicator').style.setProperty('visibility', 'hidden', 'important'); 
         startBGM("title"); return; 
     }
     const data = STAGES[curIdx];
-    pHp = pMaxHp; hideAll();
-    stopSlimeAnimation(); // 念のため静止
+    pHp = pMaxHp; 
+    hideAll(); 
+    stopSlimeAnimation(); 
     
     const fInd = document.getElementById('floor-indicator');
-    fInd.style.setProperty('visibility', 'visible', 'important'); fInd.innerText = `${data.floor}階`;
+    if (fInd) {
+        fInd.style.setProperty('visibility', 'visible', 'important'); 
+        fInd.innerText = `${data.floor}階`;
+    }
     
-    document.getElementById('scr-intro').style.display = 'block';
+    document.getElementById('scr-intro').style.setProperty('display', 'block', 'important');
     document.getElementById('intro-ch-num').innerText = `FLOOR 0${data.floor}`;
     document.getElementById('intro-ch-title').innerText = data.name;
     document.getElementById('intro-text').innerText = data.txt;
@@ -511,9 +549,11 @@ function nextStage() {
 }
 
 function startBattle() {
+  playSE('click');
   const data = STAGES[curIdx];
-  eHp = eMaxHp = data.hp; hideAll();
-  isBusy = false; 
+  eHp = eMaxHp = data.hp; 
+  hideAll(); 
+  isBusy = false; // 🔧 起動ロックを確実にfalseへ解放
   
   const container = document.getElementById('e-sprite-container');
   container.removeAttribute("style"); 
@@ -534,15 +574,12 @@ function startBattle() {
   graphicEl.style.display = "block";
   graphicEl.style.imageRendering = "pixelated";
 
-  document.getElementById('scr-battle').style.display = 'block';
+  document.getElementById('scr-battle').style.setProperty('display', 'block', 'important');
   document.getElementById('e-name').innerText = data.name;
   
-  // 🔧 モンスター画像の条件分岐レンダリング
   if (data.isCustom) {
-      // 1階スライム：3コマスレッドアニメを本格着火！
       startSlimeAnimation();
   } else {
-      // 2階以降：テクスチャアトラスシートから指定座標を抽出
       stopSlimeAnimation();
       graphicEl.style.backgroundImage = `url('${MASTER_SHEET_URL}')`;
       graphicEl.style.backgroundSize = "500% 200%";
@@ -565,25 +602,6 @@ function startBattle() {
        startBGM("horror");
   }
   setTimeout(drawBricks, 50);
-}
-
-function updateHpUI() {
-  const scr = document.getElementById('eff-scr');
-  const alertBadge = document.getElementById('p-hp-alert-badge');
-  document.getElementById('p-hp-bar').style.setProperty('width', `${pHp}%`, 'important');
-  document.getElementById('e-hp-bar').style.setProperty('width', `${(eHp/eMaxHp*100)}%`, 'important');
-  document.getElementById('p-hp-txt').innerText = `HP: ${pHp} / 100`;
-  document.getElementById('e-hp-txt').innerText = `HP: ${eHp} / ${eMaxHp}`;
-
-  if (pHp <= 30) {
-    scr.style.setProperty('animation', 'crisisAlert 1.0s infinite alternate', 'important');
-    scr.style.setProperty('border-color', '#f43f5e', 'important');
-    if (alertBadge) alertBadge.style.display = "block";
-  } else {
-    scr.style.setProperty('animation', 'none', 'important');
-    scr.style.setProperty('border-color', (STAGES[curIdx] && STAGES[curIdx].floor === 10) ? '#be123c' : '#334155', 'important');
-    if (alertBadge) alertBadge.style.display = "none";
-  }
 }
 
 function turn(playerMove) {
@@ -624,16 +642,15 @@ function turn(playerMove) {
       pDamage = data.atk;
       containerEl.style.setProperty('animation', 'enemyAssault 0.45s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards', 'important');
       setTimeout(() => { containerEl.style.setProperty('animation', 'floatE 2.2s infinite alternate ease-in-out', 'important'); }, 460);
-      if (isCritical) log = `<span style='color:#facc15; font-weight:900;'>【CRITICAL HIT!!】</span>弱点特効！『${spellName}』が炸裂し 【${eDamage}】 ダメージ！敵の残像突進で ${pDamage} 被弾！`;
-      else log = `⚔️ 術式交錯！追尾術式『${spellName}』が命中！敵に ${eDamage} ダメージ / あなたは ${pDamage} 被弾！`;
+      if (isCritical) log = `<span style='color:#facc15; font-weight:900;'>【CRITICAL HIT!!】</span>弱点特効！『${spellName}』が敵の場所で炸裂し 【${eDamage}】 ダメージ！反撃の分身残像突進で ${pDamage} 被弾！`;
+      else log = `⚔️ 術式が激突！追尾魔導『${spellName}』が命中！敵に ${eDamage} ダメージ / あなたは ${pDamage} 被弾！`;
     } else {
       eDamage = Math.floor(eDamage * 0.35); log = `🛡️ 敵の防御結界！『${spellName}』の魔力が相殺され、敵に ${eDamage} ダメージ。`;
     }
 
-    // 着弾直列管理
     setTimeout(() => {
       playSE(playerMove);
-      burstSlimeAnimation(); // 🔧 1階の場合：パラパラアニメが激しく急加速バースト！
+      burstSlimeAnimation(); 
       
       const parentRect = document.getElementById('eff-scr').getBoundingClientRect();
       const targetRect = containerEl.getBoundingClientRect();
@@ -689,7 +706,7 @@ function turn(playerMove) {
 function checkBattleEnd() {
   const containerEl = document.getElementById('e-sprite-container');
   if (pHp <= 0 || eHp <= 0) { 
-    stopBGM(); stopSlimeAnimation(); // アニメを安全停止
+    stopBGM(); stopSlimeAnimation(); 
     if (eHp <= 0) {
       playSE('boom'); triggerShake('critical_shake'); flashCritical('#ffffff');
       createExplosionParticles(STAGES[curIdx].weak); 
@@ -709,7 +726,7 @@ function checkBattleEnd() {
 
 function endBattle() {
   hideAll(); stopSlimeAnimation();
-  document.getElementById('scr-result').style.display = 'block';
+  document.getElementById('scr-result').style.setProperty('display', 'block', 'important');
   const rTitle = document.getElementById('res-title'); const rText = document.getElementById('res-text'); const rBtn = document.getElementById('res-btn');
   
   if(document.getElementById('btn-debug-death')) document.getElementById('btn-debug-death').style.setProperty('display', 'none', 'important');
@@ -720,7 +737,7 @@ function endBattle() {
     rTitle.innerText = "VICTORY"; rTitle.style.color = '#10b981';
     document.getElementById('res-icon').innerText = "🏆";
     if (curIdx === STAGES.length - 1) {
-      rText.innerText = "🎉 ついに最上階10階にて、竜王バハムートを完全討滅！\n\n世界に永遠の眩しい光が戻った！\n\nあなたはこの世界の神話となる、究極の大魔導士となったのだ！";
+      rText.innerText = "🎉 ついに最上階10階にて、竜王バハムートを完全討滅！\n\n世界を包んでいた暗黒は霧散し、光が戻った！\n\nあなたはこの世界の神話となる、究極の大魔導士となったのだ！";
       rBtn.innerText = "タイトルへ戻る";
     } else {
       rText.innerText = `激闘の末、${STAGES[curIdx].name}を魔力粒子の海に完全破砕した！\n\nさらに上の高層へ繋がる光の階段が出現した。`;
@@ -741,7 +758,6 @@ function resetGame() {
   document.getElementById('battle-log').innerHTML = "戦闘準備完了。コマンドを選択せよ。";
   stopBGM(); stopSlimeAnimation();
 }
-function hideAll() { ['scr-start','scr-intro','scr-battle','scr-result'].forEach(id=>document.getElementById(id).style.display='none'); }
 setTimeout(() => { startBGM("title"); drawBricks(); }, 500);
 /*]]>*/
 </script>
