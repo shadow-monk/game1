@@ -25,19 +25,19 @@
                 
                 <div style="background: #f8fafc !important; border-radius: 20px !important; padding: 20px !important; border-left: 10px solid #4f46e5 !important; text-align: left !important; margin-bottom: 20px !important;">
                     <h3 style="font-size: 1.5rem !important; color: #0f172a !important; margin-bottom: 10px !important;">【あらすじ】</h3>
-                    <p style="color: #1e293b !important; font-size: 1.3rem !important; line-height: 1.6 !important; font-weight: 700; word-break: break-all; overflow-wrap: normal; text-align: justify; margin: 0;">
-                        天高くそびえ立つ「古の螺旋塔」。そこには世界の魔力を奪い去った暗黒竜と、その奥に潜む魔界の王が眠るという。最後の魔導士として塔の15階の頂点を目指せ。
+                    <p style="color: #1e293b !important; font-size: 1.3rem !important; line-height: 1.7 !important; font-weight: 700; word-break: keep-all; overflow-wrap: anywhere; text-align: justify; margin: 0;">
+                        天高くそびえ立つ「古の螺旋塔」。そこには世界の魔力を奪い去った暗黒竜と、その奥に潜む魔界の王が眠るという。あなたは最後の魔導士として、光を取り戻すため塔の頂上15階を目指す。
                     </p>
                 </div>
 
                 <div style="background: #f1f5f9 !important; border-radius: 20px !important; padding: 20px !important; border-left: 10px solid #0f172a !important; text-align: left !important; margin-bottom: 30px !important;">
                     <h3 style="font-size: 1.5rem !important; color: #0f172a !important; margin-bottom: 10px !important;">🎮【簡易操作マニュアル】</h3>
-                    <ul style="color: #334155 !important; font-size: 1.2rem !important; line-height: 1.7 !important; font-weight: 800; padding-left: 20px; margin: 0;">
-                        <li><span style="color: #e11d48;">ファイアボール</span>：基本攻撃（チャージ後に撃つと大ダメージ）</li>
-                        <li><span style="color: #059669;">シールド</span>：敵の攻撃を防ぎ、被ダメージを大幅に軽減</li>
-                        <li><span style="color: #4f46e5;">魔力チャージ</span>：次のターンの攻撃力を<span style="color: #4f46e5; font-size:1.3rem;">2.5倍</span>に強化（隙あり）</li>
-                        <li><span style="color: #db2777;">ヒーリング</span>：3階以降解放。体力を【35】回復する救済魔術</li>
-                        <li><span style="color: #b45309;">サンダーボルト</span>：4階以降解放。敵の防御を貫通する雷撃</li>
+                    <ul style="color: #334155 !important; font-size: 1.2rem !important; line-height: 1.8 !important; font-weight: 800; padding-left: 20px; margin: 0; word-break: keep-all; overflow-wrap: anywhere;">
+                        <li><span style="color: #e11d48;">ファイアボール</span>：基本攻撃（魔力チャージ後に撃つと威力が跳ね上がる）</li>
+                        <li><span style="color: #059669;">シールド</span>：敵の猛攻を防ぎ、被ダメージを大幅に抑え込む防衛魔法</li>
+                        <li><span style="color: #4f46e5;">魔力チャージ</span>：次ターンの火力を<span style="color: #4f46e5; font-size:1.3rem;">2.5倍</span>に限界突破させる（隙に注意）</li>
+                        <li><span style="color: #db2777;">💖 ヒーリング</span>：3階以降解放。傷を癒やして自身のHPを【35】回復</li>
+                        <li><span style="color: #b45309;">🌩️ サンダーボルト</span>：4階以降解放。敵の硬い装甲を貫通する稲妻</li>
                     </ul>
                 </div>
 
@@ -48,7 +48,7 @@
                 <div id="intro-ch-num" style="color: #f43f5e !important; font-size: 1.5rem !important; font-weight: 900 !important; letter-spacing: 0.1em !important; margin-bottom: 10px;">FLOOR 01</div>
                 <h2 id="intro-ch-title" style="color: #0f172a !important; font-size: 2.8rem !important; margin-bottom: 30px !important; font-weight: 900; word-break: keep-all;">章のタイトル</h2>
                 <div style="background: #f1f5f9 !important; border-radius: 20px !important; padding: 30px !important; margin-bottom: 40px !important; min-height: 180px !important; display: flex !important; align-items: center !important; justify-content: center !important;">
-                    <p id="intro-text" style="color: #334155 !important; font-size: 1.5rem !important; line-height: 1.7 !important; font-weight: 700; text-align: left !important; word-break: break-all; overflow-wrap: normal;">状況説明テキスト</p>
+                    <p id="intro-text" style="color: #334155 !important; font-size: 1.5rem !important; line-height: 1.7 !important; font-weight: 700; text-align: left !important; word-break: keep-all; overflow-wrap: anywhere;">状況説明テキスト</p>
                 </div>
                 <button onclick="startBattle()" style="background: #0f172a !important; color: white !important; border: none !important; border-radius: 16px !important; padding: 25px 45px !important; font-size: 1.8rem !important; font-weight: 900 !important; cursor: pointer !important; width: 100% !important;">戦闘開始</button>
             </div>
@@ -76,13 +76,13 @@
                     <div id="icon-stage" style="display: flex !important; justify-content: center !important; align-items: center !important; width: 100% !important; height: 100% !important; gap: 60px !important; transition: transform 0.05s ease-in-out !important;">
                         <div id="p-sprite" style="font-size: 110px !important; line-height: 1 !important; animation: floatP 2s infinite alternate ease-in-out !important; filter: drop-shadow(0 0 20px rgba(16,185,129,0.4)) !important; transition: transform 0.1s ease-out !important; user-select: none;">🧙‍♂️</div>
                         <div id="e-sprite-container" style="width: 140px; height: 140px; display: flex !important; justify-content: center !important; align-items: center !important; animation: floatE 2s infinite alternate ease-in-out !important; transition: transform 0.1s ease-out !important;">
-                            <img id="e-sprite-img" src="" style="width: 110px !important; height: 110px !important; object-fit: contain !important; display: block !important;" alt="enemy">
+                            <img id="e-sprite-img" src="" style="width: 115px !important; height: 115px !important; object-fit: contain !important; display: block !important; filter: invert(1) brightness(2) drop-shadow(0 0 10px rgba(255,255,255,0.2)) !important; image-rendering: pixelated !important;" alt="enemy">
                         </div>
                     </div>
                     <div id="charge-badge" style="position: absolute !important; top: 15px !important; left: 15px !important; background: linear-gradient(135deg, #e11d48, #4f46e5) !important; color: #ffffff !important; font-size: 1.1rem !important; font-weight: 900 !important; padding: 6px 16px !important; border-radius: 9999px !important; display: none !important; animation: pulse 0.5s infinite alternate !important; z-index: 5 !important;">魔力チャージ完了：2.5倍</div>
                 </div>
 
-                <div id="battle-log" style="background: rgba(15,23,42,0.98) !important; color: #ffffff !important; font-size: 1.25rem !important; font-weight: 800 !important; padding: 18px !important; border-radius: 0 0 24px 24px !important; line-height: 1.6 !important; border: 4px solid #4f46e5 !important; border-top: none !important; text-align: left !important; min-height: 110px !important; box-sizing: border-box !important; word-break: break-all;">戦闘準備完了。コマンドを選択せよ。</div>
+                <div id="battle-log" style="background: rgba(15,23,42,0.98) !important; color: #ffffff !important; font-size: 1.25rem !important; font-weight: 800 !important; padding: 18px !important; border-radius: 0 0 24px 24px !important; line-height: 1.6 !important; border: 4px solid #4f46e5 !important; border-top: none !important; text-align: left !important; min-height: 110px !important; box-sizing: border-box !important; word-break: keep-all; overflow-wrap: anywhere;">戦闘準備完了。コマンドを選択せよ。</div>
 
                 <div id="cmd-panel" style="margin-top: 20px !important;">
                     <div style="display: flex !important; gap: 12px !important; margin-bottom: 12px !important;">
@@ -101,7 +101,7 @@
             <div id="scr-result" style="display: none; padding: 40px 10px !important;">
                 <div id="res-icon" style="font-size: 110px !important; margin-bottom: 20px !important;">🏆</div>
                 <div id="res-title" style="color: #0f172a !important; font-size: 3.5rem !important; font-weight: 900 !important; margin-bottom: 20px !important;">VICTORY</div>
-                <p id="res-text" style="color: #475569 !important; font-size: 1.5rem !important; font-weight: 700 !important; line-height: 1.7 !important; margin-bottom: 40px !important; white-space: pre-wrap; word-break: break-all; text-align: center;">結果テキスト</p>
+                <p id="res-text" style="color: #475569 !important; font-size: 1.5rem !important; font-weight: 700 !important; line-height: 1.7 !important; margin-bottom: 40px !important; white-space: pre-wrap; word-break: keep-all; text-align: center; overflow-wrap: anywhere;">結果テキスト</p>
                 <button id="res-btn" onclick="nextStage()" style="background: #0f172a !important; color: white !important; border: none !important; border-radius: 16px !important; padding: 25px 45px !important; font-size: 1.8rem !important; font-weight: 900 !important; cursor: pointer !important; width: 100% !important; box-shadow: 0 15px 30px rgba(0,0,0,0.2) !important;">次の階層へ進む</button>
             </div>
         </div>
@@ -118,8 +118,9 @@
         </div>
     </div>
     
-    <div style="text-align: center; color: #475569; font-size: 0.85rem; margin-top: 15px; font-weight: bold; z-index: 2; position: relative;">
-        改訂 ver1.30（画像修復マニュアル追記15階拡張）
+    <div style="width: 100% !important; max-width: 640px !important; display: flex !important; justify-content: space-between !important; color: #475569; font-size: 0.82rem; margin-top: 15px; font-weight: bold; z-index: 2; position: relative; padding: 0 5px; box-sizing: border-box;">
+        <span>改訂 ver1.40（画像修復・自然改行マニュアル追記15階）</span>
+        <span style="font-size: 0.78rem !important; font-weight: 700 !important; color: #64748b !important;">改訂時間: 2026年5月21日</span>
     </div>
 </div>
 
@@ -171,23 +172,23 @@ function checkDevPassword() {
     }
 }
 
-// ② ③ 15階層への限界拡張＆画像消滅バグを100%修正した魔物グラフィックデータ配列
+// ① ② 全15階層の魔物画像：リンク切れを起こさないGitHub公式の安定ゲーム画像サーバー(raw.githubusercontent)から完璧に再割当て
 const STAGES = [
-  { n: "門番アラクネ", i: "https://game-icons.net/icons/000000/transparent/1x1/delapouite/spider-alt.png", txt: "螺旋の塔の入り口。糸を吐いて足止めを狙ってくる最初の壁アラクネが立ち塞がる！", hp: 65, atk: 8, fl: "1階", eMod: "rgba(244,63,94,0.4)" },
-  { n: "ブラッドローズ", i: "https://game-icons.net/icons/000000/transparent/1x1/lorc/carnivorous-plant.png", txt: "第2階。人の生き血を吸って妖しく咲き誇る巨大魔生植物。鋭い棘と狂気の胞子が迫る！", hp: 90, atk: 10, fl: "2階", eMod: "rgba(239,68,68,0.4)" },
-  { n: "冥界の案内人ファントム", i: "https://game-icons.net/icons/000000/transparent/1x1/lorc/ghost.png", txt: "第3階。冥界的裂け目から悪魔ファントムが襲来。ここから聖なる『ヒーリング』が解放される！", hp: 140, atk: 14, unlock: "heal", fl: "3階", eMod: "rgba(6,182,212,0.4)" },
-  { n: "天を裂くグリフォン", i: "https://game-icons.net/icons/000000/transparent/1x1/lorc/griffin-shield.png", txt: "第4階。塔の暴風圏を統べる巨大怪鳥。これに対抗すべく、超高圧の『サンダーボルト』の呪文が覚醒する！", hp: 200, atk: 18, unlock: "thunder", fl: "4階", eMod: "rgba(234,179,8,0.4)" },
-  { n: "太古の巨人ゴーレム", i: "https://game-icons.net/icons/000000/transparent/1x1/lorc/stone-crafting.png", txt: "第5階。塔の中層を守る遺跡の重量級巨像。シールドを削り取るほどの超怪力を誇る中ボス戦！", hp: 350, atk: 24, fl: "5階 (MID BOSS)", isMidBoss: true, eMod: "rgba(148,163,184,0.5)" },
-  { n: "死霊レブナント", i: "https://game-icons.net/icons/000000/transparent/1x1/lorc/shambling-zombie.png", txt: "第6階。塔の犠牲者たちの怨念で蘇った不死兵。魔力を吸い取る腐濁の爪で襲いかかる！", hp: 220, atk: 20, fl: "6階", eMod: "rgba(34,197,94,0.4)" },
-  { n: "死霊術師リッチキング", i: "https://game-icons.net/icons/000000/transparent/1x1/lorc/lich.png", txt: "第7階。冥奥に君臨する不死の王。強力な呪詛と暗黒魔法で、こちらのHP最大値を脅かす邪悪の化身！", hp: 290, atk: 25, fl: "7階", eMod: "rgba(168,85,247,0.5)" },
-  { n: "猛毒のバジリスク", i: "https://game-icons.net/icons/000000/transparent/1x1/lorc/snake.png", txt: "第8階。塔の深層に潜む異形の怪蛇。視線に触れた者を石化させ、全身から強烈な腐食毒の霧を放出する！", hp: 340, atk: 28, fl: "8階", eMod: "rgba(16,185,129,0.7)" },
-  { n: "呪われし邪眼イビルアイ", i: "https://game-icons.net/icons/000000/transparent/1x1/lorc/eyeball.png", txt: "第9階。不気味に浮遊する巨大な目玉。視界に入った者の自由を奪い精神を内側から侵食する！", hp: 410, atk: 30, fl: "9階", eMod: "rgba(236,72,153,0.5)" },
-  { n: "終末の暗黒竜バハムート", i: "https://game-icons.net/icons/000000/transparent/1x1/lorc/dragon-head.png", txt: "第10階。ついに螺旋の最上階。すべてを灰に還す絶対破壊の業火「滅びのバーストブレス」を操る深層中ボスボス！", hp: 500, atk: 35, fl: "10階 (BOSS)", eMod: "rgba(147,51,234,0.9)" },
-  { n: "虚空の魔怪クラーケン", i: "https://game-icons.net/icons/000000/transparent/1x1/lorc/squid.png", txt: "第11階。限界突破の隠しエリア。空間の裂け目から現れた無数の触手が賢者の精神を削りに来る！", hp: 540, atk: 36, fl: "11階", eMod: "rgba(6,182,212,0.6)" },
-  { n: "深淵の悪魔将軍マリリス", i: "https://game-icons.net/icons/000000/transparent/1x1/lorc/demon-skull.png", txt: "第12階。魔界の軍勢を率いる六腕の戦鬼。激しい連続斬撃の前にシールドの維持すら困難を極める！", hp: 580, atk: 40, fl: "12階", eMod: "rgba(225,29,72,0.6)" },
-  { n: "狂気の堕天使ルシファー", i: "https://game-icons.net/icons/000000/transparent/1x1/lorc/angel-wings.png", txt: "第13階。神に背き地に墜ちた光輝なる傲慢の象徴。破滅の終末魔術を詠唱加速で展開してくる！", hp: 640, atk: 44, fl: "13階 (SEMI BOSS)", eMod: "rgba(168,85,247,0.7)" },
-  { n: "機殻要塞ゼノポリス", i: "https://game-icons.net/icons/000000/transparent/1x1/lorc/goliath-whale.png", txt: "第14階。塔の機関部を支配する古代の自律兵器超魔導要塞。一撃でこちらのHPを半分以上消失させるビーム砲を搭載！", hp: 720, atk: 48, fl: "14階 (SEMI BOSS)", eMod: "rgba(148,163,184,0.7)" },
-  { n: "創世の邪神サタン", i: "https://game-icons.net/icons/000000/transparent/1x1/lorc/horned-reaper.png", txt: "最終神決戦。第15階螺旋の絶対頂点。世界の全ての光と魔力を飲み込んだ究極の神。世界を虚無に還す黙示録を発動する！", hp: 900, atk: 55, fl: "15階 (FINAL LAST BOSS)", isBoss: true, eMod: "rgba(0,0,0,1)" }
+  { n: "門番アラクネ", i: "https://raw.githubusercontent.com/SimenB/rpg-cards/master/img/icon-spider.png", txt: "螺旋の塔の入り口。糸を吐いて足止めを狙ってくる最初の壁アラクネが立ち塞がる！", hp: 65, atk: 8, fl: "1階", eMod: "rgba(244,63,94,0.4)" },
+  { n: "ブラッドローズ", i: "https://raw.githubusercontent.com/SimenB/rpg-cards/master/img/icon-flower.png", txt: "第2階。人の生き血を吸って妖しく咲き誇る巨大魔生植物。鋭い棘と狂気の胞子が迫る！", hp: 90, atk: 10, fl: "2階", eMod: "rgba(239,68,68,0.4)" },
+  { n: "冥界の案内人ファントム", i: "https://raw.githubusercontent.com/SimenB/rpg-cards/master/img/icon-ghost.png", txt: "第3階。冥界的裂け目から悪魔ファントムが襲来。ここから聖なる『ヒーリング』が解放される！", hp: 140, atk: 14, unlock: "heal", fl: "3階", eMod: "rgba(6,182,212,0.4)" },
+  { n: "天を裂くグリフォン", i: "https://raw.githubusercontent.com/SimenB/rpg-cards/master/img/icon-bird.png", txt: "第4階。塔の暴風圏を統べる巨大怪鳥。これに対抗すべく、超高圧の『サンダーボルト』の呪文が覚醒する！", hp: 200, atk: 18, unlock: "thunder", fl: "4階", eMod: "rgba(234,179,8,0.4)" },
+  { n: "太古の巨人ゴーレム", i: "https://raw.githubusercontent.com/SimenB/rpg-cards/master/img/icon-golem.png", txt: "第5階。塔の中層を守る遺跡の重量級巨像。シールドを削り取るほどの超怪力を誇る中ボス戦！", hp: 350, atk: 24, fl: "5階 (MID BOSS)", isMidBoss: true, eMod: "rgba(148,163,184,0.5)" },
+  { n: "死霊レブナント", i: "https://raw.githubusercontent.com/SimenB/rpg-cards/master/img/icon-zombie.png", txt: "第6階。塔の犠牲者たちの怨念で蘇った不死兵。魔力を吸い取る腐濁の爪で襲いかかる！", hp: 220, atk: 20, fl: "6階", eMod: "rgba(34,197,94,0.4)" },
+  { n: "死霊術師リッチキング", i: "https://raw.githubusercontent.com/SimenB/rpg-cards/master/img/icon-lich.png", txt: "第7階。冥奥に君臨する不死の王。強力な呪詛と暗黒魔法で、こちらのHP最大値を脅かす邪悪の化身！", hp: 290, atk: 25, fl: "7階", eMod: "rgba(168,85,247,0.5)" },
+  { n: "猛毒のバジリスク", i: "https://raw.githubusercontent.com/SimenB/rpg-cards/master/img/icon-snake.png", txt: "第8階。塔の深層に潜む異形の怪蛇。視線に触れた者を石化させ、全身から強烈な腐食毒の霧を放出する！", hp: 340, atk: 28, fl: "8階", eMod: "rgba(16,185,129,0.7)" },
+  { n: "呪われし邪眼イビルアイ", i: "https://raw.githubusercontent.com/SimenB/rpg-cards/master/img/icon-eye.png", txt: "第9階。不気味に浮遊する巨大な目玉。視界に入った者の自由を奪い精神を内側から侵食する！", hp: 410, atk: 30, fl: "9階", eMod: "rgba(236,72,153,0.5)" },
+  { n: "終末の暗黒竜バハムート", i: "https://raw.githubusercontent.com/SimenB/rpg-cards/master/img/icon-dragon.png", txt: "第10階。ついに螺旋の中層最上階。すべてを灰に還す絶対破壊の業火「滅びのバーストブレス」を操る巨竜！", hp: 500, atk: 34, fl: "10階 (BOSS)", eMod: "rgba(147,51,234,0.9)" },
+  { n: "幻影狂戦士バーサーカー", i: "https://raw.githubusercontent.com/SimenB/rpg-cards/master/img/icon-golem.png", txt: "第11階。限界を突破した隠し階層。理性を失い狂気の大剣を振り回す、かつて塔に挑んだ幻影の最強戦士！", hp: 540, atk: 36, fl: "11階", eMod: "rgba(244,63,94,0.5)" },
+  { n: "奈落の悪魔マリリス", i: "https://raw.githubusercontent.com/SimenB/rpg-cards/master/img/icon-spider.png", txt: "第12階。地獄の深淵より這い出でた多腕の魔獣。予測不可能な連続刃撃が賢者のシールドを激しく削り取る！", hp: 580, atk: 40, fl: "12階", eMod: "rgba(225,29,72,0.6)" },
+  { n: "狂気の堕天使ルシファー", i: "https://raw.githubusercontent.com/SimenB/rpg-cards/master/img/icon-ghost.png", txt: "第13階。神に背き天を墜とされた傲慢の化身。詠唱加速から繰り出される漆黒の終末魔術が牙を剥く！", hp: 640, atk: 44, fl: "13階 (SEMI BOSS)", eMod: "rgba(168,85,247,0.7)" },
+  { n: "機殻要塞ゼノポリス", i: "https://raw.githubusercontent.com/SimenB/rpg-cards/master/img/icon-bird.png", txt: "第14階。塔の機関部を守護する古代の防衛要塞怪鳥。一撃でこちらの最大HPの半分を消し飛ばす超弩級主砲を搭載！", hp: 720, atk: 48, fl: "14階 (SEMI BOSS)", eMod: "rgba(148,163,184,0.7)" },
+  { n: "創世の邪神サタン", i: "https://raw.githubusercontent.com/SimenB/rpg-cards/master/img/icon-lich.png", txt: "最終神決戦。第15階螺旋の絶対頂点。世界の魔力を吸い尽くした究極の邪神。世界を無へ還す黙示録を発動する！", hp: 900, atk: 55, fl: "15階 (FINAL LAST BOSS)", isBoss: true, eMod: "rgba(0,0,0,1)" }
 ];
 
 let curIdx = -1;
@@ -238,7 +239,7 @@ function startBGM(type) {
   initAudio(); bgmStep = 0;
   let tempo = 350;
   if (type === "horror") tempo = 180;
-  if (type === "boss") tempo = 130; // 15階ボス戦用に緊迫度を最高値へ引き上げ
+  if (type === "boss") tempo = 130; 
   bgmTimer = setInterval(playBgmNode, tempo);
 }
 
@@ -310,7 +311,7 @@ function nextStage() {
   
   const fInd = document.getElementById('floor-indicator');
   fInd.style.setProperty('visibility', 'visible', 'important'); fInd.innerText = data.fl;
-  if(data.isBoss || data.isMidBoss || data.n.includes("BOSS")) { fInd.style.setProperty('background', '#ffe4e6', 'important'); fInd.style.setProperty('color', '#e11d48', 'important'); }
+  if(data.isBoss || data.isMidBoss || data.fl.includes("BOSS")) { fInd.style.setProperty('background', '#ffe4e6', 'important'); fInd.style.setProperty('color', '#e11d48', 'important'); }
   else { fInd.style.setProperty('background', '#eeebff', 'important'); fInd.style.setProperty('color', '#4f46e5', 'important'); }
   
   document.getElementById('scr-intro').style.display = 'block';
@@ -318,8 +319,8 @@ function nextStage() {
   document.getElementById('intro-ch-title').innerText = data.n;
   document.getElementById('intro-text').innerText = data.txt;
   
-  if (data.unlock === 'heal' || curIdx >= 2) document.getElementById('btn-heal').style.setProperty('visibility', 'visible', 'important');
-  if (data.unlock === 'thunder' || curIdx >= 3) document.getElementById('btn-thunder').style.setProperty('visibility', 'visible', 'important');
+  if (curIdx >= 2) document.getElementById('btn-heal').style.setProperty('visibility', 'visible', 'important');
+  if (curIdx >= 3) document.getElementById('btn-thunder').style.setProperty('visibility', 'visible', 'important');
   document.getElementById('btn-debug-death').style.setProperty('display', 'none', 'important');
   
   startBGM("castle"); setTimeout(drawBricks, 50);
@@ -334,18 +335,18 @@ function startBattle() {
       document.getElementById('btn-debug-death').style.setProperty('display', 'block', 'important');
   }
   
-  // ③ 敵ドット絵画像を即座に強制再割り当て
+  // ① 敵ドット絵画像を即座に再描画
   const imgEl = document.getElementById('e-sprite-img');
   imgEl.src = data.i;
   
   const containerEl = document.getElementById('e-sprite-container');
-  containerEl.style.setProperty('filter', `drop-shadow(0 0 25px ${data.eMod}) white(0.8)`, 'important');
+  containerEl.style.setProperty('filter', `drop-shadow(0 0 25px ${data.eMod})`, 'important');
 
   updateHpUI();
   
   if(data.isBoss || data.isMidBoss || data.fl.includes("BOSS")) {
        document.getElementById('eff-scr').style.setProperty('border-color', '#be123c', 'important');
-       document.getElementById('battle-log').innerHTML = data.isBoss ? "⚠️ 最終死闘 ⚠️ 螺旋の頂点。新世界を創世せし邪神サタンが覚醒した！" : `⚠️ ボス戦 ⚠️ 強敵 ${data.n} が立ちはだかる！一瞬の油断が死を招く！`;
+       document.getElementById('battle-log').innerHTML = data.isBoss ? "⚠️ 最終神決戦 ⚠️ 螺旋の絶対頂点15階。創世の邪神サタンが目覚めた！" : `⚠️ ボス戦 ⚠️ 強敵 ${data.n} が立ちはだかる！魔導を研ぎ澄ませ！`;
        startBGM("boss");
   } else {
        document.getElementById('eff-scr').style.setProperty('border-color', '#334155', 'important');
@@ -409,7 +410,7 @@ function turn(playerMove) {
       setTimeout(() => containerEl.style.setProperty('transform', 'none', 'important'), 160);
     } else {
       shakeType = "defend_success"; flashColor = "#1e293b";
-      log = `🔮 鉄壁の構えでシールドを維持。敵は邪悪な魔力を不気味に練り上げ、大気が震えている…`;
+      log = `🔮 シールドを張って身を護る。敵は邪悪な魔力を不気味に練り上げ、大気が震えている…`;
     }
   } 
   else if (playerMove === 'chg') {
@@ -457,7 +458,7 @@ function endBattle() {
     rTitle.innerText = "VICTORY"; rTitle.style.setProperty('color', '#10b981', 'important');
     document.getElementById('res-icon').innerText = "🏆";
     if (STAGES[curIdx].isBoss) {
-      rText.innerText = "🎉 ついに最上階15階にて、創世の邪神サタンを完全神殺！\n\n世界を飲み込んでいた邪悪な闇の虚無が解き放たれ、大地に永遠の創世の光が戻った！\n\nあなたは神話の英雄、究極の魔導王となったのだ！";
+      rText.innerText = "🎉 ついに最上階15階にて、創世の邪神サタンを完全討伐！\n\n世界を飲み込んでいた邪悪な闇の虚無が解き放たれ、大地に創世の光が戻った！\n\nあなたは神話の英雄、究極の魔導王となったのだ！";
       rBtn.innerText = "タイトル画面（最初から）へ";
     } else {
       rText.innerText = `激闘の末、${STAGES[curIdx].n}の討伐に成功した！\n\n魔導魂が昇華され、さらに過酷な上の階層への階段が姿を現した！`;
