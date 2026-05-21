@@ -76,7 +76,7 @@
 }
 /* ]]> */
 </style>
-<div id="sq-master-wrapper" style="position: relative !important; background-color: #0f172a !important; padding: 20px 10px !important; display: flex !important; flex-direction: column !important; justify-content: center !important; align-items: center !important; min-height: 1100px !important; width: 100% !important; box-sizing: border-box !important; overflow: hidden;">
+<div id="sq-master-wrapper" style="position: relative !important; background-color: #0f172a !important; padding: 20px 10px !important; display: flex !important; flex-direction: column !important; justify-content: center !important; align-items: center !important; min-height: 1150px !important; width: 100% !important; box-sizing: border-box !important; overflow: hidden;">
     <canvas id="brick-canvas" style="position: absolute !important; top: 0 !important; left: 0 !important; width: 100% !important; height: 100% !important; z-index: 1 !important; pointer-events: none !important;"></canvas>
 
     <div id="sq-container" style="position: relative !important; z-index: 2 !important; width: 100% !important; max-width: 640px !important; box-sizing: border-box !important; font-family: 'Helvetica Neue', Arial, 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', Meiryo, sans-serif !important; margin: 0 auto !important;">
@@ -102,7 +102,7 @@
                 <div style="background: #f1f5f9 !important; border-radius: 20px !important; padding: 20px !important; border-left: 10px solid #0f172a !important; text-align: left !important; margin-bottom: 30px !important;">
                     <h3 style="font-size: 1.5rem !important; color: #0f172a !important; margin-bottom: 10px !important;">🎮【簡易操作マニュアル】</h3>
                     <ul style="color: #334155 !important; font-size: 1.2rem !important; line-height: 1.8 !important; font-weight: 800; padding-left: 20px; margin: 0; word-break: keep-all; overflow-wrap: anywhere;">
-                        <li><span style="color: #e11d48;">ファイア</span>：炎属性（重低音ノイズ爆発音＆追尾火炎弾エフェクト）</li>
+                        <li><span style="color: #e11d48;">ファイア</span>：基本炎属性（重低音ノイズ爆発音＆追尾火炎弾エフェクト）</li>
                         <li><span style="color: #0284c7;">❄️ アイス</span>：氷結術式（高周波パルス結晶音＆高速追尾氷錐エフェクト）</li>
                         <li><span style="color: #ca8a04;">✨ ホーリー</span>：神聖光線術式（サイン波急上昇音＆天界周回槍エフェクト）</li>
                         <li><span style="color: #059669;">シールド</span>：敵の残像分身突進を受け流し被ダメージを極限カット</li>
@@ -185,9 +185,20 @@
         </div>
     </div>
     
-    <div style="width: 100% !important; max-width: 640px !important; display: flex !important; justify-content: space-between !important; color: #475569; font-size: 0.82rem; margin-top: 15px; font-weight: bold; z-index: 2; position: relative; padding: 0 5px; box-sizing: border-box;">
-        <span>改訂 V2.05（着弾座標相対化バグ修正・HP減少中危険インジケーター追加版）</span>
-        <span style="font-size: 0.78rem !important; font-weight: 700 !important; color: #64748b !important;">改訂時間: 2026年5月21日 23:49:12</span>
+    <div id="dev-console-window" style="position: relative !important; z-index: 3 !important; margin-top: 25px !important; width: 100% !important; max-width: 640px !important; background: #0b0f19 !important; border: 2px solid #334155 !important; border-radius: 16px !important; padding: 15px !important; box-sizing: border-box !important; text-align: left !important; box-shadow: 0 10px 30px rgba(0,0,0,0.5) !important; margin-left: auto; margin-right: auto;">
+        <div style="font-size: 0.95rem !important; font-weight: 800 !important; color: #94a3b8 !important; margin-bottom: 10px !important; display: flex !important; justify-content: space-between !important; align-items: center !important;">
+            <span>🔧 開発者コンソール (PW入力でデバグ呪文解放)</span>
+            <span id="dev-status-badge" style="font-size: 0.8rem !important; color: #ef4444 !important; background: rgba(239,68,68,0.1) !important; padding: 2px 8px !important; border-radius: 6px !important; font-weight: 900 !important;">LOCKED</span>
+        </div>
+        <div style="display: flex !important; gap: 10px !important; align-items: center !important;">
+            <input type="password" id="dev-password-input" oninput="checkDevPassword()" placeholder="PASSWORD（1192）を入力..." style="flex: 1 !important; background: #1e293b !important; color: #ffffff !important; border: 1px solid #475569 !important; border-radius: 8px !important; padding: 10px 12px !important; font-size: 1rem !important; font-weight: 800 !important; outline: none !important;">
+            <div id="dev-success-msg" style="font-size: 0.9rem !important; font-weight: 900 !important; color: #10b981 !important; display: none;">⚡ デバグ用呪文【デス】設置完了</div>
+        </div>
+    </div>
+    
+    <div style="width: 100% !important; max-width: 640px !important; display: flex !important; justify-content: space-between !important; color: #475569; font-size: 0.82rem; margin-top: 15px; font-weight: bold; z-index: 2; position: relative; padding: 0 5px; box-sizing: border-box; margin-left: auto; margin-right: auto;">
+        <span>改訂 V2.10（開発者モードコンソール完全復元・着弾点相対補正対応版）</span>
+        <span style="font-size: 0.78rem !important; font-weight: 700 !important; color: #64748b !important;">改訂時間: 2026年5月21日 23:53:03</span>
     </div>
 </div>
 
@@ -216,25 +227,40 @@ function drawBricks() {
 setTimeout(drawBricks, 100);
 window.addEventListener("resize", drawBricks);
 
+// 🔧 開発者コンソールのパスワード監視ロジック
 function checkDevPassword() {
-    const inputVal = document.getElementById("dev-password-input") ? document.getElementById("dev-password-input").value : "";
+    const inputField = document.getElementById("dev-password-input");
+    if (!inputField) return;
+    const inputVal = inputField.value;
+    const badge = document.getElementById("dev-status-badge");
+    const msg = document.getElementById("dev-success-msg");
+    const debugBtn = document.getElementById("btn-debug-death");
+    
     if (inputVal === "1192") {
-        if (document.getElementById("scr-battle").style.display === "block") {
-            document.getElementById('btn-debug-death').style.setProperty('display', 'block', 'important');
+        badge.innerText = "UNLOCKED";
+        badge.style.setProperty('color', '#10b981', 'important');
+        badge.style.setProperty('background', 'rgba(16,185,129,0.1)', 'important');
+        msg.style.display = "block";
+        if (document.getElementById("scr-battle").style.display === "block" && debugBtn) {
+            debugBtn.style.setProperty('display', 'block', 'important');
         }
+    } else {
+        badge.innerText = "LOCKED";
+        badge.style.setProperty('color', '#ef4444', 'important');
+        badge.style.setProperty('background', 'rgba(239,68,68,0.1)', 'important');
+        msg.style.display = "none";
+        if (debugBtn) debugBtn.style.setProperty('display', 'none', 'important');
     }
 }
 
 const SVG_SLIME = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300" width="100%" height="100%"><rect width="300" height="300" fill="none"/><path d="M100 120h100v20H100zm-20 20h140v20H80zm-20 20h180v20H60zm-10 20h200v40H50zm20 40h160v15H70z" fill="#22c55e"/><path d="M110 130h50v10h-50zm-20 20h40v10H90z" fill="#86efac"/><path d="M95 165h15v15H95zm85 0h15v15h-15z" fill="#ffffff"/><path d="M100 170h5v5h-5zm85 0h5v5h-5z" fill="#000000"/><path d="M135 185h30v12h-30z" fill="#15803d"/></svg>`;
 
-// ② 弾道軌道エフェクト用インライン設定マップ（起点は中央配置）
 const MISSILE_EFFECTS = {
   fire: `<div style="position:absolute; top:50%; left:50%; width:120px; height:120px; margin-top:-60px; margin-left:-60px; z-index:10; pointer-events:none; animation: fireFly 0.42s cubic-bezier(0.25, 1, 0.5, 1) forwards;"><svg viewBox="0 0 100 100" style="image-rendering:pixelated;"><path d="M30 50h40v10H30zm10-20h20v10H40zm-20 30h60v10H20zm10 10h40v10H30zm10 10h20v5H40z" fill="#f97316"/><path d="M40 40h20v10H40zm-10 10h40v10H30zm10 10h20v10H40z" fill="#facc15"/><path d="M45 45h10v10H45z" fill="#ffffff"/></svg></div>`,
   ice: `<div style="position:absolute; top:50%; left:50%; width:130px; height:60px; margin-top:-30px; margin-left:-65px; z-index:10; pointer-events:none; animation: iceFly 0.36s linear forwards;"><svg viewBox="0 0 80 40" style="image-rendering:pixelated;"><path d="M0 15h50v10H0zm30-10h30v5H30zm0 20h30v5H30zm20-15h20v5H20zm15 10l15-5l-15-5z" fill="#38bdf8"/><path d="M20 18h40v4H20zm35-6h15v2H55z" fill="#e0f2fe"/></svg></div>`,
   holy: `<div style="position:absolute; top:50%; left:50%; width:90px; height:90px; margin-top:-45px; margin-left:-45px; z-index:10; pointer-events:none; animation: holyFly 0.45s ease-in-out forwards;"><svg viewBox="0 0 60 60" style="image-rendering:pixelated;"><path d="M25 5h10v50H25zm-20 20h50v10H5zm5-5h40v1h-40z" fill="#facc15"/><path d="M28 10h4v40h-4zm-18 18h40v4H10z" fill="#ffffff"/></svg></div>`
 };
 
-// ① 修正：敵のグラフィック座標の「真上・ド真ん中」へ直撃して美しく内側炸裂するインライン配置用マップ
 const HIT_LAND_EFFECTS = {
   fire: `<div style="position:absolute; width:140px; height:140px; top:50%; left:50%; margin-top:-70px; margin-left:-70px; display:flex; align-items:center; justify-content:center; animation: fireBoomBlock 0.25s ease-out forwards; z-index:11;"><svg viewBox="0 0 100 100" width="100%" height="100%"><circle cx="50" cy="50" r="40" fill="#ef4444" opacity="0.85"/><circle cx="50" cy="50" r="26" fill="#f97316"/><circle cx="50" cy="50" r="13" fill="#ffffff"/></svg></div>`,
   ice: `<div style="position:absolute; width:160px; height:160px; top:50%; left:50%; margin-top:-95px; margin-left:-80px; display:flex; align-items:center; justify-content:center; animation: iceSpike 0.32s ease-out forwards; transform-origin: bottom center; z-index:11;"><svg viewBox="0 0 100 100" width="100%" height="100%"><path d="M50 10l10 25h-20zm-25 40l25-10v20zm50 0l-25-10v20zm-25 40l10-25h-20z" fill="#38bdf8"/><path d="M50 25l5 15h-10zm-15 25l15-5v10zm30 0l-15-5v10zm-15 15l5-15h-10z" fill="#e0f2fe"/></svg></div>`,
@@ -251,7 +277,7 @@ const STAGES = [
   { n: "ゾンビウォーリア", i: "🧟", txt: "7階。いくら肉体を切り刻まれようとも執念深く立ち上がる。聖なる【聖(ホーリー)】で浄化せよ！", hp: 280, atk: 24, fl: "7階", eMod: "rgba(22,163,74,0.5)", weakness: "holy" },
   { n: "魔獣フレッシュゴーレム", i: "🤖", txt: "8階。肉塊をつなぎ合わされた禁忌の人造怪物。接合部を凍らせ脆くする【氷(アイス)】が弱点だ！", hp: 330, atk: 27, fl: "8階", eMod: "rgba(100,116,139,0.5)", weakness: "ice" },
   { n: "怪光の魔眼イビルアイ", i: "👁️", txt: "9階。空間に浮かぶ巨大な単眼の魔物。邪悪な魔眼の視界をまばゆい【聖(ホーリー)】の光で遮れ！", hp: 400, atk: 29, fl: "9階", eMod: "rgba(219,39,119,0.5)", weakness: "holy" },
-  { n: "魔界の狂犬ヘルハウンド", i: "🐺", txt: "10階。地獄 of 業火をまとった双頭魔犬。その高熱の肉体は【氷(アイス)】の氷結術で急激に崩壊する！", hp: 490, atk: 33, fl: "10階 (BOSS)", isBoss: true, eMod: "rgba(225,29,72,0.8)", weakness: "ice" },
+  { n: "魔界の狂犬ヘルハウンド", i: "🐺", txt: "10階。地獄の業火をまとった双頭魔犬。その高熱の肉体は【氷(アイス)】の氷結術で急激に崩壊する！", hp: 490, atk: 33, fl: "10階 (BOSS)", isBoss: true, eMod: "rgba(225,29,72,0.8)", weakness: "ice" },
   { n: "幻影の魔術師", i: "🔮", txt: "11階。幻術を操る邪悪な魔術師。邪念を完全に切り裂く【聖(ホーリー)】がもっとも有効だ！", hp: 520, atk: 35, fl: "11階", eMod: "rgba(79,70,229,0.5)", weakness: "holy" },
   { n: "石化の怪蛇コカトリス", i: "🐍", txt: "12階. 触れたものを石化させる蛇尾の怪鳥。血流を完全にフリーズさせる【氷(アイス)】で迎え撃て！", hp: 560, atk: 39, fl: "12階", eMod: "rgba(5,150,105,0.6)", weakness: "ice" },
   { n: "死の宣告者リーパー", i: "💀", txt: "13階。大鎌を持った死神. 冥府の魔物には絶対の光【聖(ホーリー)】しか通用しない！", hp: 620, atk: 43, fl: "13階 (SEMI BOSS)", eMod: "rgba(71,85,105,0.7)", weakness: "holy" },
@@ -482,7 +508,7 @@ function nextStage() {
   document.getElementById('intro-ch-title').innerText = data.n;
   document.getElementById('intro-text').innerText = data.txt;
   
-  document.getElementById('btn-debug-death').style.setProperty('display', 'none', 'important');
+  if(document.getElementById('btn-debug-death')) document.getElementById('btn-debug-death').style.setProperty('display', 'none', 'important');
   startBGM("castle"); setTimeout(drawBricks, 50);
 }
 
@@ -525,6 +551,7 @@ function startBattle() {
   
   container.style.setProperty('filter', `drop-shadow(0 0 25px ${data.eMod})`, 'important');
   updateHpUI();
+  checkDevPassword(); // デバグ権限の再確認とデスボタン復元
   
   let floorMessage = "";
   if(data.weakness === 'fire') floorMessage = " <span style='color:#ef4444;'>[弱点: 炎]</span>";
@@ -543,7 +570,6 @@ function startBattle() {
   setTimeout(drawBricks, 50);
 }
 
-// ② HP減少に伴う「HP減少中！危険」警告ラベル表示制御を最適化したUI回路
 function updateHpUI() {
   const scr = document.getElementById('eff-scr');
   const alertBadge = document.getElementById('p-hp-alert-badge');
@@ -556,11 +582,11 @@ function updateHpUI() {
   if (pHp <= 30) {
     scr.style.setProperty('animation', 'crisisAlert 1.0s infinite alternate', 'important');
     scr.style.setProperty('border-color', '#f43f5e', 'important');
-    alertBadge.style.display = "block"; // ② [HP減少中！危険] の発動
+    if (alertBadge) alertBadge.style.display = "block";
   } else {
     scr.style.setProperty('animation', 'none', 'important');
     scr.style.setProperty('border-color', (STAGES[curIdx] && (STAGES[curIdx].isBoss || STAGES[curIdx].isMidBoss)) ? '#be123c' : '#334155', 'important');
-    alertBadge.style.display = "none";
+    if (alertBadge) alertBadge.style.display = "none";
   }
 }
 
@@ -614,7 +640,7 @@ function turn(playerMove) {
       if (isCritical) {
         log = `<span style='color:#facc15; font-weight:900;'>【CRITICAL HIT!!】</span><br>追尾魔導が弱点に完全適合！『${spellName}』が敵の場所で炸裂し 【${eDamage}】 ダメージ！反撃の分身残像突進で ${pDamage} 被弾！`;
       } else {
-        log = `⚔️ 術式交錯！追尾魔導『${spellName}』が着弾！<br>敵に ${eDamage} ダメージ / あなたは ${pDamage} ダメージ！`;
+        log = `⚔️ 術式交錯！追尾魔導『${spellName}』が敵に命中！<br>敵に ${eDamage} ダメージ / あなたは ${pDamage} ダメージ！`;
       }
     } else if (enemyMove.t === 'def') {
       eDamage = Math.floor(eDamage * 0.3);
@@ -628,11 +654,11 @@ function turn(playerMove) {
       }
     }
 
-    // 着弾シーケンス
+    // 着弾同期シーケンス
     setTimeout(() => {
       playSE(playerMove);
       
-      // ① 修正：画面中央から切り離し、現在の敵の表示位置（コンテナ）を取得してその座標で完璧に炸裂させる
+      // ① 敵の表示位置（コンテナ）を取得してその座標のド真ん中で炸裂させる
       const parentRect = document.getElementById('eff-scr').getBoundingClientRect();
       const targetRect = containerEl.getBoundingClientRect();
       const relativeX = (targetRect.left - parentRect.left) + targetRect.width / 2;
@@ -654,7 +680,7 @@ function turn(playerMove) {
       document.getElementById('battle-log').innerHTML = log;
       document.getElementById('charge-badge').style.display = (mana > 1.0 ? 'block' : 'none');
 
-      setTimeout(() => { hitBox.remove(); }, 400); // 不要になった時点で即座にクリーンアップ
+      setTimeout(() => { hitBox.remove(); }, 400); 
       setTimeout(() => { checkBattleEnd(playerMove); }, 450);
     }, 360);
 
@@ -728,7 +754,7 @@ function endBattle() {
   document.getElementById('scr-result').style.display = 'block';
   const rTitle = document.getElementById('res-title'); const rText = document.getElementById('res-text'); const rBtn = document.getElementById('res-btn');
   
-  document.getElementById('btn-debug-death').style.setProperty('display', 'none', 'important');
+  if(document.getElementById('btn-debug-death')) document.getElementById('btn-debug-death').style.setProperty('display', 'none', 'important');
   document.getElementById('sq-board').style.setProperty('animation', 'none', 'important');
   document.getElementById('p-aura-layer').style.display = "none";
   document.getElementById('battle-log').innerHTML = "戦闘準備完了。コマンドを選択せよ。";
@@ -737,7 +763,7 @@ function endBattle() {
     rTitle.innerText = "VICTORY"; rTitle.style.setProperty('color', '#10b981', 'important');
     document.getElementById('res-icon').innerText = "🏆";
     if (STAGES[curIdx].isBoss && curIdx === STAGES.length - 1) {
-      rText.innerText = "🎉 ついに最上階15階にて、魔王ドラキュラを完全消滅！\n\n飛び散る黄金の魔力粒子とともに世界に光が戻った！\n\nあなたはこの世界の神話となる、究極の大魔導士となったのだ！";
+      rText.innerText = "🎉 ついに最上階15階にて、魔王ドラキュラを完全消滅！\n\n飛び散る黄金 of 魔力粒子とともに世界に光が戻った！\n\nあなたはこの世界の神話となる、究極の大魔導士となったのだ！";
       rBtn.innerText = "タイトル画面へ戻る";
     } else {
       rText.innerText = `激闘の末、${STAGES[curIdx].n}を魔力粒子の中に完全破砕した！\n\nさらに高層への階段が姿を現した。`;
@@ -754,7 +780,7 @@ function endBattle() {
 
 function resetGame() {
   pMaxHp = 100; pHp = 100; mana = 1.0; curIdx = -1;
-  document.getElementById('btn-debug-death').style.setProperty('display', 'none', 'important');
+  if(document.getElementById('btn-debug-death')) document.getElementById('btn-debug-death').style.setProperty('display', 'none', 'important');
   document.getElementById('sq-board').style.setProperty('animation', 'none', 'important');
   document.getElementById('p-aura-layer').style.display = "none";
   document.getElementById('battle-log').innerHTML = "戦闘準備完了。コマンドを選択せよ。";
