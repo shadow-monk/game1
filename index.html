@@ -395,4 +395,299 @@ function createExplosionParticles(castType) {
   for (let i = 0; i < 50; i++) {
     const p = document.createElement('div');
     p.style.position = 'absolute';
-    p.style.width = `${Math.floor(
+    p.style.width = `${Math.floor(Math.random() * 8) + 6}px`;
+    p.style.height = p.style.width;
+    p.style.backgroundColor = Math.random() > 0.4 ? colorPrimary : colorSecondary;
+    p.style.left = `${startX}px`; p.style.top = `${startY}px`;
+    p.style.zIndex = '12'; p.style.pointerEvents = 'none';
+    
+    const tx = (Math.random() * 340 - 170); const ty = (Math.random() * -260 - 40);
+    p.style.setProperty('--tx', `${tx}px`); p.style.setProperty('--ty', `${ty}px`);
+    p.style.animation = 'particleBoom 0.68s cubic-bezier(0.1, 0.8, 0.25, 1) forwards';
+    
+    parent.appendChild(p);
+    setTimeout(() => p.remove(), 680);
+  }
+}
+
+function hideAll() { ['scr-start','scr-intro','scr-battle','scr-result'].forEach(id=>document.getElementById(id).style.display='none'); }
+
+function nextStage() {
+  curIdx++;
+  if (curIdx >= STAGES.length) { 
+    curIdx = -1; resetGame(); hideAll(); 
+    document.getElementById('scr-start').style.display='block'; 
+    document.getElementById('floor-indicator').style.setProperty('visibility', 'hidden', 'important'); 
+    startBGM("title"); 
+    return; 
+  }
+  const data = STAGES[curIdx];
+  pHp = pMaxHp; hideAll();
+  
+  const fInd = document.getElementById('floor-indicator');
+  fInd.style.setProperty('visibility', 'visible', 'important'); fInd.innerText = data.fl;
+  if(data.isBoss || data.isMidBoss || data.fl.includes("BOSS")) { fInd.style.setProperty('background', '#ffe4e6', 'important'); fInd.style.setProperty('color', '#e11d48', 'important'); }
+  else { fInd.style.setProperty('background', '#eeebff', 'important'); fInd.style.setProperty('color', '#4f46e5', 'important'); }
+  
+  document.getElementById('scr-intro').style.display = 'block';
+  document.getElementById('intro-ch-num').innerText = `FLOOR ${curIdx+1 < 10 ? '0'+(curIdx+1) : curIdx+1}`;
+  document.getElementById('intro-ch-title').innerText = data.n;
+  document.getElementById('intro-text').innerText = data.txt;
+  
+  document.getElementById('btn-debug-death').style.setProperty('display', 'none', 'important');
+  startBGM("castle"); setTimeout(drawBricks, 50);
+}
+
+// 🔧 V1.97：消失エフェクトがリセットされず透明化していた不具合を完全に修復
+function startBattle() {
+  const data = STAGES[curIdx];
+  eHp = eMaxHp = data.hp; hideAll();
+  
+  // 前の戦闘のフェードアウト効果（opacity:0やscale）を強制リセット
+  const container = document.getElementById('e-sprite-container');
+  container.style.setProperty('animation', 'floatE 2.2s infinite alternate ease-in-out', 'important');
+  container.style.setProperty('opacity', '1', 'important');
+  container.style.setProperty('transform', 'none', 'important');
+
+  const graphicBox = document.getElementById('e-sprite-graphic-box');
+  graphicBox.style.setProperty('opacity', '1', 'important');
+  graphicBox.style.setProperty('transform', 'none', 'important');
+  graphicBox.innerHTML = ""; 
+
+  document.getElementById('scr-battle').style.display = 'block';
+  document.getElementById('e-name').innerText = data.n;
+  
+  // バット画像表示エラー時に備え、予備のアイコンフォント（🦇）を設定
+  if (data.url) {
+      graphicBox.innerHTML = `
+        <img src="${data.url}" style="width: 140px !important; height: 140px !important; object-fit: contain !important; display: block !important; image-rendering: pixelated !important;" 
+             onerror="this.style.display='none'; document.getElementById('fallback-icon').style.display='block';" alt="enemy">
+        <span id="fallback-icon" style="font-size: 110px !important; line-height: 1 !important; filter: invert(1) brightness(1.5) drop-shadow(0 0 15px ${data.eMod}) !important; display: none;">${data.i}</span>
+      `;
+  } else if (data.svg) {
+      graphicBox.innerHTML = data.svg;
+  } else {
+      graphicBox.innerHTML = `<span style="font-size: 110px !important; line-height: 1 !important; filter: invert(1) brightness(1.5) drop-shadow(0 0 15px ${data.eMod}) !important; display: block !important;">${data.i}</span>`;
+  }
+  
+  container.style.setProperty('filter', `drop-shadow(0 0 25px ${data.eMod})`, 'important');
+  updateHpUI();
+  
+  let floorMessage = "";
+  if(data.weakness === 'fire') floorMessage = " <span style='color:#ef4444;'>[弱点: 炎]</span>";
+  if(data.weakness === 'ice') floorMessage = " <span style='color:#38bdf8;'>[弱点: 氷]</span>";
+  if(data.weakness === 'holy') floorMessage = " <span style='color:#facc15;'>[弱点: 聖]</span>";
+
+  if(data.isBoss || data.isMidBoss || data.fl.includes("BOSS")) {
+       document.getElementById('eff-scr').style.setProperty('border-color', '#be123c', 'important');
+       document.getElementById('battle-log').innerHTML = `⚠️ 階層守護者 ⚠️ 『${data.n}』が出現！魔力を高めよ！${floorMessage}`;
+       startBGM("boss");
+  } else {
+       document.getElementById('eff-scr').style.setProperty('border-color', '#334155', 'important');
+       document.getElementById('battle-log').innerHTML = `魔導術式、展開完了。敵の弱点を見極めよ。${floorMessage}`;
+       startBGM("horror");
+  }
+  setTimeout(drawBricks, 50);
+}
+
+function updateHpUI() {
+  const scr = document.getElementById('eff-scr');
+  document.getElementById('p-hp-bar').style.setProperty('width', `${(pHp/pMaxHp*100)}%`, 'important');
+  document.getElementById('e-hp-bar').style.setProperty('width', `${(eHp/eMaxHp*100)}%`, 'important');
+  document.getElementById('p-hp-txt').innerText = `HP: ${pHp} / ${pMaxHp}`;
+  document.getElementById('e-hp-txt').innerText = `HP: ${eHp} / ${eMaxHp}`;
+
+  if (pHp <= 30) {
+    scr.style.setProperty('animation', 'crisisAlert 1.0s infinite alternate', 'important');
+    scr.style.setProperty('border-color', '#f43f5e', 'important');
+  } else {
+    scr.style.setProperty('animation', 'none', 'important');
+    scr.style.setProperty('border-color', (STAGES[curIdx] && (STAGES[curIdx].isBoss || STAGES[curIdx].isMidBoss)) ? '#be123c' : '#334155', 'important');
+  }
+}
+
+function turn(playerMove) {
+  if (isBusy || pHp <= 0 || eHp <= 0) return;
+  isBusy = true;
+  const data = STAGES[curIdx];
+  const eMoves = [{n:"強烈な一撃", t:"atk"}, {n:"不浄の結界", t:"def"}, {n:"魔力集束", t:"chg"}];
+  let enemyMove = eMoves[Math.floor(Math.random() * eMoves.length)];
+  
+  let pDamage = 0, eDamage = 0; let log = ""; 
+  let shakeStyle = "attack_success"; let flashColor = "#e11d48";
+  let isCritical = false;
+
+  const pSprite = document.getElementById('p-sprite');
+  const containerEl = document.getElementById('e-sprite-container');
+  const boardEl = document.getElementById('sq-board');
+  const effectLayer = document.getElementById('spell-effect-layer');
+  const auraLayer = document.getElementById('p-aura-layer');
+
+  if (playerMove === 'debug_death') {
+    playSE('boom');
+    pSprite.style.setProperty('transform', 'scale(1.5) rotate(20deg)', 'important');
+    setTimeout(() => pSprite.style.setProperty('transform', 'none', 'important'), 300);
+    eDamage = eHp; pDamage = 0; shakeStyle = "critical_shake"; flashColor = "#000000";
+    log = `☠️ デバグ術式起動！因果を消滅させた！`;
+    mana = 1.0; auraLayer.style.display = "none";
+  } 
+  else if (playerMove === 'fire' || playerMove === 'ice' || playerMove === 'holy') {
+    playSE(playerMove);
+    effectLayer.innerHTML = SPELL_EFFECTS[playerMove];
+    
+    pSprite.style.setProperty('transform', 'translateX(55px) scaleY(1.1) scaleX(1.15) rotate(5deg)', 'important');
+    setTimeout(() => {
+      pSprite.style.setProperty('transform', 'none', 'important');
+      effectLayer.innerHTML = "";
+    }, 400);
+
+    let basePower = 14; let spellName = "ファイア";
+    if (playerMove === 'ice') { basePower = 13; spellName = "アイスコフィン"; flashColor = "#0284c7"; }
+    if (playerMove === 'holy') { basePower = 12; spellName = "ホーリーランス"; flashColor = "#eab308"; }
+
+    if (data.weakness === playerMove) {
+      isCritical = true;
+      basePower = Math.floor(basePower * 2.3);
+      shakeStyle = "critical_shake";
+    }
+
+    eDamage = Math.floor(basePower * mana);
+
+    if (enemyMove.t === 'atk') {
+      pDamage = data.atk;
+      containerEl.style.setProperty('animation', 'enemyAssault 0.45s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards', 'important');
+      setTimeout(() => { containerEl.style.setProperty('animation', 'floatE 2.2s infinite alternate ease-in-out', 'important'); }, 460);
+
+      if (isCritical) {
+        log = `<span style='color:#facc15; font-weight:900;'>【CRITICAL HIT!!】</span><br>弱点適合！『${spellName}』がコアを破壊し 【${eDamage}】 ダメージ！敵の分身残像突進により ${pDamage} ダメージ被弾！`;
+      } else {
+        log = `⚔️ 術式が激突！『${spellName}』直撃！<br>敵に ${eDamage} ダメージ / あなたは ${pDamage} ダメージ！`;
+      }
+    } else if (enemyMove.t === 'def') {
+      eDamage = Math.floor(eDamage * 0.3);
+      log = `🛡️ 敵の防壁！『${spellName}』のエネルギーが大幅に減衰した！<br>敵に ${eDamage} ダメージ。`;
+    } else if (enemyMove.t === 'chg') {
+      eDamage = Math.floor(eDamage * 1.35);
+      if (isCritical) {
+        log = `<span style='color:#ef4444; font-weight:900;'>【💥 CRITICAL DESTROY!!】</span><br>魔力充充填中のコアへ弱点直撃！敵の魔導回路が完全崩壊し 【${eDamage}】 の致命傷！`;
+      } else {
+        log = `🔥 隙を突いた！『${spellName}』がクリーンヒット！<br>敵に 【${eDamage}】 ダメージ！`;
+      }
+    }
+    mana = 1.0; boardEl.style.setProperty('animation', 'none', 'important');
+    auraLayer.style.display = "none";
+    
+    setTimeout(triggerEnemyHitPulse, 180);
+  }
+  else if (playerMove === 'def') {
+    playSE('def'); flashColor = "#10b981";
+    if (enemyMove.t === 'atk') {
+      pDamage = Math.max(1, Math.floor(data.atk * 0.15));
+      shakeStyle = "defend_success";
+      containerEl.style.setProperty('animation', 'enemyAssault 0.45s ease-in-out forwards', 'important');
+      setTimeout(() => { containerEl.style.setProperty('animation', 'floatE 2.2s infinite alternate ease-in-out', 'important'); }, 460);
+      log = `🛡️ 魔導「シールド」を展開！敵の残像分身突進を受け流し、ダメージをわずか 【${pDamage}】 に封殺！`;
+    } else {
+      log = `🔮 シールドを構え身を護る。敵は魔力を不気味に練り上げている…`;
+    }
+  } 
+  else if (playerMove === 'chg') {
+    playSE('chg'); flashColor = "#4f46e5";
+    if (enemyMove.t === 'atk') {
+      pDamage = Math.floor(data.atk * 1.7);
+      shakeStyle = "big_damage";
+      containerEl.style.setProperty('animation', 'enemyAssault 0.45s ease-in-out forwards', 'important');
+      setTimeout(() => { containerEl.style.setProperty('animation', 'floatE 2.2s infinite alternate ease-in-out', 'important'); }, 460);
+      log = `🚨 魔素吸引の隙を残像突進で痛烈に狙われた！カウンター被弾により 【${pDamage}】 の大ダメージ！`;
+      mana = 1.0; boardEl.style.setProperty('animation', 'none', 'important');
+      auraLayer.style.display = "none";
+    } else {
+      mana = 2.5;
+      log = `⚡ 回路へ魔素を限界充填！<br>次ターンの属性魔法威力が <span style='color:#4f46e5;font-weight:900;'>【2.5倍】</span> に臨界突破！`;
+      boardEl.style.setProperty('animation', 'chargeAura 0.4s infinite alternate', 'important');
+      auraLayer.style.display = "block";
+    }
+  }
+
+  if (isCritical) { flashCritical(flashColor); setTimeout(() => { playSE('hit'); }, 90); } 
+  else { flashScreen(flashColor); if(playerMove !== 'def' && playerMove !== 'chg') setTimeout(() => { playSE('hit'); }, 110); }
+
+  pHp = Math.max(0, pHp - pDamage); eHp = Math.max(0, eHp - eDamage); updateHpUI();
+  document.getElementById('battle-log').innerHTML = log;
+  document.getElementById('charge-badge').style.display = (mana > 1.0 ? 'block' : 'none');
+  
+  setTimeout(() => { 
+    if (pHp <= 0 || eHp <= 0) { 
+      stopBGM(); 
+      if (eHp <= 0) {
+        playSE('boom');
+        triggerShake('critical_shake');
+        flashCritical('#ffffff');
+        createExplosionParticles(playerMove); 
+        
+        // 敵の肉体を消失アニメーション（このスタイルが次に残らないよう、次のバトル時に完全クリア処理されます）
+        containerEl.style.setProperty('animation', 'none', 'important');
+        containerEl.style.setProperty('transition', 'all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94)', 'important');
+        containerEl.style.setProperty('opacity', '0', 'important');
+        containerEl.style.setProperty('transform', 'scale(0.05) rotate(70deg) translateY(-50px)', 'important');
+        
+        if (data.isBoss || data.isMidBoss || data.fl.includes("BOSS")) {
+          setTimeout(() => {
+            playSE('boss_fanfare');
+            setTimeout(() => { endBattle(); }, 1450);
+          }, 350);
+        } else {
+          setTimeout(() => { endBattle(); }, 650);
+        }
+      } else {
+        endBattle();
+      }
+    } else { 
+      isBusy = false; 
+    } 
+  }, 450);
+}
+
+function endBattle() {
+  hideAll(); 
+  document.getElementById('scr-result').style.display = 'block';
+  
+  const rTitle = document.getElementById('res-title'); 
+  const rText = document.getElementById('res-text'); 
+  const rBtn = document.getElementById('res-btn');
+  
+  document.getElementById('btn-debug-death').style.setProperty('display', 'none', 'important');
+  document.getElementById('sq-board').style.setProperty('animation', 'none', 'important');
+  document.getElementById('p-aura-layer').style.display = "none";
+  document.getElementById('battle-log').innerHTML = "戦闘準備完了。コマンドを選択せよ。";
+  
+  if (eHp <= 0) {
+    rTitle.innerText = "VICTORY"; rTitle.style.setProperty('color', '#10b981', 'important');
+    document.getElementById('res-icon').innerText = "🏆";
+    if (STAGES[curIdx].isBoss && curIdx === STAGES.length - 1) {
+      rText.innerText = "🎉 ついに最上階15階にて、魔王ドラキュラを完全消滅！\n\n飛び散る黄金の魔力粒子とともに世界に光が戻った！\n\nあなたはこの世界の神話となる、究極の大魔導士となったのだ！";
+      rBtn.innerText = "タイトル画面へ戻る";
+    } else {
+      rText.innerText = `激闘 of 末、${STAGES[curIdx].n}を魔力粒子の中に完全破砕した！\n\nさらに高層への階段が姿を現した。`;
+      rBtn.innerText = "上の階層へ登る";
+    }
+  } else {
+    rTitle.innerText = "DEFEATED"; rTitle.style.setProperty('color', '#f43f5e', 'important');
+    document.getElementById('res-icon').innerText = "💀";
+    rText.innerText = "圧倒的な大迷宮の闇の前に、あなたの生命の灯火が消え去った…\n\n世界は永遠の闇へと閉ざされる…";
+    rBtn.innerText = "タイトル画面へ戻る"; curIdx = -1;
+  }
+  isBusy = false; setTimeout(drawBricks, 50);
+}
+
+function resetGame() {
+  pMaxHp = 100; pHp = 100; mana = 1.0; curIdx = -1;
+  document.getElementById('btn-debug-death').style.setProperty('display', 'none', 'important');
+  document.getElementById('sq-board').style.setProperty('animation', 'none', 'important');
+  document.getElementById('p-aura-layer').style.display = "none";
+  document.getElementById('battle-log').innerHTML = "戦闘準備完了。コマンドを選択せよ。";
+  stopBGM();
+}
+setTimeout(() => { startBGM("title"); drawBricks(); }, 500);
+/*]]>*/
+</script>
