@@ -75,7 +75,9 @@
                     <div id="icon-stage" style="display: flex !important; justify-content: center !important; align-items: center !important; width: 100% !important; height: 100% !important; gap: 70px !important; transition: transform 0.05s ease-in-out !important;">
                         <div id="p-sprite" style="font-size: 120px !important; line-height: 1 !important; animation: floatP 2s infinite alternate ease-in-out !important; filter: drop-shadow(0 0 20px rgba(16,185,129,0.4)) !important; transition: transform 0.1s ease-out !important; user-select: none;">🧙‍♂️</div>
                         <div id="e-sprite-container" style="width: 160px; height: 160px; display: flex !important; justify-content: center !important; align-items: center !important; animation: floatE 2s infinite alternate ease-in-out !important; transition: transform 0.1s ease-out !important;">
-                            <img id="e-sprite-img" src="" style="width: 140px !important; height: 140px !important; object-fit: contain !important; display: block !important; filter: invert(1) brightness(2) drop-shadow(0 0 10px rgba(255,255,255,0.2)) !important; image-rendering: pixelated !important;" alt="enemy">
+                            <div id="e-sprite-graphic-box" style="width: 140px !important; height: 140px !important; display: flex !important; justify-content: center !important; align-items: center !important;">
+                                <img id="e-sprite-img" src="" style="width: 140px !important; height: 140px !important; object-fit: contain !important; display: none !important; image-rendering: pixelated !important;" alt="enemy">
+                            </div>
                         </div>
                     </div>
                     <div id="charge-badge" style="position: absolute !important; top: 15px !important; left: 15px !important; background: linear-gradient(135deg, #e11d48, #4f46e5) !important; color: #ffffff !important; font-size: 1.1rem !important; font-weight: 900 !important; padding: 6px 16px !important; border-radius: 9999px !important; display: none !important; animation: pulse 0.5s infinite alternate !important; z-index: 5 !important;">魔力チャージ完了：2.5倍</div>
@@ -118,14 +120,14 @@
     </div>
     
     <div style="width: 100% !important; max-width: 640px !important; display: flex !important; justify-content: space-between !important; color: #475569; font-size: 0.82rem; margin-top: 15px; font-weight: bold; z-index: 2; position: relative; padding: 0 5px; box-sizing: border-box;">
-        <span>改訂 ver1.50（王道ファンタジー変更・レイアウト最適化）</span>
+        <span>改訂 ver1.60（1・2階SVG埋め込み・メイン画面拡張）</span>
         <span style="font-size: 0.78rem !important; font-weight: 700 !important; color: #64748b !important;">改訂時間: 2026年5月21日</span>
     </div>
 </div>
 
 <script>
 /* <![CDATA[ */
-// 背景キャンバス壁生成
+// 煉瓦背景自動描画
 function drawBricks() {
   const canvas = document.getElementById("brick-canvas");
   if (!canvas) return;
@@ -171,23 +173,28 @@ function checkDevPassword() {
     }
 }
 
-// 1階から15階層の王道ファンタジー・モンスターデータ
+// 👾 AIインライン書き下ろし高精度SVG画像ドット絵コード
+const SVG_BAT = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300" width="100%" height="100%"><rect width="300" height="300" fill="none"/><path d="M40 90h20v10H40zm220 0h20v10h-20zM60 100h20v10H60zm160 0h20v10h-20zM80 110h20v10H80zm120 0h20v10h-20zm-20 0h20v10h-20zm-40 10h40v10h-40zm-30 10h100v10H90zm-10 10h120v10H80zm-10 10h140v10H70zm0 10h140v10H70zm10 10h120v10H80zm20 10h20v10H100zm60 0h20v10h-20zm-20 20h20v10h-20z" fill="#3a2520"/><path d="M100 120h20v10h-20zm80 0h20v10h-20zm-50 20h10v10h-10zm30 0h10v10h-10z" fill="#ffd700"/><path d="M120 160h15v10h-15zm45 0h15v10h-15z" fill="#ffffff"/><path d="M110 100h20v10h-20zm60 0h20v10h-20z" fill="#2d1d19"/></svg>`;
+
+const SVG_SLIME = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300" width="100%" height="100%"><rect width="300" height="300" fill="none"/><path d="M100 120h100v20H100zm-20 20h140v20H80zm-20 20h180v20H60zm-10 20h200v40H50zm20 40h160v15H70z" fill="#22c55e"/><path d="M110 130h50v10h-50zm-20 20h40v10H90z" fill="#86efac"/><path d="M95 165h15v15H95zm85 0h15v15h-15z" fill="#ffffff"/><path d="M100 170h5v5h-5zm85 0h5v5h-5z" fill="#000000"/><path d="M135 185h30v12h-30z" fill="#15803d"/></svg>`;
+
+// 全15階層の王道クラシック・ファンタジーデータマップ
 const STAGES = [
-  { n: "ジャイアントバット", i: "https://raw.githubusercontent.com/SimenB/rpg-cards/master/img/icon-bird.png", txt: "1階。薄暗い塔の入り口に群生する巨大な吸血コウモリ。素早い動きでこちらの隙を狙ってくる！", hp: 60, atk: 7, fl: "1階", eMod: "rgba(148,163,184,0.4)" },
-  { n: "グリーンスライム", i: "https://raw.githubusercontent.com/SimenB/rpg-cards/master/img/icon-flower.png", txt: "2階。通路の至る所に這い寄る酸性の不気味な粘液質。物理攻撃をうごめく肉体で吸収する定番の魔物！", hp: 85, atk: 9, fl: "2階", eMod: "rgba(34,197,94,0.4)" },
-  { n: "スケルトンソルジャー", i: "https://raw.githubusercontent.com/SimenB/rpg-cards/master/img/icon-zombie.png", txt: "3階。錆びた古剣を携えて迫り来る不死の骸骨兵。ここから聖なる癒やしの魔法『ヒーリング』が使用可能に！", hp: 130, atk: 13, unlock: "heal", fl: "3階", eMod: "rgba(241,245,149,0.4)" },
-  { n: "ハーピィ", i: "https://raw.githubusercontent.com/SimenB/rpg-cards/master/img/icon-bird.png", txt: "4階。鋭い爪を持つ半人半鳥の怪鳥。精神を惑わす鳴き声に対抗するため、高圧の『サンダーボルト』が覚醒する！", hp: 190, atk: 17, unlock: "thunder", fl: "4階", eMod: "rgba(236,72,153,0.4)" },
-  { n: "ミノタウロス", i: "https://raw.githubusercontent.com/SimenB/rpg-cards/master/img/icon-golem.png", txt: "5階。巨大な両刃斧を振り回し侵入者をバラバラに引き裂く迷宮の牛頭鬼。中層最初の高い壁となる強敵！", hp: 340, atk: 23, fl: "5階 (MID BOSS)", isMidBoss: true, eMod: "rgba(239,68,68,0.5)" },
-  { n: "ジャイアントスパイダー", i: "https://raw.githubusercontent.com/SimenB/rpg-cards/master/img/icon-spider.png", txt: "6階。天井の闇から音もなく急降下してくる大蜘蛛。強靭な粘着糸で絡め取り、毒牙を突き立てようとする！", hp: 210, atk: 19, fl: "6階", eMod: "rgba(168,85,247,0.4)" },
-  { n: "ゾンビウォーリア", i: "https://raw.githubusercontent.com/SimenB/rpg-cards/master/img/icon-zombie.png", txt: "7階。いくら肉体を切り刻まれようとも執念深く立ち上がる腐肉の戦士。不快な死臭が部屋中に立ち込める…", hp: 280, atk: 24, fl: "7階", eMod: "rgba(22,163,74,0.5)" },
-  { n: "魔獣フレッシュゴーレム", i: "https://raw.githubusercontent.com/SimenB/rpg-cards/master/img/icon-golem.png", txt: "8階。死霊術師によって複数の肉塊をつなぎ合わされた禁忌の人造怪物。並大抵の攻撃ではびくともしない。", hp: 330, atk: 27, fl: "8階", eMod: "rgba(100,116,139,0.5)" },
-  { n: "怪光の魔眼イビルアイ", i: "https://raw.githubusercontent.com/SimenB/rpg-cards/master/img/icon-eye.png", txt: "9階。空間に不気味に浮かぶ巨大な単眼の魔物。その不吉な眼光に射すくめられると、全身の筋肉が硬直する！", hp: 400, atk: 29, fl: "9階", eMod: "rgba(219,39,119,0.5)" },
-  { n: "魔界の狂犬ヘルハウンド", i: "https://raw.githubusercontent.com/SimenB/rpg-cards/master/img/icon-snake.png", txt: "10階。地獄の業火をまとった漆黒 of 双頭魔犬。深層への門番であり、すべてを焼き尽くすブレスを放つ！", hp: 490, atk: 33, fl: "10階 (BOSS)", eMod: "rgba(225,29,72,0.8)" },
-  { n: "幻影の魔術師", i: "https://raw.githubusercontent.com/SimenB/rpg-cards/master/img/icon-lich.png", txt: "11階。幻術と呪いのオーラを操る邪悪な魔術師。賢者の思考を狂わせ、同士討ちを誘う結界を展開する！", hp: 520, atk: 35, fl: "11階", eMod: "rgba(79,70,229,0.5)" },
-  { n: "石化の怪蛇コカトリス", i: "https://raw.githubusercontent.com/SimenB/rpg-cards/master/img/icon-snake.png", txt: "12階。触れたものを例外なく灰色の石像へと変えてしまう蛇の尾を持つ怪鳥。一瞬の油断も許されない。", hp: 560, atk: 39, fl: "12階", eMod: "rgba(5,150,105,0.6)" },
-  { n: "死の宣告者リーパー", i: "https://raw.githubusercontent.com/SimenB/rpg-cards/master/img/icon-ghost.png", txt: "13階。魂の終わりを告げる巨大な大鎌を持った黒フードの死神。冷徹な死の波動がじわじわと体力を奪う！", hp: 620, atk: 43, fl: "13階 (SEMI BOSS)", eMod: "rgba(71,85,105,0.7)" },
-  { n: "無心の鉄巨人アイアンゴーレム", i: "https://raw.githubusercontent.com/SimenB/rpg-cards/master/img/icon-golem.png", txt: "14階。あらゆる魔法を弾き返す漆黒の超鉄躯。狂気の重量を誇る拳は、掠めただけでも賢者に致命傷を与える！", hp: 700, atk: 47, fl: "14階 (SEMI BOSS)", eMod: "rgba(15,23,42,0.8)" },
-  { n: "魔王ドラキュラ", i: "https://raw.githubusercontent.com/SimenB/rpg-cards/master/img/icon-lich.png", txt: "15階。螺旋の頂上に君臨する王道の絶対支配者「ロード・ヴァンパイア」。無限の魔力と吸血の霧で襲いかかる！", hp: 880, atk: 54, fl: "15階 (FINAL LAST BOSS)", isBoss: true, eMod: "rgba(0,0,0,1)" }
+  { n: "ジャイアントバット", svg: SVG_BAT, txt: "1階。薄暗い塔の入り口に群生する巨大な吸血コウモリ。素早い羽ばたきでこちらの隙を狙ってくる！", hp: 60, atk: 7, fl: "1階", eMod: "rgba(148,163,184,0.4)" },
+  { n: "グリーンスライム", svg: SVG_SLIME, txt: "2階。通路の至る所に這い寄る酸性の不気味な粘液質。物理攻撃をうごめく肉体で無効化する定番の魔物！", hp: 85, atk: 9, fl: "2階", eMod: "rgba(34,197,94,0.4)" },
+  { n: "スケルトンソルジャー", i: "🧙‍♂️", txt: "3階。錆びた古剣を携えて迫り来る不死の骸骨兵。ここから聖なる癒やしの魔法『ヒーリング』が使用可能に！", hp: 130, atk: 13, unlock: "heal", fl: "3階", eMod: "rgba(241,245,149,0.4)" },
+  { n: "ハーピィ", i: "🦅", txt: "4階。鋭い爪を持つ半人半鳥の怪鳥。精神を惑わす鳴き声に対抗するため、高圧の『サンダーボルト』が覚醒する！", hp: 190, atk: 17, unlock: "thunder", fl: "4階", eMod: "rgba(236,72,153,0.4)" },
+  { n: "ミノタウロス", i: "🐂", txt: "5階。巨大な両刃斧を振り回し侵入者をバラバラに引き裂く迷宮の牛頭鬼。中層最初の高い壁となる強敵！", hp: 340, atk: 23, fl: "5階 (MID BOSS)", isMidBoss: true, eMod: "rgba(239,68,68,0.5)" },
+  { n: "ジャイアントスパイダー", i: "🕷️", txt: "6階。天井の闇から音もなく急降下してくる大蜘蛛。強靭な粘着糸で絡め取り、毒牙を突き立てようとする！", hp: 210, atk: 19, fl: "6階", eMod: "rgba(168,85,247,0.4)" },
+  { n: "ゾンビウォーリア", i: "🧟", txt: "7階。いくら肉体を切り刻まれようとも執念深く立ち上がる腐肉の戦士。不快な死臭が部屋中に立ち込める…", hp: 280, atk: 24, fl: "7階", eMod: "rgba(22,163,74,0.5)" },
+  { n: "魔獣フレッシュゴーレム", i: "🤖", txt: "8階。死霊術師によって複数の肉塊をつなぎ合わされた禁忌の人造怪物。並大抵の攻撃ではびくともしない。", hp: 330, atk: 27, fl: "8階", eMod: "rgba(100,116,139,0.5)" },
+  { n: "怪光の魔眼イビルアイ", i: "👁️", txt: "9階。空間に不気味に浮かぶ巨大な単眼の魔物。その不吉な眼光に射すくめられると、全身の筋肉が硬直する！", hp: 400, atk: 29, fl: "9階", eMod: "rgba(219,39,119,0.5)" },
+  { n: "魔界の狂犬ヘルハウンド", i: "🐺", txt: "10階。地獄 of 業火をまとった漆黒の双頭魔犬。深層への門番であり、すべてを焼き尽くす火炎ブレスを放つ！", hp: 490, atk: 33, fl: "10階 (BOSS)", eMod: "rgba(225,29,72,0.8)" },
+  { n: "幻影の魔術師", i: "🔮", txt: "11階。幻術と呪いのオーラを操る邪悪な魔術師。賢者の思考を狂わせ、同士討ちを誘う結界を展開する！", hp: 520, atk: 35, fl: "11階", eMod: "rgba(79,70,229,0.5)" },
+  { n: "石化の怪蛇コカトリス", i: "🐍", txt: "12階。触れたものを例外なく灰色の石像へと変えてしまう蛇の尾を持つ怪鳥。一瞬の油断も許されない。", hp: 560, atk: 39, fl: "12階", eMod: "rgba(5,150,105,0.6)" },
+  { n: "死の宣告者リーパー", i: "💀", txt: "13階。魂の終わりを告げる巨大な大鎌を持った黒フードの死神。冷徹な死の波動がじわじわと体力を奪う！", hp: 620, atk: 43, fl: "13階 (SEMI BOSS)", eMod: "rgba(71,85,105,0.7)" },
+  { n: "無心の鉄巨人アイアンゴーレム", i: "⛓️", txt: "14階。あらゆる魔法を弾き返す漆黒の超鉄躯。狂気の重量を誇る拳は、掠めただけでも賢者に致命傷を与える！", hp: 700, atk: 47, fl: "14階 (SEMI BOSS)", eMod: "rgba(15,23,42,0.8)" },
+  { n: "魔王ドラキュラ", i: "🧛", txt: "15階。螺旋の頂上に君臨する王道の絶対支配者「ロード・ヴァンパイア」。無限の魔力と吸血の霧で襲いかかる！", hp: 880, atk: 54, fl: "15階 (FINAL LAST BOSS)", isBoss: true, eMod: "rgba(0,0,0,1)" }
 ];
 
 let curIdx = -1;
@@ -334,8 +341,15 @@ function startBattle() {
       document.getElementById('btn-debug-death').style.setProperty('display', 'block', 'important');
   }
   
-  const imgEl = document.getElementById('e-sprite-img');
-  imgEl.src = data.i;
+  // 🎨 【新・描画システム】SVGコードの直接注入またはレトロ調絵文字の動的割り当て
+  const graphicBox = document.getElementById('e-sprite-graphic-box');
+  if (data.svg) {
+      // 1、2階はAI書き下ろしSVGドット絵をロス無く高精度にインライン展開
+      graphicBox.innerHTML = data.svg;
+  } else {
+      // 3階以降は世界観を維持するため、テキストフォントを巨大ドット絵風にフィルタリング表示
+      graphicBox.innerHTML = `<span style="font-size: 110px !important; line-height: 1 !important; filter: invert(1) brightness(1.5) drop-shadow(0 0 15px ${data.eMod}) !important;">${data.i}</span>`;
+  }
   
   const containerEl = document.getElementById('e-sprite-container');
   containerEl.style.setProperty('filter', `drop-shadow(0 0 25px ${data.eMod})`, 'important');
