@@ -2,278 +2,183 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<title>スパイラルタワー - V2.36 完全クリーン動作版 -</title>
+<title>スパイラルタワー - V2.40 6枚アニメ＆特大版 -</title>
 <style>
 /* <![CDATA[ */
-/* 各種CSSアニメーション */
+/* アニメーション */
 @keyframes floatP { 0% { transform: translateY(0px) scaleY(1); } 100% { transform: translateY(-15px) scaleY(1.03) scaleX(0.98); } }
-@keyframes floatE { 0% { transform: translateY(0px) scale(1); } 100% { transform: translateY(-12px) scale(1.04); } }
+@keyframes floatE { 0% { transform: translateY(0px) scale(1); } 100% { transform: translateY(-10px) scale(1.03); } }
 @keyframes pulse { 0% { transform: scale(1); opacity: 0.9; } 100% { transform: scale(1.05); opacity: 1; } }
 @keyframes txtAlert { 0% { opacity: 0.3; } 100% { opacity: 1; } }
 
-/* 魔導チャージオーラ */
-@keyframes auraBurn {
-  0% { transform: scale(1) rotate(0deg); opacity: 0.4; filter: blur(8px); }
-  50% { transform: scale(1.25) rotate(180deg); opacity: 0.8; filter: blur(4px); }
-  100% { transform: scale(1) rotate(360deg); opacity: 0.4; filter: blur(8px); }
-}
-
-/* 瀕死時赤色警報 */
+/* 瀕死時警報 */
 @keyframes crisisAlert {
-  0% { box-shadow: inset 0 0 10px rgba(239, 68, 68, 0), 0 0 10px rgba(33, 41, 53, 1); }
-  50% { box-shadow: inset 0 0 35px rgba(239, 68, 68, 0.8), 0 0 20px rgba(239, 68, 68, 0.6); }
-  100% { box-shadow: inset 0 0 10px rgba(239, 68, 68, 0), 0 0 10px rgba(33, 41, 53, 1); }
+  0% { box-shadow: inset 0 0 10px rgba(239,68,68,0); }
+  50% { box-shadow: inset 0 0 35px rgba(239,68,68,0.8); }
+  100% { box-shadow: inset 0 0 10px rgba(239,68,68,0); }
 }
 
-/* 敵の分身残像高速突進 */
+/* 敵の残像突進 */
 @keyframes enemyAssault {
-  0% { transform: translateX(0) scale(1); filter: drop-shadow(0 0 0 transparent); }
-  20% { transform: translateX(40px) scale(0.95); filter: drop-shadow(-20px 0 0 rgba(244,63,94,0.4)) drop-shadow(20px 0 0 rgba(168,85,247,0.3)); }
-  45% { transform: translateX(-160px) scale(1.2); filter: drop-shadow(40px 0 4px rgba(244,63,94,0.6)) drop-shadow(80px 0 8px rgba(244,63,94,0.3)); }
-  70% { transform: translateX(20px) scale(1); }
-  100% { transform: translateX(0) scale(1); filter: none; }
+  0% { transform: translateX(0); }
+  20% { transform: translateX(30px); filter: drop-shadow(-20px 0 0 rgba(244,63,94,0.4)); }
+  45% { transform: translateX(-150px) scale(1.1); filter: drop-shadow(30px 0 4px rgba(244,63,94,0.6)); }
+  70% { transform: translateX(15px); }
+  100% { transform: translateX(0); }
 }
 
-/* 追尾魔法ミサイル弾道 */
-@keyframes fireFly {
-  0% { transform: translate(-140px, 40px) rotate(0deg) scale(0.4); opacity: 0; }
-  15% { opacity: 1; }
-  85% { opacity: 1; }
-  100% { transform: translate(110px, -20px) rotate(540deg) scale(1.3); opacity: 0; }
-}
-@keyframes iceFly {
-  0% { transform: translate(-140px, 20px) rotate(15deg) scaleX(0.3); opacity: 0; }
-  10% { opacity: 1; }
-  90% { opacity: 1; filter: brightness(1.5); }
-  100% { transform: translate(110px, -15px) rotate(15deg) scaleX(1.4); opacity: 0; }
-}
-@keyframes holyFly {
-  0% { transform: translate(-140px, 20px) scale(0.3) rotate(0deg); opacity: 0; }
-  30% { transform: translate(-30px, -120px) scale(1) rotate(180deg); opacity: 1; filter: brightness(2); }
-  75% { transform: translate(70px, -140px) scale(1.2) rotate(360deg); opacity: 1; }
-  100% { transform: translate(110px, -40px) scale(0.5) rotate(540deg); opacity: 0; }
-}
+/* 魔法軌道 */
+@keyframes fireFly { 0% { transform: translate(-140px,40px) scale(0.4); opacity:0; } 15% { opacity:1; } 100% { transform: translate(110px,-20px) rotate(540deg) scale(1.3); opacity:0; } }
+@keyframes iceFly { 0% { transform: translate(-140px,20px) scaleX(0.3); opacity:0; } 10% { opacity:1; } 100% { transform: translate(110px,-15px) scaleX(1.4); opacity:0; } }
+@keyframes holyFly { 0% { transform: translate(-140px,20px) scale(0.3); opacity:0; } 30% { transform: translate(-30px,-120px) scale(1); opacity:1; } 100% { transform: translate(110px,-40px) scale(0.5); opacity:0; } }
 
-/* 本体の炸裂降臨演出 */
-@keyframes fireBoomBlock {
-  0% { transform: scale(0); opacity: 0; }
-  50% { transform: scale(1.4); opacity: 1; filter: brightness(1.6); }
-  100% { transform: scale(1); opacity: 1; }
-}
-@keyframes iceSpike {
-  0% { transform: scaleY(0) translateY(80px); opacity: 0; filter: brightness(2); }
-  30% { transform: scaleY(1.3) translateY(-15px); opacity: 1; filter: brightness(1.5); }
-  100% { transform: scaleY(1) translateY(0px); opacity: 1; filter: brightness(1); }
-}
-@keyframes holyDown {
-  0% { transform: translateY(-220px) scaleX(0.5); opacity: 0; filter: brightness(3); }
-  40% { transform: translateY(0px) scaleX(1.4); opacity: 1; filter: brightness(2); }
-  100% { transform: translateY(10px) scaleX(1); opacity: 1; filter: brightness(1); }
-}
-@keyframes pulseBoom {
-  0% { transform: translate(0, 0) scale(1) rotate(0deg); opacity: 1; }
-  100% { transform: translate(var(--tx), var(--ty)) scale(0.1) rotate(360deg); opacity: 0; }
-}
+/* 炸裂演出 */
+@keyframes fireBoomBlock { 0% { transform: scale(0); opacity:0; } 50% { transform: scale(1.4); opacity:1; } 100% { transform: scale(1); opacity:1; } }
+@keyframes iceSpike { 0% { transform: scaleY(0) translateY(80px); opacity:0; } 30% { transform: scaleY(1.3) translateY(-15px); opacity:1; } 100% { transform: scaleY(1) translateY(0px); opacity:1; } }
+@keyframes holyDown { 0% { transform: translateY(-220px) scaleX(0.5); opacity:0; } 40% { transform: translateY(0px) scaleX(1.4); opacity:1; } 100% { transform: translateY(10px) scaleX(1); opacity:1; } }
+@keyframes pulseBoom { 0% { transform: translate(0,0) scale(1); opacity:1; } 100% { transform: translate(var(--tx), var(--ty)) scale(0.1); opacity:0; } }
 /* ]]> */
 </style>
 </head>
-<body style="margin: 0; padding: 0; background-color: #0f172a;">
+<body style="margin:0; padding:0; background-color:#0f172a;">
 
-<div id="sq-master-wrapper" style="position: relative !important; background-color: #0f172a !important; padding: 20px 10px !important; display: flex !important; flex-direction: column !important; justify-content: center !important; align-items: center !important; min-height: 1150px !important; width: 100% !important; box-sizing: border-box !important; overflow: hidden;">
-    <canvas id="brick-canvas" style="position: absolute !important; top: 0 !important; left: 0 !important; width: 100% !important; height: 100% !important; z-index: 1 !important; pointer-events: none !important;"></canvas>
+<div id="sq-master-wrapper" style="position:relative; background-color:#0f172a; padding:20px 10px; display:flex; flex-direction:column; justify-content:center; align-items:center; min-height:1150px; width:100%; box-sizing:border-box; overflow:hidden;">
+    <canvas id="brick-canvas" style="position:absolute; top:0; left:0; width:100%; height:100%; z-index:1; pointer-events:none;"></canvas>
 
-    <div id="sq-container" style="position: relative !important; z-index: 2 !important; width: 100% !important; max-width: 640px !important; box-sizing: border-box !important; font-family: 'Helvetica Neue', Arial, 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', Meiryo, sans-serif !important; margin: 0 auto !important;">
-        <div style="background-color: #ffffff !important; border: 6px solid #4f46e5 !important; border-radius: 30px !important; padding: 25px 15px !important; width: 100% !important; text-align: center !important; box-shadow: 0 40px 80px rgba(0,0,0,0.6) !important; box-sizing: border-box !important; overflow: hidden; position: relative; transition: all 0.2s ease-in-out;" id="sq-board">
+    <div id="sq-container" style="position:relative; z-index:2; width:100%; max-width:640px; box-sizing:border-box; font-family:'Helvetica Neue',Arial,sans-serif; margin:0 auto;">
+        <div style="background-color:#ffffff; border:6px solid #4f46e5; border-radius:30px; padding:25px 15px; text-align:center; box-shadow:0 40px 80px rgba(0,0,0,0.6); overflow:hidden; position:relative;" id="sq-board">
             
-            <div style="display: flex !important; justify-content: space-between !important; align-items: center !important; margin-bottom: 15px !important; padding-bottom: 10px !important; border-bottom: 2px solid #e2e8f0 !important;">
-                <div id="floor-indicator" style="font-size: 1.2rem !important; font-weight: 900 !important; color: #4f46e5 !important; background: #eeebff !important; padding: 4px 16px !important; border-radius: 99px !important; visibility: hidden;">1階</div>
-                <button onclick="toggleMute()" id="btn-mute" style="background: #1e293b !important; color: white !important; border: none !important; border-radius: 8px !important; padding: 8px 16px !important; font-size: 1rem !important; font-weight: 800 !important; cursor: pointer !important; box-shadow: 0 4px 6px rgba(0,0,0,0.1) !important; z-index: 10;">🔊 音声: ON</button>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; padding-bottom:10px; border-bottom:2px solid #e2e8f0;">
+                <div id="floor-indicator" style="font-size:1.2rem; font-weight:900; color:#4f46e5; background:#eeebff; padding:4px 16px; border-radius:99px; visibility:hidden;">1階</div>
+                <button onclick="toggleMute()" id="btn-mute" style="background:#1e293b; color:white; border:none; border-radius:8px; padding:8px 16px; font-size:1rem; font-weight:800; cursor:pointer;">🔊 音声: ON</button>
             </div>
 
-            <div id="scr-start" style="display: block; padding: 20px 5px !important;">
-                <div style="color: #4f46e5 !important; font-size: 1.4rem !important; font-weight: 800 !important; letter-spacing: 0.4em !important; margin-bottom: 10px;">LEGENDARY RPG</div>
-                <h1 style="color: #0f172a !important; font-size: 4rem !important; margin: 0 0 20px 0 !important; font-weight: 900 !important; letter-spacing: -0.05em !important; line-height: 1.1; word-break: keep-all;">スパイラルタワー</h1>
-                <div style="height: 8px !important; background: linear-gradient(90deg, #4f46e5, #f43f5e) !important; width: 200px !important; margin: 0 auto 25px auto !important; border-radius: 99px;"></div>
+            <div id="scr-start" style="display:block; padding:20px 5px;">
+                <div style="color:#4f46e5; font-size:1.4rem; font-weight:800; letter-spacing:0.4em; margin-bottom:10px;">LEGENDARY RPG</div>
+                <h1 style="color:#0f172a; font-size:4rem; margin:0 0 20px 0; font-weight:900; letter-spacing:-0.05em; line-height:1.1;">スパイラルタワー</h1>
+                <div style="height:8px; background:linear-gradient(90deg,#4f46e5,#f43f5e); width:200px; margin:0 auto 25px auto; border-radius:99px;"></div>
                 
-                <div style="background: #f8fafc !important; border-radius: 20px !important; padding: 20px !important; border-left: 10px solid #4f46e5 !important; text-align: left !important; margin-bottom: 20px !important;">
-                    <h3 style="font-size: 1.5rem !important; color: #0f172a !important; margin-bottom: 10px !important;">【あらすじ】</h3>
-                    <p style="color: #1e293b !important; font-size: 1.3rem !important; line-height: 1.7 !important; font-weight: 700; word-break: keep-all; overflow-wrap: anywhere; text-align: justify; margin: 0;">
-                        古びた大迷宮「螺旋の塔」。かつて数々の冒険者を吞み込んできたその最上階には、暗黒の支配者バハムートが眠る。世界に平穏を取り戻すため、魔導士としての誇りを胸に、全 10 階層の試練へ立ち向かえ。
+                <div style="background:#f8fafc; border-radius:20px; padding:20px; border-left:10px solid #4f46e5; text-align:left; margin-bottom:20px;">
+                    <p style="color:#1e293b; font-size:1.3rem; line-height:1.7; font-weight:700; margin:0;">
+                        古びた大迷宮「螺旋の塔」。その最上階には暗黒の支配者バハムートが眠る。魔導士としての誇りを胸に、全10階層の試練へ立ち向かえ。
                     </p>
                 </div>
-
-                <div style="background: #f1f5f9 !important; border-radius: 20px !important; padding: 20px !important; border-left: 10px solid #0f172a !important; text-align: left !important; margin-bottom: 30px !important;">
-                    <h3 style="font-size: 1.5rem !important; color: #0f172a !important; margin-bottom: 10px !important;">🎮holiday【簡易操作マニュアル】</h3>
-                    <ul style="color: #334155 !important; font-size: 1.2rem !important; line-height: 1.8 !important; font-weight: 800; padding-left: 20px; margin: 0; word-break: keep-all; overflow-wrap: anywhere;">
-                        <li><span style="color: #e11d48;">ファイア</span>：基本炎属性（重低音ノイズ爆発音＆追尾火炎弾エフェクト）➔ [弱点：1階スライム等]</li>
-                        <li><span style="color: #0284c7;">❄️ アイス</span>：氷結術式（高周波パルス結晶音＆高速追尾氷錐）➔ [弱点：2階コウモリ等]</li>
-                        <li><span style="color: #ca8a04;">✨ ホーリー</span>：神聖光線（サイン波急上昇音＆天界槍）➔ [弱点：悪魔・ゾンビ等]</li>
-                        <li><span style="color: #059669;">シールド</span>：敵の残像分身突進を受け流し被ダメージを極限カット</li>
-                        <li><span style="color: #4f46e5;">チャージ</span>：次ターンの威力【2.5倍】（魔導オーラが自動発動）</li>
-                    </ul>
-                </div>
-
-                <button onclick="nextStage()" style="background: linear-gradient(135deg, #4f46e5, #6366f1) !important; color: white !important; border: none !important; border-radius: 16px !important; padding: 25px 45px !important; font-size: 1.8rem !important; font-weight: 900 !important; cursor: pointer !important; width: 100% !important; box-shadow: 0 10px 25px rgba(79,70,229,0.3) !important;">冒険を始める</button>
+                <button onclick="nextStage()" style="background:linear-gradient(135deg,#4f46e5,#6366f1); color:white; border:none; border-radius:16px; padding:25px 45px; font-size:1.8rem; font-weight:900; cursor:pointer; width:100%; box-shadow:0 10px 25px rgba(79,70,229,0.3);">冒険を始める</button>
             </div>
 
-            <div id="scr-intro" style="display: none; padding: 20px 10px !important;">
-                <div id="intro-ch-num" style="color: #f43f5e !important; font-size: 1.5rem !important; font-weight: 900 !important; letter-spacing: 0.1em !important; margin-bottom: 10px;">FLOOR 01</div>
-                <h2 id="intro-ch-title" style="color: #0f172a !important; font-size: 2.8rem !important; margin-bottom: 30px !important; font-weight: 900; word-break: keep-all;">章のタイトル</h2>
-                <div style="background: #f1f5f9 !important; border-radius: 20px !important; padding: 30px !important; margin-bottom: 40px !important; min-height: 180px !important; display: flex !important; align-items: center !important; justify-content: center !important;">
-                    <p id="intro-text" style="color: #334155 !important; font-size: 1.5rem !important; line-height: 1.7 !important; font-weight: 700; text-align: left !important; word-break: keep-all; overflow-wrap: anywhere;">状況説明テキスト</p>
+            <div id="scr-intro" style="display:none; padding:20px 10px;">
+                <div id="intro-ch-num" style="color:#f43f5e; font-size:1.5rem; font-weight:900; margin-bottom:10px;">FLOOR 01</div>
+                <h2 id="intro-ch-title" style="color:#0f172a; font-size:2.8rem; margin-bottom:30px; font-weight:900;">章のタイトル</h2>
+                <div style="background:#f1f5f9; border-radius:20px; padding:30px; margin-bottom:40px;">
+                    <p id="intro-text" style="color:#334155; font-size:1.5rem; font-weight:700; text-align:left;">状況説明テキスト</p>
                 </div>
-                <button onclick="startBattle()" style="background: #0f172a !important; color: white !important; border: none !important; border-radius: 16px !important; padding: 25px 45px !important; font-size: 1.8rem !important; font-weight: 900 !important; cursor: pointer !important; width: 100% !important;">戦闘開始</button>
+                <button onclick="startBattle()" style="background:#0f172a; color:white; border:none; border-radius:16px; padding:25px 45px; font-size:1.8rem; font-weight:900; cursor:pointer; width:100%;">戦闘開始</button>
             </div>
 
-            <div id="scr-battle" style="display: none;">
-                <div style="display: flex !important; justify-content: space-between !important; margin-bottom: 15px !important; gap: 10px !important;">
-                    <div style="flex: 1 !important; text-align: left !important; position: relative;">
-                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px;">
-                            <div style="font-size: 1.2rem !important; font-weight: 900 !important; color: #1e293b !important;">🧙‍♂️ 光の賢者</div>
-                            <div id="p-hp-alert-badge" style="display: none; background-color: #ef4444 !important; color: #ffffff !important; font-size: 0.78rem !important; font-weight: 900 !important; padding: 2px 7px !important; border-radius: 4px !important; animation: txtAlert 0.4s infinite alternate; letter-spacing: 0.05em;">HP減少中！危険</div>
+            <div id="scr-battle" style="display:none;">
+                <div style="display:flex; justify-content:space-between; margin-bottom:15px; gap:10px;">
+                    <div style="flex:1; text-align:left;">
+                        <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:4px;">
+                            <div style="font-size:1.2rem; font-weight:900; color:#1e293b;">🧙‍♂️ 光の賢者</div>
+                            <div id="p-hp-alert-badge" style="display:none; background-color:#ef4444; color:#ffffff; font-size:0.78rem; font-weight:900; padding:2px 7px; border-radius:4px; animation: txtAlert 0.4s infinite alternate;">HP減少中！危険</div>
                         </div>
-                        <div style="background: #e2e8f0 !important; border-radius: 99px; height: 16px !important; width: 100% !important; border: 2px solid #cbd5e1 !important; overflow: hidden !important;">
-                            <div id="p-hp-bar" style="background: linear-gradient(90deg, #10b981, #34d399) !important; height: 100% !important; width: 100% !important; transition: width 0.3s !important;"></div>
+                        <div style="background:#e2e8f0; border-radius:99px; height:16px; width:100%; overflow:hidden;">
+                            <div id="p-hp-bar" style="background:linear-gradient(90deg,#10b981,#34d399); height:100%; width:100%;"></div>
                         </div>
-                        <div id="p-hp-txt" style="font-size: 1rem !important; font-weight: 900 !important; color: #475569 !important; text-align: right !important; margin-top: 2px;">HP: 100/100</div>
+                        <div id="p-hp-txt" style="font-size:1rem; font-weight:900; color:#475569; text-align:right; margin-top:2px;">HP: 100/100</div>
                     </div>
-                    <div style="font-size: 1.4rem !important; font-weight: 900 !important; color: #e11d48 !important; padding: 5px 0 !important; font-style: italic !important; line-height: 2;">VS</div>
-                    <div style="flex: 1 !important; text-align: right !important;">
-                        <div id="e-name" style="font-size: 1.2rem !important; font-weight: 900 !important; color: #1e293b !important; margin-bottom: 4px;">敵の名前</div>
-                        <div style="background: #e2e8f0 !important; border-radius: 99px; height: 16px !important; width: 100% !important; border: 2px solid #cbd5e1 !important; overflow: hidden !important;">
-                            <div id="e-hp-bar" style="background: linear-gradient(90deg, #f43f5e, #fb7185) !important; height: 100% !important; width: 100% !important; transition: width 0.3s !important;"></div>
+                    <div style="font-size:1.4rem; font-weight:900; color:#e11d48; padding:5px 0; font-style:italic; line-height:2;">VS</div>
+                    <div style="flex:1; text-align:right;">
+                        <div id="e-name" style="font-size:1.2rem; font-weight:900; color:#1e293b; margin-bottom:4px;">敵の名前</div>
+                        <div style="background:#e2e8f0; border-radius:99px; height:16px; width:100%; overflow:hidden;">
+                            <div id="e-hp-bar" style="background:linear-gradient(90deg,#f43f5e,#fb7185); height:100%; width:100%;"></div>
                         </div>
-                        <div id="e-hp-txt" style="font-size: 1rem !important; font-weight: 900 !important; color: #475569 !important; text-align: left !important; margin-top: 2px;">HP: 100/100</div>
+                        <div id="e-hp-txt" style="font-size:1rem; font-weight:900; color:#475569; text-align:left; margin-top:2px;">HP: 100/100</div>
                     </div>
                 </div>
 
-                <div id="eff-scr" style="background-color: #0f172a !important; border: 4px solid #334155 !important; border-radius: 24px 24px 0 0 !important; height: 350px !important; position: relative !important; overflow: hidden !important; box-sizing: border-box !important; transition: background-color 0.12s ease-out, border-color 0.2s !important;">
+                <div id="eff-scr" style="background-color:#0f172a; border:4px solid #334155; border-radius:24px 24px 0 0; height:350px; position:relative; overflow:hidden; box-sizing:border-box;">
+                    <div id="p-aura-layer" style="position:absolute; width:130px; height:130px; top:110px; left:115px; border-radius:50%; background:radial-gradient(circle, rgba(168,85,247,0.7) 0%, rgba(79,70,229,0) 70%); display:none; z-index:2; animation: auraBurn 1.2s linear infinite;"></div>
+                    <div id="spell-effect-layer" style="position:absolute; width:100%; height:100%; top:0; left:0; pointer-events:none; z-index:5;"></div>
                     
-                    <div id="p-aura-layer" style="position: absolute !important; width: 130px; height: 130px; top: 110px; left: 115px; border-radius: 50%; background: radial-gradient(circle, rgba(168,85,247,0.7) 0%, rgba(79,70,229,0) 70%); display: none; z-index: 2 !important; animation: auraBurn 1.2s linear infinite;"></div>
-
-                    <div id="spell-effect-layer" style="position: absolute !important; width: 100% !important; height: 100% !important; top:0; left:0; pointer-events: none; z-index: 5 !important;"></div>
-                    
-                    <div id="icon-stage" style="display: flex !important; justify-content: center !important; align-items: center !important; width: 100% !important; height: 100% !important; gap: 70px !important; transition: transform 0.05s ease-in-out !important; position: relative; z-index: 3;">
-                        <div id="p-sprite" style="font-size: 120px !important; line-height: 1 !important; animation: floatP 1.8s infinite alternate ease-in-out !important; filter: drop-shadow(0 0 20px rgba(16,185,129,0.4)) !important; transition: transform 0.1s ease-out !important; user-select: none; position: relative; z-index: 3; transform-origin: bottom center;">🧙‍♂️</div>
+                    <div id="icon-stage" style="display:flex; justify-content:center; align-items:center; width:100%; height:100%; gap:50px; position:relative; z-index:3;">
+                        <div id="p-sprite" style="font-size:120px; line-height:1; animation: floatP 1.8s infinite alternate ease-in-out; filter:drop-shadow(0 0 20px rgba(16,185,129,0.4)); transition:transform 0.1s; user-select:none; transform-origin:bottom center;">🧙‍♂️</div>
                         
-                        <div id="e-sprite-container" style="width: 160px; height: 160px; display: flex !important; justify-content: center !important; align-items: center !important; position: relative !important; animation: floatE 2.2s infinite alternate ease-in-out !important; transition: all 0.1s ease-out; opacity: 1 !important; transform: none !important;">
+                        <div id="e-sprite-container" style="width:200px; height:200px; display:flex; justify-content:center; align-items:center; position:relative; animation: floatE 2.2s infinite alternate ease-in-out; transition:all 0.1s;">
                             <div id="e-sprite-graphic" style="
-                                width: 140px !important; 
-                                height: 140px !important; 
-                                display: block !important;
+                                width:200px !important; 
+                                height:200px !important; 
+                                background-size:100% 100% !important; 
+                                background-repeat:no-repeat !important;
+                                background-position:center !important;
+                                image-rendering:pixelated !important;
+                                display:block !important;
                             "></div>
                         </div>
                     </div>
-
-                    <div id="front-effect-layer" style="position: absolute !important; width:100% !important; height:100% !important; top:0; left:0; pointer-events:none; z-index:6 !important;"></div>
-                    
-                    <div id="dmg-layer" style="position: absolute !important; width:100% !important; height:100% !important; top:0; left:0; pointer-events:none; z-index:7 !important;"></div>
+                    <div id="front-effect-layer" style="position:absolute; width:100%; height:100%; top:0; left:0; pointer-events:none; z-index:6;"></div>
+                    <div id="dmg-layer" style="position:absolute; width:100%; height:100%; top:0; left:0; pointer-events:none; z-index:7;"></div>
+                    <div id="charge-badge" style="position:absolute; top:15px; left:15px; background:linear-gradient(135deg,#e11d48,#4f46e5); color:#ffffff; font-size:1.1rem; font-weight:900; padding:6px 16px; border-radius:9999px; display:none; animation: pulse 0.5s infinite alternate; z-index:6;">魔力チャージ完了：2.5倍</div>
                 </div>
 
-                <div id="battle-log" style="background: rgba(15,23,42,0.98) !important; color: #ffffff !important; font-size: 1.25rem !important; font-weight: 800 !important; padding: 18px !important; border-radius: 0 0 24px 24px !important; line-height: 1.6 !important; border: 4px solid #4f46e5 !important; border-top: none !important; text-align: left !important; min-height: 110px !important; box-sizing: border-box !important; word-break: keep-all; overflow-wrap: anywhere;">戦闘準備完了。コマンドを選択せよ。</div>
+                <div id="battle-log" style="background:rgba(15,23,42,0.98); color:#ffffff; font-size:1.25rem; font-weight:800; padding:18px; border-radius:0 0 24px 24px; line-height:1.6; border:4px solid #4f46e5; border-top:none; min-height:110px; box-sizing:border-box;">コマンドを選択せよ。</div>
 
-                <div id="cmd-panel" style="margin-top: 15px !important; padding: 5px !important;">
-                    <div style="display: flex !important; gap: 8px !important; margin-bottom: 8px !important;">
-                        <button onclick="turn('fire')" style="flex: 1 !important; background: linear-gradient(135deg, #e11d48, #f43f5e) !important; color: white !important; border: none !important; border-radius: 12px !important; padding: 12px 2px !important; font-size: 1.05rem !important; font-weight: 900 !important; cursor: pointer !important; display: flex; flex-direction: column; align-items: center; justify-content: center;"><span style="font-size: 1.4rem !important; margin-bottom: 2px !important;">🔥</span> ファイア</button>
-                        <button onclick="turn('ice')" style="flex: 1 !important; background: linear-gradient(135deg, #0284c7, #38bdf8) !important; color: white !important; border: none !important; border-radius: 12px !important; padding: 12px 2px !important; font-size: 1.05rem !important; font-weight: 900 !important; cursor: pointer !important; display: flex; flex-direction: column; align-items: center; justify-content: center;"><span style="font-size: 1.4rem !important; margin-bottom: 2px !important;">❄️</span> アイス</button>
-                        <button onclick="turn('holy')" style="flex: 1 !important; background: linear-gradient(135deg, #ca8a04, #facc15) !important; color: white !important; border: none !important; border-radius: 12px !important; padding: 12px 2px !important; font-size: 1.05rem !important; font-weight: 900 !important; cursor: pointer !important; display: flex; flex-direction: column; align-items: center; justify-content: center;"><span style="font-size: 1.4rem !important; margin-bottom: 2px !important;">✨</span> ホーリー</button>
+                <div id="cmd-panel" style="margin-top:15px; padding:5px;">
+                    <div style="display:flex; gap:8px; margin-bottom:8px;">
+                        <button onclick="turn('fire')" style="flex:1; background:linear-gradient(135deg,#e11d48,#f43f5e); color:white; border:none; border-radius:12px; padding:12px 2px; font-size:1.05rem; font-weight:900; cursor:pointer;">🔥 ファイア</button>
+                        <button onclick="turn('ice')" style="flex:1; background:linear-gradient(135deg,#0284c7,#38bdf8); color:white; border:none; border-radius:12px; padding:12px 2px; font-size:1.05rem; font-weight:900; cursor:pointer;">❄️ アイス</button>
+                        <button onclick="turn('holy')" style="flex:1; background:linear-gradient(135deg,#ca8a04,#facc15); color:white; border:none; border-radius:12px; padding:12px 2px; font-size:1.05rem; font-weight:900; cursor:pointer;">✨ ホーリー</button>
                     </div>
-                    <div style="display: flex !important; gap: 8px !important;">
-                        <button onclick="turn('def')" style="flex: 1 !important; background: linear-gradient(135deg, #059669, #10b981) !important; color: white !important; border: none !important; border-radius: 12px !important; padding: 10px 5px !important; font-size: 1.05rem !important; font-weight: 900 !important; cursor: pointer !important; display: flex; align-items: center; justify-content: center;"><span style="font-size: 1.2rem !important; margin-right: 4px !important;">🛡️</span> シールド</button>
-                        <button onclick="turn('chg')" style="flex: 1 !important; background: linear-gradient(135deg, #4f46e5, #6366f1) !important; border: none !important; border-radius: 12px !important; padding: 10px 5px !important; font-size: 1.05rem !important; font-weight: 900 !important; cursor: pointer !important; display: flex; align-items: center; justify-content: center;"><span style="font-size: 1.2rem !important; margin-right: 4px !important;">⚡</span> チャージ</button>
-                        <button id="btn-debug-death" onclick="turn('debug_death')" style="flex: 1 !important; display: none; background: linear-gradient(135deg, #475569, #0f172a) !important; color: #f43f5e !important; border: 2px solid #e11d48 !important; border-radius: 12px !important; padding: 10px 5px !important; font-size: 1.05rem !important; font-weight: 900 !important; cursor: pointer !important;"><span style="font-size: 1.2rem !important; margin-right: 2px !important;">☠️</span> デス</button>
+                    <div style="display:flex; gap:8px;">
+                        <button onclick="turn('def')" style="flex:1; background:linear-gradient(135deg,#059669,#10b981); color:white; border:none; border-radius:12px; padding:10px 5px; font-size:1.05rem; font-weight:900; cursor:pointer;">🛡️ シールド</button>
+                        <button onclick="turn('chg')" style="flex:1; background:linear-gradient(135deg,#4f46e5,#6366f1); color:white; border:none; border-radius:12px; padding:10px 5px; font-size:1.05rem; font-weight:900; cursor:pointer;">⚡ チャージ</button>
+                        <button id="btn-debug-death" onclick="turn('debug_death')" style="flex:1; display:none; background:linear-gradient(135deg,#475569,#0f172a); color:#f43f5e; border:2px solid #e11d48; border-radius:12px; padding:10px 5px; font-size:1.05rem; font-weight:900; cursor:pointer;">☠️ デス</button>
                     </div>
                 </div>
             </div>
 
-            <div id="scr-result" style="display: none; padding: 40px 10px !important;">
-                <div id="res-icon" style="font-size: 110px !important; margin-bottom: 20px !important;">🏆</div>
-                <div id="res-title" style="color: #0f172a !important; font-size: 3.5rem !important; font-weight: 900 !important; margin-bottom: 20px !important;">VICTORY</div>
-                <p id="res-text" style="color: #475569 !important; font-size: 1.5rem !important; font-weight: 700 !important; line-height: 1.7 !important; margin-bottom: 40px !important; white-space: pre-wrap; word-break: keep-all; text-align: center; overflow-wrap: anywhere;">結果テキスト</p>
-                <button id="res-btn" onclick="nextStage()" style="background: #0f172a !important; color: white !important; border: none !important; border-radius: 16px !important; padding: 25px 45px !important; font-size: 1.8rem !important; font-weight: 900 !important; cursor: pointer !important; width: 100% !important; box-shadow: 0 15px 30px rgba(0,0,0,0.2) !important;">次の階層へ進む</button>
+            <div id="scr-result" style="display:none; padding:40px 10px;">
+                <div id="res-icon" style="font-size:110px; margin-bottom:20px;">🏆</div>
+                <h2 id="res-title" style="color:#0f172a; font-size:3.5rem; font-weight:900; margin-bottom:20px;">VICTORY</h2>
+                <p id="res-text" style="color:#475569; font-size:1.5rem; font-weight:700; line-height:1.7; margin-bottom:40px; text-align:center;">結果テキスト</p>
+                <button id="res-btn" onclick="nextStage()" style="background:#0f172a; color:white; border:none; border-radius:16px; padding:25px 45px; font-size:1.8rem; font-weight:900; cursor:pointer; width:100%; box-shadow:0 15px 30px rgba(0,0,0,0.2);">次の階層へ進む</button>
             </div>
         </div>
     </div>
     
-    <div id="dev-console-window" style="position: relative !important; z-index: 3 !important; margin-top: 25px !important; width: 100% !important; max-width: 640px !important; background: #0b0f19 !important; border: 2px solid #334155 !important; border-radius: 16px !important; padding: 15px !important; box-sizing: border-box !important; text-align: left !important; box-shadow: 0 10px 30px rgba(0,0,0,0.5) !important; margin-left: auto; margin-right: auto;">
-        <div style="font-size: 0.95rem !important; font-weight: 800 !important; color: #94a3b8 !important; margin-bottom: 10px !important; display: flex !important; justify-content: space-between !important; align-items: center !important;">
-            <span>🔧 開発者コンソール (PW入力でデバグ呪文解放)</span>
-            <span id="dev-status-badge" style="font-size: 0.8rem !important; color: #ef4444 !important; background: rgba(239,68,68,0.1) !important; padding: 2px 8px !important; border-radius: 6px !important; font-weight: 900 !important;">LOCKED</span>
-        </div>
-        <div style="display: flex !important; gap: 10px !important; align-items: center !important;">
-            <input type="password" id="dev-password-input" oninput="checkDevPassword()" placeholder="PASSWORD（1192）を入力..." style="flex: 1 !important; background: #1e293b !important; color: #ffffff !important; border: 1px solid #475569 !important; border-radius: 8px !important; padding: 10px 12px !important; font-size: 1rem !important; font-weight: 800 !important; outline: none !important;">
-            <div id="dev-success-msg" style="font-size: 0.9rem !important; font-weight: 900 !important; color: #10b981 !important; display: none;">⚡ デバグ用呪文【デス】設置完了</div>
-        </div>
-    </div>
-    
-    <div style="width: 100% !important; max-width: 640px !important; display: flex !important; justify-content: space-between !important; color: #475569; font-size: 0.82rem; margin-top: 15px; font-weight: bold; z-index: 2; position: relative; padding: 0 5px; box-sizing: border-box; margin-left: auto; margin-right: auto;">
-        <span>改訂 V2.36（①スライム映り込みバグ消去・②フリーズバーストタイマー調停完了版）</span>
-        <span style="font-size: 0.78rem !important; font-weight: 700 !important; color: #64748b !important;">改訂時間: 2026年5月22日 02:10:05</span>
+    <div style="width:100%; max-width:640px; display:flex; justify-content:space-between; color:#475569; font-size:0.82rem; margin-top:15px; font-weight:bold; margin-left:auto; margin-right:auto;">
+        <span>改訂 V2.40（②6枚スライムアニメ・③画像200px最大拡張フリーズ完全修復版）</span>
+        <span style="font-size:0.78rem; color:#64748b;">改訂時間: 2026年5月22日 02:41:43</span>
     </div>
 </div>
 
 <script>
 /* <![CDATA[ */
-function drawBricks() {
-  const canvas = document.getElementById("brick-canvas");
-  if (!canvas) return;
-  const ctx = canvas.getContext("2d");
-  const wrapper = document.getElementById("sq-master-wrapper");
-  canvas.width = wrapper.offsetWidth || window.innerWidth;
-  canvas.height = wrapper.offsetHeight || 1150;
-  const brickW = 90; const brickH = 40; 
-  const rows = Math.ceil(canvas.height / brickH); const cols = Math.ceil(canvas.width / brickW) + 1;
-  ctx.fillStyle = "#111827"; ctx.fillRect(0, 0, canvas.width, canvas.height);
-  for (let r = 0; r < rows; r++) {
-    const offsetX = (r % 2 === 0) ? 0 : -brickW / 2;
-    for (let c = 0; c < cols; c++) {
-      const x = c * brickW + offsetX; const y = r * brickH;
-      ctx.fillStyle = (r + c) % 3 === 0 ? "#1f2937" : (r + c) % 3 === 1 ? "#111827" : "#374151";
-      ctx.fillRect(x, y, brickW - 6, brickH - 6);
-      ctx.strokeStyle = "#030712"; ctx.lineWidth = 3; ctx.strokeRect(x, y, brickW - 6, brickH - 6);
-    }
-  }
-}
-setTimeout(drawBricks, 100);
-window.addEventListener("resize", drawBricks);
-
-function checkDevPassword() {
-    const inputField = document.getElementById("dev-password-input");
-    if (!inputField) return;
-    const inputVal = inputField.value;
-    const badge = document.getElementById("dev-status-badge");
-    const msg = document.getElementById("dev-success-msg");
-    const debugBtn = document.getElementById("btn-debug-death");
-    
-    if (inputVal === "1192") {
-        badge.innerText = "UNLOCKED"; badge.style.color = '#10b981'; msg.style.display = "block";
-        if (document.getElementById("scr-battle").style.display === "block" && debugBtn) {
-            debugBtn.style.setProperty('display', 'block', 'important');
-        }
-    } else {
-        badge.innerText = "LOCKED"; badge.style.color = '#ef4444'; msg.style.display = "none";
-        if (debugBtn) debugBtn.style.setProperty('display', 'none', 'important');
-    }
-}
-
-// 魔法ミサイル弾道追尾定義
-const MISSILE_EFFECTS = {
-  fire: `<div style="position:absolute; top:50%; left:50%; width:120px; height:120px; margin-top:-60px; margin-left:-60px; z-index:10; pointer-events:none; animation: fireFly 0.42s cubic-bezier(0.25, 1, 0.5, 1) forwards;"><svg viewBox="0 0 100 100" style="image-rendering:pixelated;"><path d="M30 50h40v10H30zm10-20h20v10H40zm-20 30h60v10H20zm10 10h40v10H30zm10 10h20v5H40z" fill="#f97316"/><path d="M40 40h20v10H40zm-10 10h40v10H30zm10 10h20v10H40z" fill="#facc15"/><path d="M45 45h10v10H45z" fill="#ffffff"/></svg></div>`,
-  ice: `<div style="position:absolute; top:50%; left:50%; width:130px; height:60px; margin-top:-30px; margin-left:-65px; z-index:10; pointer-events:none; animation: iceFly 0.36s linear forwards;"><svg viewBox="0 0 80 40" style="image-rendering:pixelated;"><path d="M0 15h50v10H0zm30-10h30v5H30zm0 20h30v5H30zm20-15h20v5H20zm15 10l15-5l-15-5z" fill="#38bdf8"/><path d="M20 18h40v4H20zm35-6h15v2H55z" fill="#e0f2fe"/></svg></div>`,
-  holy: `<div style="position:absolute; top:50%; left:50%; width:90px; height:90px; margin-top:-45px; margin-left:-45px; z-index:10; pointer-events:none; animation: holyFly 0.45s ease-in-out forwards;"><svg viewBox="0 0 60 60" style="image-rendering:pixelated;"><path d="M25 5h10v50H25zm-20 20h50v10H5zm5-5h40v1h-40z" fill="#facc15"/><path d="M28 10h4v40h-4zm-18 18h40v4H10z" fill="#ffffff"/></svg></div>`
-};
-
-// 1階スライム用3アニメーション画像
+// 🔧 ② 修正：スライム画像を(1)〜(6)の全6パターンへ完全配列化
 const SLIME_FRAMES = [
   "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/imagesX/Slime%20(1).png",
   "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/imagesX/Slime%20(2).png",
-  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/imagesX/Slime%20(3).png"
+  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/imagesX/Slime%20(3).png",
+  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/imagesX/Slime%20(4).png",
+  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/imagesX/Slime%20(5).png",
+  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/imagesX/Slime%20(6).png"
 ];
-
 const MASTER_SHEET_URL = "https://raw.githubusercontent.com/shadow-monk/game1/main/SPY01.jpg";
 
+const MISSILE_EFFECTS = {
+  fire: `<div style="position:absolute; top:50%; left:50%; width:120px; height:120px; margin-top:-60px; margin-left:-60px; z-index:10; pointer-events:none; animation: fireFly 0.42s cubic-bezier(0.25, 1, 0.5, 1) forwards;"><svg viewBox="0 0 100 100"><path d="M30 50h40v10H30zm10-20h20v10H40zm-20 30h60v10H20zm10 10h40v10H30zm10 10h20v5H40z" fill="#f97316"/><path d="M40 40h20v10H40zm-10 10h40v10H30zm10 10h20v10H40z" fill="#facc15"/></svg></div>`,
+  ice: `<div style="position:absolute; top:50%; left:50%; width:130px; height:60px; margin-top:-30px; margin-left:-65px; z-index:10; pointer-events:none; animation: iceFly 0.36s linear forwards;"><svg viewBox="0 0 80 40"><path d="M0 15h50v10H0zm30-10h30v5H30z" fill="#38bdf8"/><path d="M20 18h40v4H20z" fill="#e0f2fe"/></svg></div>`,
+  holy: `<div style="position:absolute; top:50%; left:50%; width:90px; height:90px; margin-top:-45px; margin-left:-45px; z-index:10; pointer-events:none; animation: holyFly 0.45s ease-in-out forwards;"><svg viewBox="0 0 60 60"><path d="M25 5h10v50H25zm-20 20h50v10H5zm5-5h40v1h-40z" fill="#facc15"/></svg></div>`
+};
+
+const HIT_LAND_EFFECTS = {
+  fire: `<div style="position:absolute; width:140px; height:140px; top:50%; left:50%; margin-top:-70px; margin-left:-70px; animation: fireBoomBlock 0.25s ease-out forwards; z-index:11;"><svg viewBox="0 0 100 100" width="100%" height="100%"><circle cx="50" cy="50" r="40" fill="#ef4444" opacity="0.85"/><circle cx="50" cy="50" r="26" fill="#f97316"/><circle cx="50" cy="50" r="13" fill="#ffffff"/></svg></div>`,
+  ice: `<div style="position:absolute; width:160px; height:160px; top:50%; left:50%; margin-top:-95px; margin-left:-80px; animation: iceSpike 0.32s ease-out forwards; transform-origin: bottom center; z-index:11;"><svg viewBox="0 0 100 100" width="100%" height="100%"><path d="M50 10l10 25h-20zm-25 40l25-10v20z" fill="#38bdf8"/><path d="M50 25l5 15h-10z" fill="#e0f2fe"/></svg></div>`,
+  holy: `<div style="position:absolute; width:100px; height:280px; top:50%; left:50%; margin-top:-220px; margin-left:-50px; animation: holyDown 0.35s ease-in forwards; z-index:11;"><svg viewBox="0 0 40 120" width="100%" height="100%"><path d="M18 0h4v80h-4z" fill="#facc15"/><path d="M19 10h2v60h-2z" fill="#ffffff"/></svg></div>`
+};
+
 const STAGES = [
-  { floor: 1,  name: "グリーンスライム", hp: 65,  atk: 10, weak: "fire", isCustom: true,  eMod: "rgba(34,197,94,0.4)",  txt: "1階。通路を塞ぐ酸性の巨大ドット絵スライム！熱に弱く【炎(ファイア)】の術式が特効爆発する！" },
+  { floor: 1,  name: "グリーンスライム", hp: 65,  atk: 10, weak: "fire", isCustom: true,  eMod: "rgba(34,197,94,0.4)",  txt: "1階。通路を塞ぐ酸性の巨大6枚ドット絵スライム！熱に弱く【炎(ファイア)】の術式が特効爆発する！" },
   { floor: 2,  name: "スカイバット",     hp: 80,  atk: 13, weak: "ice",  isCustom: false, eMod: "rgba(148,163,184,0.4)", txt: "2階。螺旋の塔の通路に巣食う吸血コウモリ。冷気に弱く【氷(アイス)】の術式が有効だ！", bgX: "0%",   bgY: "0%" },
   { floor: 3,  name: "スケルトン武者",   hp: 120, atk: 16, weak: "holy", isCustom: false, eMod: "rgba(241,245,149,0.4)", txt: "3階。古剣を携えて迫り来る不死の骸骨兵。邪悪な魔物には【聖(ホーリー)】の光槍が刺さる！", bgX: "25%",  bgY: "0%" },
   { floor: 4,  name: "ハーピィ怪鳥",     hp: 160, atk: 20, weak: "ice",  isCustom: false, eMod: "rgba(236,72,153,0.4)",  txt: "4階。鋭い爪を持つ半人半鳥の怪鳥。羽をフリーズさせる【氷(アイス)】の術式が大きな弱点だ！", bgX: "50%",  bgY: "0%" },
@@ -285,24 +190,13 @@ const STAGES = [
   { floor: 10, name: "竜王バハムート",   hp: 550, atk: 52, weak: "holy", isCustom: false, eMod: "rgba(0,0,0,1)",         txt: "10階。螺旋の頂上に君臨する最終暗黒竜王。賢者の集大成たる【聖(ホーリー)】の神光を叩き込め！", bgX: "75%",  bgY: "100%" }
 ];
 
-let curIdx = -1;
-let pMaxHp = 100, pHp = 100, eHp = 100, eMaxHp = 100, mana = 1.0;
-let isBusy = false, isMuted = false;
-
-let animeTimer = null;
-let currentFrameIdx = 0;
-let animeSpeed = 220;
-let isBursting = false; // 🔧 タイマーの多重衝突を防ぐ制御フラグ
+let animeTimer = null; let currentFrameIdx = 0; let animeSpeed = 220; let isBursting = false;
 
 function startSlimeAnimation() {
-    stopSlimeAnimation();
-    if (isBursting) return; // バースト処理中は通常タイマーを起動させない
+    stopSlimeAnimation(); if (isBursting) return;
+    const graphicEl = document.getElementById("e-sprite-graphic"); if (!graphicEl) return;
     
-    currentFrameIdx = 0;
-    const graphicEl = document.getElementById("e-sprite-graphic");
-    if (!graphicEl) return;
-    
-    // ① 修正点：左右の回り込み画像を完全に消去するスタイル保護コード
+    // 🔧 ① 修正：background-sizeを100% 100%にして、不気味な回り込み画像を完璧に封鎖消去
     graphicEl.style.setProperty('background-image', `url('${SLIME_FRAMES[0]}')`, 'important');
     graphicEl.style.setProperty('background-size', '100% 100%', 'important');
     graphicEl.style.setProperty('background-repeat', 'no-repeat', 'important');
@@ -316,378 +210,169 @@ function startSlimeAnimation() {
     }, animeSpeed);
 }
 
-function stopSlimeAnimation() {
-    if(animeTimer) { clearInterval(animeTimer); animeTimer = null; }
-}
+function stopSlimeAnimation() { if(animeTimer) { clearInterval(animeTimer); animeTimer = null; } }
 
-// 🔧 ② 修正点：行動不能（フリーズ）を防ぐ安全調停型バーストスレッド
 function burstSlimeAnimation() {
     if(STAGES[curIdx] && STAGES[curIdx].isCustom) {
-        stopSlimeAnimation();
-        isBursting = true;
-        let bFrame = 0;
+        stopSlimeAnimation(); isBursting = true; let bFrame = 0;
         const graphicEl = document.getElementById("e-sprite-graphic");
-        
-        // 70msの間隔で確実に高速伸縮
         const burstTimer = setInterval(() => {
             bFrame = (bFrame + 1) % SLIME_FRAMES.length;
             if (graphicEl) graphicEl.style.setProperty('background-image', `url('${SLIME_FRAMES[bFrame]}')`, 'important');
-        }, 70);
-
-        setTimeout(() => {
-            clearInterval(burstTimer);
-            isBursting = false;
-            if(document.getElementById("scr-battle").style.display === "block") {
-                startSlimeAnimation();
-            }
-        }, 450); // 被弾演出が終わるタイミングで完全安全リセット
+        }, 60);
+        setTimeout(() => { clearInterval(burstTimer); isBursting = false; if(document.getElementById("scr-battle").style.display === "block") startSlimeAnimation(); }, 450);
     }
 }
 
-// --- 🎧 音響回路 ---
+// --- 🎧 音響 ---
 let audioCtx = null; let bgmTimer = null; let bgmStep = 0; let currentBgmType = "title";
 function initAudio() { if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
-
-const SCALE = {
-  castle: [146, 165, 174, 220, 196, 220, 261, 329], 
-  horror: [110, 116, 138, 146, 165, 174, 207, 220]  
-};
-
 function playBgmNode() {
-  if (isMuted || currentBgmType === "title" || currentBgmType === "clear") return;
+  if (isMuted || currentBgmType === "title") return;
   try {
-    initAudio();
-    let now = audioCtx.currentTime;
-    let osc1 = audioCtx.createOscillator(); let osc2 = audioCtx.createOscillator(); let gainNode = audioCtx.createGain();
-    osc1.connect(gainNode); osc2.connect(gainNode); gainNode.connect(audioCtx.destination);
-    
-    if (currentBgmType === "castle") {
-      let baseNote = SCALE.castle[bgmStep % SCALE.castle.length];
-      osc1.type = "triangle"; osc1.frequency.setValueAtTime(baseNote, now);
-      osc2.type = "sine"; osc2.frequency.setValueAtTime(baseNote * 2, now);
-      gainNode.gain.setValueAtTime(0.03, now); gainNode.gain.exponentialRampToValueAtTime(0.001, now + 0.55);
-      osc1.start(now); osc1.stop(now + 0.55); osc2.start(now); osc2.stop(now + 0.55);
-      bgmStep++;
-    } 
-    else if (currentBgmType === "horror" || currentBgmType === "boss") {
-      let baseNote = SCALE.horror[bgmStep % SCALE.horror.length];
-      let isBoss = (currentBgmType === "boss");
-      if(isBoss && bgmStep % 2 === 0) baseNote *= 1.05; 
-      osc1.type = "sawtooth"; osc1.frequency.setValueAtTime(baseNote, now);
-      osc2.type = "square"; osc2.frequency.setValueAtTime(baseNote * 0.99, now);
-      let vol = isBoss ? 0.04 : 0.03;
-      gainNode.gain.setValueAtTime(vol, now); gainNode.gain.linearRampToValueAtTime(0.001, now + 0.2);
-      osc1.start(now); osc1.stop(now + 0.2); osc2.start(now); osc2.stop(now + 0.2);
-      bgmStep++;
-    }
+    initAudio(); let now = audioCtx.currentTime;
+    let osc1 = audioCtx.createOscillator(); let gainNode = audioCtx.createGain();
+    osc1.connect(gainNode); gainNode.connect(audioCtx.destination);
+    let baseNote = currentBgmType === "castle" ? SCALE.castle[bgmStep % 8] : SCALE.horror[bgmStep % 8];
+    osc1.type = "triangle"; osc1.frequency.setValueAtTime(baseNote, now);
+    gainNode.gain.setValueAtTime(0.02, now); gainNode.gain.exponentialRampToValueAtTime(0.001, now + 0.3);
+    osc1.start(now); osc1.stop(now + 0.3); bgmStep++;
   } catch(e){}
 }
-
-function startBGM(type) {
-  stopBGM(); currentBgmType = type; if (type === "title" || isMuted) return;
-  initAudio(); bgmStep = 0;
-  let tempo = 180; if (type === "castle") tempo = 350; if (type === "boss") tempo = 130; 
-  bgmTimer = setInterval(playBgmNode, tempo);
-}
-
+function startBGM(type) { stopBGM(); currentBgmType = type; if (type === "title" || isMuted) return; initAudio(); bgmStep = 0; bgmTimer = setInterval(playBgmNode, currentBgmType === "castle" ? 300 : 180); }
 function stopBGM() { if (bgmTimer) { clearInterval(bgmTimer); bgmTimer = null; } }
-
-function toggleMute() {
-  isMuted = !isMuted;
-  document.getElementById('btn-mute').innerText = isMuted ? "🔇 音声: OFF" : "🔊 音声: ON";
-  if (isMuted) { stopBGM(); } else { startBGM(currentBgmType); }
-}
+function toggleMute() { isMuted = !isMuted; document.getElementById('btn-mute').innerText = isMuted ? "🔇 音声: OFF" : "🔊 音声: ON"; if (isMuted) stopBGM(); else startBGM(currentBgmType); }
 
 function playSE(type) {
   if (isMuted) return;
   try {
-    initAudio();
-    let now = audioCtx.currentTime;
-    if (type === 'fire') {
-      let bufferSize = audioCtx.sampleRate * 0.4;
-      let buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
-      let data = buffer.getChannelData(0);
-      for (let i = 0; i < bufferSize; i++) { data[i] = Math.random() * 2 - 1; }
-      let noise = audioCtx.createBufferSource(); noise.buffer = buffer;
-      let filter = audioCtx.createBiquadFilter(); filter.type = 'lowpass'; filter.frequency.setValueAtTime(250, now);
-      let noiseGain = audioCtx.createGain(); noiseGain.gain.setValueAtTime(0.4, now); noiseGain.gain.linearRampToValueAtTime(0.001, now + 0.4);
-      noise.connect(filter); filter.connect(noiseGain); noiseGain.connect(audioCtx.destination);
-      let osc = audioCtx.createOscillator(); osc.type = 'sawtooth'; osc.frequency.setValueAtTime(140, now); osc.frequency.linearRampToValueAtTime(30, now + 0.35);
-      let oscGain = audioCtx.createGain(); oscGain.gain.setValueAtTime(0.3, now); oscGain.gain.linearRampToValueAtTime(0.001, now + 0.35);
-      osc.connect(oscGain); oscGain.connect(audioCtx.destination);
-      noise.start(now); osc.start(now); osc.stop(now + 0.4);
-    } 
-    else if (type === 'ice') {
-      let osc = audioCtx.createOscillator(); osc.type = 'square';
-      osc.frequency.setValueAtTime(1600, now); osc.frequency.exponentialRampToValueAtTime(350, now + 0.38);
-      let gain = audioCtx.createGain(); gain.gain.setValueAtTime(0.18, now); gain.gain.linearRampToValueAtTime(0.001, now + 0.38);
-      osc.connect(gain); gain.connect(audioCtx.destination); osc.start(now); osc.stop(now + 0.38);
-    } 
-    else if (type === 'holy') {
-      let osc = audioCtx.createOscillator(); osc.type = 'sine';
-      osc.frequency.setValueAtTime(220, now); osc.frequency.exponentialRampToValueAtTime(2800, now + 0.42);
-      let gain = audioCtx.createGain(); gain.gain.setValueAtTime(0.28, now); gain.gain.linearRampToValueAtTime(0.001, now + 0.42);
-      osc.connect(gain); gain.connect(audioCtx.destination); osc.start(now); osc.stop(now + 0.42);
-    } 
-    else if (type === 'def') {
-      let osc = audioCtx.createOscillator(); osc.type = 'sine'; osc.frequency.setValueAtTime(750, now); osc.frequency.exponentialRampToValueAtTime(1300, now + 0.15);
-      let gain = audioCtx.createGain(); gain.gain.setValueAtTime(0.15, now); gain.gain.linearRampToValueAtTime(0.001, now + 0.15);
-      osc.connect(gain); gain.connect(audioCtx.destination); osc.start(now); osc.stop(now + 0.15);
-    } else if (type === 'chg') {
-      let osc = audioCtx.createOscillator(); osc.type = 'triangle'; osc.frequency.setValueAtTime(150, now); osc.frequency.exponentialRampToValueAtTime(1400, now + 0.5);
-      let gain = audioCtx.createGain(); gain.gain.setValueAtTime(0.2, now); gain.gain.linearRampToValueAtTime(0.001, now + 0.5);
-      osc.connect(gain); gain.connect(audioCtx.destination); osc.start(now); osc.stop(now + 0.5);
-    } else if (type === 'hit') {
-      let osc = audioCtx.createOscillator(); osc.type = 'square'; osc.frequency.setValueAtTime(120, now); osc.frequency.linearRampToValueAtTime(20, now + 0.2);
-      let gain = audioCtx.createGain(); gain.gain.setValueAtTime(0.35, now); gain.gain.linearRampToValueAtTime(0.001, now + 0.2);
-      osc.connect(gain); gain.connect(audioCtx.destination); osc.start(now); osc.stop(now + 0.2);
-    } else if (type === 'boom') {
-      let osc = audioCtx.createOscillator(); osc.type = 'sawtooth'; osc.frequency.setValueAtTime(160, now); osc.frequency.linearRampToValueAtTime(5, now + 0.6);
-      let gain = audioCtx.createGain(); gain.gain.setValueAtTime(0.55, now); gain.gain.linearRampToValueAtTime(0.001, now + 0.6);
-      osc.connect(gain); gain.connect(audioCtx.destination); osc.start(now); osc.stop(now + 0.6);
-    }
-    else if (type === 'boss_fanfare') {
-      const notes = [ [523.25, 659.25, 783.99], [587.33, 698.46, 880.00], [659.25, 783.99, 987.77], [1046.50, 1318.51, 1567.98] ];
-      notes.forEach((chord, step) => {
-        chord.forEach((freq) => {
-          let osc = audioCtx.createOscillator(); osc.type = 'square'; let gain = audioCtx.createGain();
-          osc.frequency.setValueAtTime(freq, now + step * 0.14);
-          let duration = step === 3 ? 0.8 : 0.12;
-          gain.gain.setValueAtTime(0.08, now + step * 0.14); gain.gain.linearRampToValueAtTime(0.001, now + step * 0.14 + duration);
-          osc.connect(gain); gain.connect(audioCtx.destination); osc.start(now + step * 0.14); osc.stop(now + step * 0.14 + duration);
-        });
-      });
-    }
+    initAudio(); let now = audioCtx.currentTime;
+    let osc = audioCtx.createOscillator(); let gain = audioCtx.createGain();
+    osc.connect(gain); gain.connect(audioCtx.destination);
+    if (type === 'fire') { osc.type = 'sawtooth'; osc.frequency.setValueAtTime(120, now); osc.frequency.linearRampToValueAtTime(20, now + 0.3); gain.gain.setValueAtTime(0.3, now); }
+    else if (type === 'ice') { osc.type = 'square'; osc.frequency.setValueAtTime(1400, now); gain.gain.setValueAtTime(0.1, now); }
+    else if (type === 'holy') { osc.type = 'sine'; osc.frequency.setValueAtTime(300, now); osc.frequency.exponentialRampToValueAtTime(2000, now + 0.3); gain.gain.setValueAtTime(0.2, now); }
+    else { osc.type = 'sine'; osc.frequency.setValueAtTime(400, now); gain.gain.setValueAtTime(0.1, now); }
+    gain.gain.linearRampToValueAtTime(0.001, now + 0.3); osc.start(now); osc.stop(now + 0.3);
   } catch(e){}
 }
 
-function triggerShake(shakeType) {
-  const stage = document.getElementById('icon-stage');
-  if(!stage) return;
-  let count = 0, max = 16; let power = 12;
-  let isMulti = (shakeType === 'critical_shake');
-  if (isMulti) power = 28;
-  const interval = setInterval(() => {
-    if (count >= max) { stage.style.setProperty('transform', 'none', 'important'); clearInterval(interval); return; }
-    let x = Math.floor(Math.random() * power) - (power / 2);
-    let y = Math.floor(Math.random() * power) - (power / 2);
-    if (isMulti) { x = (count % 2 === 0) ? power / 2 : -power / 2; y = (count % 3 === 0) ? power / 2 : -power / 2; }
-    stage.style.setProperty('transform', `translate3d(${x}px, ${y}px, 0px)`, 'important');
-    count++;
-  }, 16);
+function createDmgPop(dmg, isWeak, isPlayer) {
+    const layer = document.getElementById("dmg-layer"); if(!layer) return;
+    const pop = document.createElement("div"); pop.style.position = "absolute";
+    pop.style.fontSize = isWeak ? "3rem" : "2.2rem"; pop.style.fontWeight = "900";
+    if (isPlayer) { pop.style.left = "130px"; pop.style.top = "120px"; pop.style.color = "#ef4444"; pop.innerText = `-${dmg}`; }
+    else { pop.style.right = "90px"; pop.style.top = "90px"; pop.style.color = isWeak ? "#facc15" : "#ffffff"; pop.innerText = dmg; }
+    let yIdx = 0; let opacity = 1;
+    const upTimer = setInterval(() => { yIdx -= 3; pop.style.transform = `translateY(${yIdx}px)`; opacity -= 0.05; pop.style.opacity = opacity; if(opacity <= 0) { clearInterval(upTimer); pop.remove(); } }, 25);
+    layer.appendChild(pop);
 }
 
-function triggerEnemyHitPulse() {
-  const box = document.getElementById('e-sprite-graphic');
-  if(!box) return;
-  let pCount = 0;
-  const pulseTimer = setInterval(() => {
-    if (pCount > 4) { box.style.transform = "none"; clearInterval(pulseTimer); return; }
-    box.style.transform = `translate3d(${(pCount % 2 === 0 ? 8 : -8)}px, 0px, 0px) scale(0.95)`;
-    pCount++;
-  }, 45);
+function checkDevPassword() {
+    const inputField = document.getElementById("dev-password-input"); if (!inputField) return;
+    const badge = document.getElementById("dev-status-badge");
+    const debugBtn = document.getElementById("btn-debug-death");
+    if (inputField.value === "1192") { badge.innerText = "UNLOCKED"; badge.style.color = '#10b981'; if (document.getElementById("scr-battle").style.display === "block" && debugBtn) debugBtn.style.setProperty('display', 'block', 'important'); }
+    else { badge.innerText = "LOCKED"; badge.style.color = '#ef4444'; if (debugBtn) debugBtn.style.setProperty('display', 'none', 'important'); }
 }
 
-function flashScreen(color) {
-  const screen = document.getElementById('eff-scr');
-  if(!screen) return;
-  screen.style.setProperty('background-color', color, 'important');
-  setTimeout(() => {
-    const isCrisis = (pHp <= 30);
-    screen.style.setProperty('background-color', isCrisis ? 'rgba(239, 68, 68, 0.1)' : '#0f172a', 'important');
-  }, 140);
-}
-
-function flashCritical(color) {
-  const screen = document.getElementById('eff-scr');
-  if(!screen) return;
-  screen.style.setProperty('background-color', color, 'important');
-  setTimeout(() => {
-    screen.style.setProperty('background-color', '#0f172a', 'important');
-    setTimeout(() => {
-      screen.style.setProperty('background-color', color, 'important');
-      setTimeout(() => {
-        const isCrisis = (pHp <= 30);
-        screen.style.setProperty('background-color', isCrisis ? 'rgba(239, 68, 68, 0.1)' : '#0f172a', 'important');
-      }, 70);
-    }, 50);
-  }, 70);
-}
-
-function createExplosionParticles(castType) {
-  const parent = document.getElementById('eff-scr');
-  const container = document.getElementById('e-sprite-container');
-  if(!parent || !container) return;
-  const rect = container.getBoundingClientRect();
-  const parentRect = parent.getBoundingClientRect();
-  const startX = (rect.left - parentRect.left) + rect.width / 2;
-  const startY = (rect.top - parentRect.top) + rect.height / 2;
-
-  let colorPrimary = '#ffd700'; let colorSecondary = '#ffffff';
-  if (castType === 'fire') { colorPrimary = '#ef4444'; colorSecondary = '#f97316'; }
-  else if (castType === 'ice') { colorPrimary = '#38bdf8'; colorSecondary = '#e0f2fe'; }
-  else if (castType === 'holy') { colorPrimary = '#facc15'; colorSecondary = '#ffffff'; }
-
-  for (let i = 0; i < 50; i++) {
-    const p = document.createElement('div');
-    p.style.position = 'absolute'; p.style.width = `${Math.floor(Math.random() * 8) + 6}px`; p.style.height = p.style.width;
-    p.style.backgroundColor = Math.random() > 0.4 ? colorPrimary : colorSecondary;
-    p.style.left = `${startX}px`; p.style.top = `${startY}px`; p.style.zIndex = '12'; p.style.pointerEvents = 'none';
-    
-    const tx = (Math.random() * 340 - 170); const ty = (Math.random() * -260 - 40);
-    p.style.setProperty('--tx', `${tx}px`); p.style.setProperty('--ty', `${ty}px`);
-    p.style.animation = 'pulseBoom 0.68s cubic-bezier(0.1, 0.8, 0.25, 1) forwards';
-    
-    parent.appendChild(p);
-    setTimeout(() => p.remove(), 680);
-  }
-}
-
-function hideAll() { 
-    ['scr-start','scr-intro','scr-battle','scr-result'].forEach(id => {
-        const el = document.getElementById(id);
-        if (el) el.style.setProperty('display', 'none', 'important');
-    }); 
-}
+function hideAll() { ['scr-start','scr-intro','scr-battle','scr-result'].forEach(id => { const el = document.getElementById(id); if (el) el.style.setProperty('display', 'none', 'important'); }); }
 
 function nextStage() {
-    playSE('click');
-    curIdx++; 
-    if (curIdx >= STAGES.length) { 
-        resetGame(); 
-        hideAll(); 
-        document.getElementById('scr-start').style.setProperty('display', 'block', 'important'); 
-        document.getElementById('floor-indicator').style.setProperty('visibility', 'hidden', 'important'); 
-        startBGM("title"); 
-        return; 
-    }
-    const data = STAGES[curIdx];
-    pHp = pMaxHp; 
-    hideAll(); 
-    stopSlimeAnimation(); 
-    
-    const fInd = document.getElementById('floor-indicator');
-    if (fInd) {
-        fInd.style.setProperty('visibility', 'visible', 'important'); 
-        fInd.innerText = `${data.floor}階`;
-    }
-    
+    playSE('click'); curIdx++;
+    if (curIdx >= STAGES.length) { resetGame(); hideAll(); document.getElementById('scr-start').style.setProperty('display', 'block', 'important'); document.getElementById('floor-indicator').style.setProperty('visibility', 'hidden', 'important'); startBGM("title"); return; }
+    const data = STAGES[curIdx]; pHp = pMaxHp; hideAll(); stopSlimeAnimation();
+    const fInd = document.getElementById('floor-indicator'); if (fInd) { fInd.style.setProperty('visibility', 'visible', 'important'); fInd.innerText = `${data.floor}階`; }
     document.getElementById('scr-intro').style.setProperty('display', 'block', 'important');
     document.getElementById('intro-ch-num').innerText = `FLOOR 0${data.floor}`;
     document.getElementById('intro-ch-title').innerText = data.name;
     document.getElementById('intro-text').innerText = data.txt;
-    startBGM("castle"); setTimeout(drawBricks, 50);
+    startBGM("castle");
 }
 
 function startBattle() {
-  playSE('click');
-  const data = STAGES[curIdx];
-  eHp = eMaxHp = data.hp; 
-  hideAll(); 
-  isBusy = false; // 🔧 起動ロック完全解除
-  isBursting = false;
-  
+  playSE('click'); const data = STAGES[curIdx]; eHp = eMaxHp = data.hp; hideAll(); isBusy = false; isBursting = false;
   const container = document.getElementById('e-sprite-container');
   if(container) {
-    container.removeAttribute("style"); 
-    container.style.setProperty('animation', 'floatE 2.2s infinite alternate ease-in-out', 'important');
-    container.style.setProperty('opacity', '1', 'important');
-    container.style.setProperty('transform', 'none', 'important');
-    container.style.setProperty('width', '160px', 'important');
-    container.style.setProperty('height', '160px', 'important');
-    container.style.setProperty('display', 'flex', 'important');
-    container.style.setProperty('justify-content', 'center', 'important');
-    container.style.setProperty('align-items', 'center', 'important');
-    container.style.setProperty('position', 'relative', 'important');
+    container.removeAttribute("style"); container.style.setProperty('animation', 'floatE 2.2s infinite alternate ease-in-out', 'important');
+    container.style.setProperty('width', '200px', 'important'); container.style.setProperty('height', '200px', 'important');
+    container.style.setProperty('display', 'flex', 'important'); container.style.setProperty('justify-content', 'center', 'important');
+    container.style.setProperty('align-items', 'center', 'important'); container.style.setProperty('position', 'relative', 'important');
     container.style.setProperty('filter', `drop-shadow(0 0 25px ${data.eMod})`, 'important');
   }
-
   const graphicEl = document.getElementById('e-sprite-graphic');
   if(graphicEl) {
-    graphicEl.removeAttribute("style");
-    graphicEl.style.width = "140px";
-    graphicEl.style.height = "140px";
-    graphicEl.style.display = "block";
-    graphicEl.style.imageRendering = "pixelated";
+    graphicEl.removeAttribute("style"); graphicEl.style.width = "200px"; graphicEl.style.height = "200px"; graphicEl.style.display = "block"; graphicEl.style.imageRendering = "pixelated";
   }
-
   document.getElementById('scr-battle').style.setProperty('display', 'block', 'important');
   document.getElementById('e-name').innerText = data.name;
-  
-  if (data.isCustom) {
-      startSlimeAnimation();
-  } else if(graphicEl) {
+  if (data.isCustom) { startSlimeAnimation(); } 
+  else if(graphicEl) {
       stopSlimeAnimation();
       graphicEl.style.setProperty('background-image', `url('${MASTER_SHEET_URL}')`, 'important');
       graphicEl.style.setProperty('background-size', '500% 200%', 'important');
       graphicEl.style.setProperty('background-repeat', 'no-repeat', 'important');
       graphicEl.style.setProperty('background-position', `${data.bgX} ${data.bgY}`, 'important');
   }
-  
-  updateHpUI();
-  checkDevPassword(); 
-  
+  updateHpUI(); checkDevPassword();
   let floorMessage = ` <span style='color:#38bdf8;'>[弱点: ${data.weak.toUpperCase()}]</span>`;
-  if(data.floor === 10) {
-       document.getElementById('eff-scr').style.setProperty('border-color', '#be123c', 'important');
-       document.getElementById('battle-log').innerHTML = `⚠️ 螺旋竜王 ⚠️ 『${data.name}』が覚醒した！世界を救え！${floorMessage}`;
-       startBGM("boss");
-  } else {
-       document.getElementById('eff-scr').style.setProperty('border-color', '#334155', 'important');
-       document.getElementById('battle-log').innerHTML = `魔導術式展開。${data.name}に立ち向かえ。${floorMessage}`;
-       startBGM("horror");
-  }
-  setTimeout(drawBricks, 50);
+  document.getElementById('eff-scr').style.setProperty('border-color', data.floor === 10 ? '#be123c' : '#334155', 'important');
+  document.getElementById('battle-log').innerHTML = `術式展開。${data.name}に立ち向かえ。${floorMessage}`;
+  startBGM(data.floor === 10 ? "boss" : "horror");
 }
 
+function updateHpUI() {
+  const scr = document.getElementById('eff-scr'); const alertBadge = document.getElementById('p-hp-alert-badge'); if(!scr) return;
+  document.getElementById('p-hp-bar').style.setProperty('width', `${pHp}%`, 'important');
+  document.getElementById('e-hp-bar').style.setProperty('width', `${(eHp/eMaxHp*100)}%`, 'important');
+  document.getElementById('p-hp-txt').innerText = `HP: ${pHp} / 100`; document.getElementById('e-hp-txt').innerText = `HP: ${eHp} / ${eMaxHp}`;
+  if (pHp <= 30) { scr.style.setProperty('animation', 'crisisAlert 1.0s infinite alternate', 'important'); scr.style.setProperty('border-color', '#f43f5e', 'important'); if (alertBadge) alertBadge.style.display = "block"; } 
+  else { scr.style.setProperty('animation', 'none', 'important'); scr.style.setProperty('border-color', (STAGES[curIdx] && STAGES[curIdx].floor === 10) ? '#be123c' : '#334155', 'important'); if (alertBadge) alertBadge.style.display = "none"; }
+}
+
+// 🔧 ① 修正：行動不能ロックを根本解決した直列完全同期型ターンエンジン
 function turn(playerMove) {
   if (isBusy || pHp <= 0 || eHp <= 0) return;
-  isBusy = true; // 行動処理ロック
+  isBusy = true; 
+  
   const data = STAGES[curIdx];
   const enemyMove = Math.random() > 0.4 ? "atk" : "def";
+  let pDamage = 0, eDamage = 0; let log = ""; let isCritical = false;
   
-  let pDamage = 0, eDamage = 0; let log = ""; 
-  let shakeStyle = "attack_success"; let flashColor = "#e11d48";
-  let isCritical = false;
-
-  const pSprite = document.getElementById('p-sprite');
   const containerEl = document.getElementById('e-sprite-container');
   const effectLayer = document.getElementById('spell-effect-layer');
   const frontLayer = document.getElementById('front-effect-layer');
-  const auraLayer = document.getElementById('p-aura-layer');
 
   if (playerMove === 'debug_death') {
-    playSE('boom'); eDamage = eHp; pDamage = 0; log = `☠️ デバグ消滅術式発動！一撃の元に葬り去った！`;
-    mana = 1.0; if(auraLayer) auraLayer.style.display = "none";
+    playSE('boom'); eDamage = eHp; log = `☠️ 究極消滅術式発動！一撃の元に葬った！`;
     eHp = 0; updateHpUI(); document.getElementById('battle-log').innerHTML = log;
-    setTimeout(() => { checkBattleEnd(); }, 450);
-  } 
-  else if (playerMove === 'fire' || playerMove === 'ice' || playerMove === 'holy') {
+    setTimeout(() => { checkBattleEnd(); }, 400);
+    return;
+  }
+
+  if (playerMove === 'fire' || playerMove === 'ice' || playerMove === 'holy') {
     if(effectLayer) effectLayer.innerHTML = MISSILE_EFFECTS[playerMove];
-    if(pSprite) pSprite.style.setProperty('transform', 'translateX(55px) scaleY(1.1) scaleX(1.15) rotate(5deg)', 'important');
-    setTimeout(() => { if(pSprite) pSprite.style.setProperty('transform', 'none', 'important'); }, 400);
+    document.getElementById('p-sprite').style.setProperty('transform', 'translateX(55px) scale(1.1) rotate(4deg)', 'important');
+    setTimeout(() => { document.getElementById('p-sprite').style.setProperty('transform', 'none', 'important'); }, 400);
 
-    let basePower = 15; let spellName = "ファイア";
-    if (playerMove === 'ice') { basePower = 14; spellName = "アイスコフィン"; flashColor = "#0284c7"; }
-    if (playerMove === 'holy') { basePower = 13; spellName = "ホーリーランス"; flashColor = "#eab308"; }
+    let basePower = 15; let spellName = playerMove === 'fire' ? "ファイア" : (playerMove === 'ice' ? "アイスコフィン" : "ホーリーランス");
+    let flashColor = playerMove === 'fire' ? "#e11d48" : (playerMove === 'ice' ? "#0284c7" : "#eab308");
 
-    if (data.weak === playerMove) { isCritical = true; basePower = Math.floor(basePower * 2.3); shakeStyle = "critical_shake"; }
+    if (data.weak === playerMove) { isCritical = true; basePower = Math.floor(basePower * 2.3); }
     eDamage = Math.floor(basePower * mana);
 
     if (enemyMove === 'atk') {
       pDamage = data.atk;
-      if(containerEl) containerEl.style.setProperty('animation', 'enemyAssault 0.45s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards', 'important');
+      if(containerEl) containerEl.style.setProperty('animation', 'enemyAssault 0.45s forwards', 'important');
       setTimeout(() => { if(containerEl) containerEl.style.setProperty('animation', 'floatE 2.2s infinite alternate ease-in-out', 'important'); }, 460);
-      if (isCritical) log = `<span style='color:#facc15; font-weight:900;'>【CRITICAL HIT!!】</span>弱点特効！『${spellName}』が敵の場所で炸裂し 【${eDamage}】 ダメージ！反撃の分身残像突進で ${pDamage} 被弾！`;
-      else log = `⚔️ 術式が激突！追尾魔導『${spellName}』が命中！敵に ${eDamage} ダメージ / あなたは ${pDamage} 被弾！`;
+      log = isCritical ? `【CRITICAL】弱点適合！『${spellName}』直撃 【${eDamage}】 ダメージ！突進反撃で ${pDamage} 被弾！` : `『${spellName}』が命中！敵に ${eDamage} ダメージ / あなたは ${pDamage} 被弾！`;
     } else {
-      eDamage = Math.floor(eDamage * 0.35); log = `🛡️ 敵の防御結界！『${spellName}』の魔力が相殺され、敵に ${eDamage} ダメージ。`;
+      eDamage = Math.floor(eDamage * 0.35); log = `🛡️ 敵の防御！『${spellName}』が減衰。敵に ${eDamage} ダメージ。`;
     }
 
-    // 🔧 着弾直列処理スレッド
+    // 弾道が飛ぶ360msのラグの後に直列実行
     setTimeout(() => {
-      playSE(playerMove);
-      burstSlimeAnimation(); // スライムバースト変形着火
+      playSE(playerMove); burstSlimeAnimation();
       
       if(containerEl && frontLayer) {
         const parentRect = document.getElementById('eff-scr').getBoundingClientRect();
@@ -697,47 +382,31 @@ function turn(playerMove) {
 
         const hitBox = document.createElement('div');
         hitBox.style.position = 'absolute'; hitBox.style.left = `${relativeX}px`; hitBox.style.top = `${relativeY}px`; hitBox.style.pointerEvents = 'none';
-        hitBox.innerHTML = HIT_LAND_EFFECTS[playerMove];
-        frontLayer.appendChild(hitBox);
+        hitBox.innerHTML = HIT_LAND_EFFECTS[playerMove]; frontLayer.appendChild(hitBox);
         setTimeout(() => { hitBox.remove(); if(effectLayer) effectLayer.innerHTML = ""; }, 320);
       }
 
-      triggerEnemyHitPulse(); triggerShake(shakeStyle); createDmgPop(eDamage, isCritical, false);
-      if (pDamage > 0) createDmgPop(pDamage, false, true);
+      triggerEnemyHitPulse(); triggerShake(isCritical ? 'critical_shake' : 'attack_success'); 
+      createDmgPop(eDamage, isCritical, false); if (pDamage > 0) createDmgPop(pDamage, false, true);
       if (isCritical) { flashCritical(flashColor); } else { flashScreen(flashColor); }
       
       pHp = Math.max(0, pHp - pDamage); eHp = Math.max(0, eHp - eDamage); updateHpUI();
       document.getElementById('battle-log').innerHTML = log;
-      
-      // 🔧 演出完了後、次ターンへ進める安全バッファタイマー
+
+      // ➔ 全演出完了後のタイミングで次判定をキック（フリーズ遮断）
       setTimeout(() => { checkBattleEnd(); }, 450);
     }, 360);
 
-    mana = 1.0; document.getElementById('sq-board').style.setProperty('animation', 'none', 'important'); if(auraLayer) auraLayer.style.display = "none";
+    mana = 1.0; document.getElementById('p-aura-layer').style.display = "none";
   }
-  else if (playerMove === 'def' || playerMove === 'chg') {
+  else {
+    // 防御・チャージ
     if (playerMove === 'def') {
-      playSE('def'); flashColor = "#10b981";
-      if (enemyMove === 'atk') {
-        pDamage = Math.max(1, Math.floor(data.atk * 0.15));
-        if(containerEl) containerEl.style.setProperty('animation', 'enemyAssault 0.45s ease-in-out forwards', 'important');
-        setTimeout(() => { if(containerEl) containerEl.style.setProperty('animation', 'floatE 2.2s infinite alternate ease-in-out', 'important'); }, 460);
-        log = `🛡️ 魔導シールド展開！敵の突進を受け流し、被弾をわずか 【${pDamage}】 に封殺！`;
-      } else { log = `🔮 シールドを構え警戒するが、敵は身を固めている。`; }
+      playSE('def'); if (enemyMove === 'atk') { pDamage = Math.max(1, Math.floor(data.atk * 0.15)); log = `🛡️ シールド展開！突進を 【${pDamage}】 に封殺！`; } else { log = `🔮 シールドを構え警戒。`; }
     } else {
-      playSE('chg'); flashColor = "#4f46e5";
-      if (enemyMove === 'atk') {
-        pDamage = Math.floor(data.atk * 1.7);
-        if(containerEl) containerEl.style.setProperty('animation', 'enemyAssault 0.45s ease-in-out forwards', 'important');
-        setTimeout(() => { if(containerEl) containerEl.style.setProperty('animation', 'floatE 2.2s infinite alternate ease-in-out', 'important'); }, 460);
-        log = `🚨 魔素吸引の無防備な瞬間を突かれた！痛烈なカウンター被弾により 【${pDamage}】 ダメージ！`;
-        mana = 1.0; if(auraLayer) auraLayer.style.display = "none";
-      } else {
-        mana = 2.5; log = `⚡ 回路へ魔素を限界充填！次ターンの威力が <span style='color:#4f46e5;font-weight:900;'>【2.5倍】</span> に臨界突破！`;
-        if(auraLayer) auraLayer.style.display = "block";
-      }
+      playSE('chg'); if (enemyMove === 'atk') { pDamage = Math.floor(data.atk * 1.7); log = `🚨 チャージの隙を突かれた！カウンター 【${pDamage}】 被弾！`; mana = 1.0; } else { mana = 2.5; log = `⚡ 魔素充填！次ターン術式威力 【2.5倍】！`; document.getElementById('p-aura-layer').style.display = "block"; }
     }
-    flashScreen(flashColor); if (pDamage > 0) createDmgPop(pDamage, false, true);
+    flashScreen("#10b981"); if (pDamage > 0) createDmgPop(pDamage, false, true);
     pHp = Math.max(0, pHp - pDamage); updateHpUI(); document.getElementById('battle-log').innerHTML = log;
     setTimeout(() => { checkBattleEnd(); }, 450);
   }
@@ -748,61 +417,33 @@ function checkBattleEnd() {
   if (pHp <= 0 || eHp <= 0) { 
     stopBGM(); stopSlimeAnimation(); 
     if (eHp <= 0) {
-      playSE('boom'); triggerShake('critical_shake'); flashCritical('#ffffff');
-      createExplosionParticles(STAGES[curIdx].weak); 
-      if(containerEl) {
-        containerEl.style.setProperty('animation', 'none', 'important');
-        containerEl.style.setProperty('transition', 'all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94)', 'important');
-        containerEl.style.setProperty('opacity', '0', 'important');
-        containerEl.style.setProperty('transform', 'scale(0.05) rotate(70deg) translateY(-50px)', 'important');
-      }
-      if (STAGES[curIdx].floor === 10) {
-        setTimeout(() => { playSE('boss_fanfare'); setTimeout(() => { endBattle(); }, 1450); }, 350);
-      } else {
-        setTimeout(() => { endBattle(); }, 650);
-      }
+      playSE('boom'); triggerShake('critical_shake'); flashCritical('#ffffff'); createExplosionParticles(STAGES[curIdx].weak); 
+      if(containerEl) { containerEl.style.setProperty('opacity', '0', 'important'); containerEl.style.setProperty('transform', 'scale(0.05)', 'important'); }
+      if (STAGES[curIdx].floor === 10) { setTimeout(() => { playSE('boss_fanfare'); setTimeout(() => { endBattle(); }, 1450); }, 350); } 
+      else { setTimeout(() => { endBattle(); }, 650); }
     } else { endBattle(); }
   } else { 
-    isBusy = false; // 🔧 確実にロックを解除して行動不能バグを完全防止
+    isBusy = false; // 🔧 生存時は確実にロックを戻し次の行動へ移行！
   }
 }
 
 function endBattle() {
-  hideAll(); stopSlimeAnimation();
-  document.getElementById('scr-result').style.setProperty('display', 'block', 'important');
-  const rTitle = document.getElementById('res-title'); const rText = document.getElementById('res-text'); const rBtn = document.getElementById('res-btn');
-  
-  if(document.getElementById('btn-debug-death')) document.getElementById('btn-debug-death').style.setProperty('display', 'none', 'important');
-  document.getElementById('p-aura-layer').style.display = "none";
-  document.getElementById('battle-log').innerHTML = "戦闘準備完了。コマンドを選択せよ。";
-  
+  hideAll(); stopSlimeAnimation(); document.getElementById('scr-result').style.setProperty('display', 'block', 'important');
+  const rTitle = document.getElementById('res-title'); const rText = document.getElementById('res-text');
+  document.getElementById('p-aura-layer').style.display = "none"; document.getElementById('battle-log').innerHTML = "コマンドを選択せよ。";
   if (eHp <= 0) {
-    rTitle.innerText = "VICTORY"; rTitle.style.color = '#10b981';
-    document.getElementById('res-icon').innerText = "🏆";
-    if (curIdx === STAGES.length - 1) {
-      rText.innerText = "🎉 ついに最上階10階にて、竜王バハムートを完全討滅！\n\n世界を包んでいた暗黒は霧散し、光が戻った！\n\nあなたはこの世界の神話となる、究極の大魔導士となったのだ！";
-      rBtn.innerText = "タイトルへ戻る";
-    } else {
-      rText.innerText = `激闘の末、${STAGES[curIdx].name}を魔力粒子の海に完全破砕した！\n\nさらに上の高層へ繋がる光の階段が出現した。`;
-      rBtn.innerText = "上の階層へ登る";
-    }
+    rTitle.innerText = "VICTORY"; rTitle.style.color = '#10b981'; document.getElementById('res-icon').innerText = "🏆";
+    if (curIdx === STAGES.length - 1) rText.innerText = "🎉 10階竜王バハムートを完全消滅！世界に光が戻った！";
+    else rText.innerText = `激闘の末、${STAGES[curIdx].name}を完全破砕した！`;
   } else {
-    rTitle.innerText = "DEFEATED"; rTitle.style.color = '#f43f5e';
-    document.getElementById('res-icon').innerText = "💀";
-    rText.innerText = "圧倒的な大迷宮の闇の前に、あなたの生命の灯火が消え去った…\n\n世界は永遠の闇へと閉ざされる…";
-    rBtn.innerText = "タイトル画面へ戻る";
+    rTitle.innerText = "DEFEATED"; rTitle.style.color = '#f43f5e'; document.getElementById('res-icon').innerText = "💀";
+    rText.innerText = "大迷宮の闇の前に力尽きた..."; curIdx = -1;
   }
-  isBusy = false; setTimeout(drawBricks, 50);
+  isBusy = false;
 }
 
-function resetGame() {
-  pHp = 100; mana = 1.0; curIdx = -1; isBusy = false; isBursting = false;
-  if(document.getElementById('p-aura-layer')) document.getElementById('p-aura-layer').style.display = "none";
-  document.getElementById('battle-log').innerHTML = "戦闘準備完了。コマンドを選択せよ。";
-  stopBGM(); stopSlimeAnimation();
-}
-setTimeout(() => { startBGM("title"); drawBricks(); }, 500);
-/*]]>*/
+function resetGame() { pHp = 100; mana = 1.0; curIdx = -1; isBusy = false; isBursting = false; document.getElementById('battle-log').innerHTML = "コマンドを選択せよ。"; stopBGM(); stopSlimeAnimation(); }
+/* ]]> */
 </script>
 </body>
 </html>
