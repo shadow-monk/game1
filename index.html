@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<title>スパイラルタワー - V2.35 完全動作修正版 -</title>
+<title>スパイラルタワー - V2.36 完全クリーン動作版 -</title>
 <style>
 /* <![CDATA[ */
 /* 各種CSSアニメーション */
@@ -70,7 +70,7 @@
   40% { transform: translateY(0px) scaleX(1.4); opacity: 1; filter: brightness(2); }
   100% { transform: translateY(10px) scaleX(1); opacity: 1; filter: brightness(1); }
 }
-@keyframes particleBoom {
+@keyframes pulseBoom {
   0% { transform: translate(0, 0) scale(1) rotate(0deg); opacity: 1; }
   100% { transform: translate(var(--tx), var(--ty)) scale(0.1) rotate(360deg); opacity: 0; }
 }
@@ -103,7 +103,7 @@
                 </div>
 
                 <div style="background: #f1f5f9 !important; border-radius: 20px !important; padding: 20px !important; border-left: 10px solid #0f172a !important; text-align: left !important; margin-bottom: 30px !important;">
-                    <h3 style="font-size: 1.5rem !important; color: #0f172a !important; margin-bottom: 10px !important;">🎮【簡易操作マニュアル】</h3>
+                    <h3 style="font-size: 1.5rem !important; color: #0f172a !important; margin-bottom: 10px !important;">🎮holiday【簡易操作マニュアル】</h3>
                     <ul style="color: #334155 !important; font-size: 1.2rem !important; line-height: 1.8 !important; font-weight: 800; padding-left: 20px; margin: 0; word-break: keep-all; overflow-wrap: anywhere;">
                         <li><span style="color: #e11d48;">ファイア</span>：基本炎属性（重低音ノイズ爆発音＆追尾火炎弾エフェクト）➔ [弱点：1階スライム等]</li>
                         <li><span style="color: #0284c7;">❄️ アイス</span>：氷結術式（高周波パルス結晶音＆高速追尾氷錐）➔ [弱点：2階コウモリ等]</li>
@@ -160,10 +160,6 @@
                             <div id="e-sprite-graphic" style="
                                 width: 140px !important; 
                                 height: 140px !important; 
-                                background-size: contain !important; 
-                                background-repeat: no-repeat !important;
-                                background-position: center !important;
-                                image-rendering: pixelated !important;
                                 display: block !important;
                             "></div>
                         </div>
@@ -211,21 +207,63 @@
     </div>
     
     <div style="width: 100% !important; max-width: 640px !important; display: flex !important; justify-content: space-between !important; color: #475569; font-size: 0.82rem; margin-top: 15px; font-weight: bold; z-index: 2; position: relative; padding: 0 5px; box-sizing: border-box; margin-left: auto; margin-right: auto;">
-        <span>改訂 V2.35（変数誤ロック完全修復・全ミサイルオブジェクト定義内蔵版）</span>
-        <span style="font-size: 0.78rem !important; font-weight: 700 !important; color: #64748b !important;">改訂時間: 2026年5月22日 02:04:15</span>
+        <span>改訂 V2.36（①スライム映り込みバグ消去・②フリーズバーストタイマー調停完了版）</span>
+        <span style="font-size: 0.78rem !important; font-weight: 700 !important; color: #64748b !important;">改訂時間: 2026年5月22日 02:10:05</span>
     </div>
 </div>
 
 <script>
 /* <![CDATA[ */
-// 🔧 記述漏れを完全修復した「追尾弾道（マジックミサイル）」用グラフィック設定オブジェクト
+function drawBricks() {
+  const canvas = document.getElementById("brick-canvas");
+  if (!canvas) return;
+  const ctx = canvas.getContext("2d");
+  const wrapper = document.getElementById("sq-master-wrapper");
+  canvas.width = wrapper.offsetWidth || window.innerWidth;
+  canvas.height = wrapper.offsetHeight || 1150;
+  const brickW = 90; const brickH = 40; 
+  const rows = Math.ceil(canvas.height / brickH); const cols = Math.ceil(canvas.width / brickW) + 1;
+  ctx.fillStyle = "#111827"; ctx.fillRect(0, 0, canvas.width, canvas.height);
+  for (let r = 0; r < rows; r++) {
+    const offsetX = (r % 2 === 0) ? 0 : -brickW / 2;
+    for (let c = 0; c < cols; c++) {
+      const x = c * brickW + offsetX; const y = r * brickH;
+      ctx.fillStyle = (r + c) % 3 === 0 ? "#1f2937" : (r + c) % 3 === 1 ? "#111827" : "#374151";
+      ctx.fillRect(x, y, brickW - 6, brickH - 6);
+      ctx.strokeStyle = "#030712"; ctx.lineWidth = 3; ctx.strokeRect(x, y, brickW - 6, brickH - 6);
+    }
+  }
+}
+setTimeout(drawBricks, 100);
+window.addEventListener("resize", drawBricks);
+
+function checkDevPassword() {
+    const inputField = document.getElementById("dev-password-input");
+    if (!inputField) return;
+    const inputVal = inputField.value;
+    const badge = document.getElementById("dev-status-badge");
+    const msg = document.getElementById("dev-success-msg");
+    const debugBtn = document.getElementById("btn-debug-death");
+    
+    if (inputVal === "1192") {
+        badge.innerText = "UNLOCKED"; badge.style.color = '#10b981'; msg.style.display = "block";
+        if (document.getElementById("scr-battle").style.display === "block" && debugBtn) {
+            debugBtn.style.setProperty('display', 'block', 'important');
+        }
+    } else {
+        badge.innerText = "LOCKED"; badge.style.color = '#ef4444'; msg.style.display = "none";
+        if (debugBtn) debugBtn.style.setProperty('display', 'none', 'important');
+    }
+}
+
+// 魔法ミサイル弾道追尾定義
 const MISSILE_EFFECTS = {
   fire: `<div style="position:absolute; top:50%; left:50%; width:120px; height:120px; margin-top:-60px; margin-left:-60px; z-index:10; pointer-events:none; animation: fireFly 0.42s cubic-bezier(0.25, 1, 0.5, 1) forwards;"><svg viewBox="0 0 100 100" style="image-rendering:pixelated;"><path d="M30 50h40v10H30zm10-20h20v10H40zm-20 30h60v10H20zm10 10h40v10H30zm10 10h20v5H40z" fill="#f97316"/><path d="M40 40h20v10H40zm-10 10h40v10H30zm10 10h20v10H40z" fill="#facc15"/><path d="M45 45h10v10H45z" fill="#ffffff"/></svg></div>`,
   ice: `<div style="position:absolute; top:50%; left:50%; width:130px; height:60px; margin-top:-30px; margin-left:-65px; z-index:10; pointer-events:none; animation: iceFly 0.36s linear forwards;"><svg viewBox="0 0 80 40" style="image-rendering:pixelated;"><path d="M0 15h50v10H0zm30-10h30v5H30zm0 20h30v5H30zm20-15h20v5H20zm15 10l15-5l-15-5z" fill="#38bdf8"/><path d="M20 18h40v4H20zm35-6h15v2H55z" fill="#e0f2fe"/></svg></div>`,
   holy: `<div style="position:absolute; top:50%; left:50%; width:90px; height:90px; margin-top:-45px; margin-left:-45px; z-index:10; pointer-events:none; animation: holyFly 0.45s ease-in-out forwards;"><svg viewBox="0 0 60 60" style="image-rendering:pixelated;"><path d="M25 5h10v50H25zm-20 20h50v10H5zm5-5h40v1h-40z" fill="#facc15"/><path d="M28 10h4v40h-4zm-18 18h40v4H10z" fill="#ffffff"/></svg></div>`
 };
 
-// 1階スライムの3連モーション外部画像リンク
+// 1階スライム用3アニメーション画像
 const SLIME_FRAMES = [
   "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/imagesX/Slime%20(1).png",
   "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/imagesX/Slime%20(2).png",
@@ -254,21 +292,26 @@ let isBusy = false, isMuted = false;
 let animeTimer = null;
 let currentFrameIdx = 0;
 let animeSpeed = 220;
+let isBursting = false; // 🔧 タイマーの多重衝突を防ぐ制御フラグ
 
 function startSlimeAnimation() {
     stopSlimeAnimation();
+    if (isBursting) return; // バースト処理中は通常タイマーを起動させない
+    
     currentFrameIdx = 0;
     const graphicEl = document.getElementById("e-sprite-graphic");
     if (!graphicEl) return;
     
-    graphicEl.style.backgroundImage = `url('${SLIME_FRAMES[0]}')`;
-    graphicEl.style.backgroundSize = "contain";
-    graphicEl.style.backgroundPosition = "center";
+    // ① 修正点：左右の回り込み画像を完全に消去するスタイル保護コード
+    graphicEl.style.setProperty('background-image', `url('${SLIME_FRAMES[0]}')`, 'important');
+    graphicEl.style.setProperty('background-size', '100% 100%', 'important');
+    graphicEl.style.setProperty('background-repeat', 'no-repeat', 'important');
+    graphicEl.style.setProperty('background-position', 'center', 'important');
 
     animeTimer = setInterval(() => {
-        if(STAGES[curIdx] && STAGES[curIdx].isCustom) {
+        if(STAGES[curIdx] && STAGES[curIdx].isCustom && !isBursting) {
             currentFrameIdx = (currentFrameIdx + 1) % SLIME_FRAMES.length;
-            graphicEl.style.backgroundImage = `url('${SLIME_FRAMES[currentFrameIdx]}')`;
+            graphicEl.style.setProperty('background-image', `url('${SLIME_FRAMES[currentFrameIdx]}')`, 'important');
         }
     }, animeSpeed);
 }
@@ -277,13 +320,27 @@ function stopSlimeAnimation() {
     if(animeTimer) { clearInterval(animeTimer); animeTimer = null; }
 }
 
+// 🔧 ② 修正点：行動不能（フリーズ）を防ぐ安全調停型バーストスレッド
 function burstSlimeAnimation() {
     if(STAGES[curIdx] && STAGES[curIdx].isCustom) {
-        stopSlimeAnimation(); animeSpeed = 70; startSlimeAnimation();
+        stopSlimeAnimation();
+        isBursting = true;
+        let bFrame = 0;
+        const graphicEl = document.getElementById("e-sprite-graphic");
+        
+        // 70msの間隔で確実に高速伸縮
+        const burstTimer = setInterval(() => {
+            bFrame = (bFrame + 1) % SLIME_FRAMES.length;
+            if (graphicEl) graphicEl.style.setProperty('background-image', `url('${SLIME_FRAMES[bFrame]}')`, 'important');
+        }, 70);
+
         setTimeout(() => {
-            stopSlimeAnimation(); animeSpeed = 220;
-            if(document.getElementById("scr-battle").style.display === "block") startSlimeAnimation();
-        }, 500);
+            clearInterval(burstTimer);
+            isBursting = false;
+            if(document.getElementById("scr-battle").style.display === "block") {
+                startSlimeAnimation();
+            }
+        }, 450); // 被弾演出が終わるタイミングで完全安全リセット
     }
 }
 
@@ -493,10 +550,9 @@ function hideAll() {
     }); 
 }
 
-// 🔧 V2.35：画面切り替えと進行フラグの不整合バグを100%解決
 function nextStage() {
     playSE('click');
-    curIdx++; // 次の階層へ
+    curIdx++; 
     if (curIdx >= STAGES.length) { 
         resetGame(); 
         hideAll(); 
@@ -528,7 +584,8 @@ function startBattle() {
   const data = STAGES[curIdx];
   eHp = eMaxHp = data.hp; 
   hideAll(); 
-  isBusy = false; // 🔧 誤ブロックの強制完全解除
+  isBusy = false; // 🔧 起動ロック完全解除
+  isBursting = false;
   
   const container = document.getElementById('e-sprite-container');
   if(container) {
@@ -561,10 +618,10 @@ function startBattle() {
       startSlimeAnimation();
   } else if(graphicEl) {
       stopSlimeAnimation();
-      graphicEl.style.backgroundImage = `url('${MASTER_SHEET_URL}')`;
-      graphicEl.style.backgroundSize = "500% 200%";
-      graphicEl.style.backgroundRepeat = "no-repeat";
-      graphicEl.style.backgroundPosition = `${data.bgX} ${data.bgY}`;
+      graphicEl.style.setProperty('background-image', `url('${MASTER_SHEET_URL}')`, 'important');
+      graphicEl.style.setProperty('background-size', '500% 200%', 'important');
+      graphicEl.style.setProperty('background-repeat', 'no-repeat', 'important');
+      graphicEl.style.setProperty('background-position', `${data.bgX} ${data.bgY}`, 'important');
   }
   
   updateHpUI();
@@ -583,29 +640,9 @@ function startBattle() {
   setTimeout(drawBricks, 50);
 }
 
-function updateHpUI() {
-  const scr = document.getElementById('eff-scr');
-  const alertBadge = document.getElementById('p-hp-alert-badge');
-  if(!scr) return;
-  document.getElementById('p-hp-bar').style.setProperty('width', `${pHp}%`, 'important');
-  document.getElementById('e-hp-bar').style.setProperty('width', `${(eHp/eMaxHp*100)}%`, 'important');
-  document.getElementById('p-hp-txt').innerText = `HP: ${pHp} / 100`;
-  document.getElementById('e-hp-txt').innerText = `HP: ${eHp} / ${eMaxHp}`;
-
-  if (pHp <= 30) {
-    scr.style.setProperty('animation', 'crisisAlert 1.0s infinite alternate', 'important');
-    scr.style.setProperty('border-color', '#f43f5e', 'important');
-    if (alertBadge) alertBadge.style.display = "block";
-  } else {
-    scr.style.setProperty('animation', 'none', 'important');
-    scr.style.setProperty('border-color', (STAGES[curIdx] && STAGES[curIdx].floor === 10) ? '#be123c' : '#334155', 'important');
-    if (alertBadge) alertBadge.style.display = "none";
-  }
-}
-
 function turn(playerMove) {
   if (isBusy || pHp <= 0 || eHp <= 0) return;
-  isBusy = true;
+  isBusy = true; // 行動処理ロック
   const data = STAGES[curIdx];
   const enemyMove = Math.random() > 0.4 ? "atk" : "def";
   
@@ -647,9 +684,10 @@ function turn(playerMove) {
       eDamage = Math.floor(eDamage * 0.35); log = `🛡️ 敵の防御結界！『${spellName}』の魔力が相殺され、敵に ${eDamage} ダメージ。`;
     }
 
+    // 🔧 着弾直列処理スレッド
     setTimeout(() => {
       playSE(playerMove);
-      burstSlimeAnimation(); 
+      burstSlimeAnimation(); // スライムバースト変形着火
       
       if(containerEl && frontLayer) {
         const parentRect = document.getElementById('eff-scr').getBoundingClientRect();
@@ -670,6 +708,8 @@ function turn(playerMove) {
       
       pHp = Math.max(0, pHp - pDamage); eHp = Math.max(0, eHp - eDamage); updateHpUI();
       document.getElementById('battle-log').innerHTML = log;
+      
+      // 🔧 演出完了後、次ターンへ進める安全バッファタイマー
       setTimeout(() => { checkBattleEnd(); }, 450);
     }, 360);
 
@@ -716,14 +756,15 @@ function checkBattleEnd() {
         containerEl.style.setProperty('opacity', '0', 'important');
         containerEl.style.setProperty('transform', 'scale(0.05) rotate(70deg) translateY(-50px)', 'important');
       }
-      
       if (STAGES[curIdx].floor === 10) {
         setTimeout(() => { playSE('boss_fanfare'); setTimeout(() => { endBattle(); }, 1450); }, 350);
       } else {
         setTimeout(() => { endBattle(); }, 650);
       }
     } else { endBattle(); }
-  } else { isBusy = false; }
+  } else { 
+    isBusy = false; // 🔧 確実にロックを解除して行動不能バグを完全防止
+  }
 }
 
 function endBattle() {
@@ -754,9 +795,8 @@ function endBattle() {
   isBusy = false; setTimeout(drawBricks, 50);
 }
 
-// 🔧 完全に不整合変数を排除した初期化リセット関数
 function resetGame() {
-  pHp = 100; mana = 1.0; curIdx = -1; isBusy = false; // 🔧 誤字を徹底撲滅
+  pHp = 100; mana = 1.0; curIdx = -1; isBusy = false; isBursting = false;
   if(document.getElementById('p-aura-layer')) document.getElementById('p-aura-layer').style.display = "none";
   document.getElementById('battle-log').innerHTML = "戦闘準備完了。コマンドを選択せよ。";
   stopBGM(); stopSlimeAnimation();
