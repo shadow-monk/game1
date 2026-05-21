@@ -99,7 +99,7 @@
                 <div style="background: #f1f5f9 !important; border-radius: 20px !important; padding: 20px !important; border-left: 10px solid #0f172a !important; text-align: left !important; margin-bottom: 30px !important;">
                     <h3 style="font-size: 1.5rem !important; color: #0f172a !important; margin-bottom: 10px !important;">🎮【簡易操作マニュアル】</h3>
                     <ul style="color: #334155 !important; font-size: 1.2rem !important; line-height: 1.8 !important; font-weight: 800; padding-left: 20px; margin: 0; word-break: keep-all; overflow-wrap: anywhere;">
-                        <li><span style="color: #e11d48;">ファイア</span>：炎属性（重低音ノイズ爆発音＆追尾火炎弾エフェクト）</li>
+                        <li><span style="color: #e11d48;">ファイア</span>：基本炎属性（重低音ノイズ爆発音＆追尾火炎弾エフェクト）</li>
                         <li><span style="color: #0284c7;">❄️ アイス</span>：氷結術式（高周波パルス結晶音＆高速追尾氷錐エフェクト）</li>
                         <li><span style="color: #ca8a04;">✨ ホーリー</span>：神聖光線術式（サイン波急上昇音＆天界周回槍エフェクト）</li>
                         <li><span style="color: #059669;">シールド</span>：敵の残像分身突進を受け流し被ダメージを極限カット</li>
@@ -180,8 +180,8 @@
     </div>
     
     <div style="width: 100% !important; max-width: 640px !important; display: flex !important; justify-content: space-between !important; color: #475569; font-size: 0.82rem; margin-top: 15px; font-weight: bold; z-index: 2; position: relative; padding: 0 5px; box-sizing: border-box;">
-        <span>改訂 V2.00（全属性魔法追尾マジックミサイル弾道＆専用SE完全連動版）</span>
-        <span style="font-size: 0.78rem !important; font-weight: 700 !important; color: #64748b !important;">改訂時間: 2026年5月21日 23:31:28</span>
+        <span>改訂 V2.02（直列同期スレッド再検証・完全ノンストップ安定化版）</span>
+        <span style="font-size: 0.78rem !important; font-weight: 700 !important; color: #64748b !important;">改訂時間: 2026年5月21日 23:36:15</span>
     </div>
 </div>
 
@@ -210,25 +210,14 @@ function drawBricks() {
 setTimeout(drawBricks, 100);
 window.addEventListener("resize", drawBricks);
 
-function checkDevPassword() {
-    const inputVal = document.getElementById("dev-password-input") ? document.getElementById("dev-password-input").value : "";
-    if (inputVal === "1192") {
-        if (document.getElementById("scr-battle").style.display === "block") {
-            document.getElementById('btn-debug-death').style.setProperty('display', 'block', 'important');
-        }
-    }
-}
-
 const SVG_SLIME = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300" width="100%" height="100%"><rect width="300" height="300" fill="none"/><path d="M100 120h100v20H100zm-20 20h140v20H80zm-20 20h180v20H60zm-10 20h200v40H50zm20 40h160v15H70z" fill="#22c55e"/><path d="M110 130h50v10h-50zm-20 20h40v10H90z" fill="#86efac"/><path d="M95 165h15v15H95zm85 0h15v15h-15z" fill="#ffffff"/><path d="M100 170h5v5h-5zm85 0h5v5h-5z" fill="#000000"/><path d="M135 185h30v12h-30z" fill="#15803d"/></svg>`;
 
-// ② 【新機能】インライン構築された各魔法の「追尾弾道（マジックミサイル）用」SVGコードマップ
 const MISSILE_EFFECTS = {
   fire: `<svg width="120" height="120" viewBox="0 0 100 100" style="animation: fireFly 0.42s cubic-bezier(0.25, 1, 0.5, 1) forwards; image-rendering:pixelated;"><path d="M30 50h40v10H30zm10-20h20v10H40zm-20 30h60v10H20zm10 10h40v10H30zm10 10h20v5H40z" fill="#f97316"/><path d="M40 40h20v10H40zm-10 10h40v10H30zm10 10h20v10H40z" fill="#facc15"/><path d="M45 45h10v10H45z" fill="#ffffff"/></svg>`,
   ice: `<svg width="130" height="60" viewBox="0 0 80 40" style="animation: iceFly 0.36s linear forwards; image-rendering:pixelated;"><path d="M0 15h50v10H0zm30-10h30v5H30zm0 20h30v5H30zm20-15h20v5H20zm15 10l15-5l-15-5z" fill="#38bdf8"/><path d="M20 18h40v4H20zm35-6h15v2H55z" fill="#e0f2fe"/></svg>`,
   holy: `<svg width="90" height="90" viewBox="0 0 60 60" style="animation: holyFly 0.45s ease-in-out forwards; image-rendering:pixelated;"><path d="M25 5h10v50H25zm-20 20h50v10H5zm5-5h40v1h-40z" fill="#facc15"/><path d="M28 10h4v40h-4zm-18 18h40v4H10z" fill="#ffffff"/></svg>`
 };
 
-// 着弾地点に時間差でポップアップ出現する、各呪文本体のグラフィックSVG
 const HIT_LAND_EFFECTS = {
   fire: `<svg width="130" height="130" viewBox="0 0 100 100" style="animation: fireBoomBlock 0.25s ease-out forwards;"><circle cx="50" cy="50" r="40" fill="#ef4444" opacity="0.8"/><circle cx="50" cy="50" r="25" fill="#f97316"/><circle cx="50" cy="50" r="12" fill="#ffffff"/></svg>`,
   ice: `<svg width="150" height="150" viewBox="0 0 100 100" style="animation: iceSpike 0.32s ease-out forwards; transform-origin: bottom center;"><path d="M50 10l10 25h-20zm-25 40l25-10v20zm50 0l-25-10v20zm-25 40l10-25h-20z" fill="#38bdf8"/><path d="M50 25l5 15h-10zm-15 25l15-5v10zm30 0l-15-5v10zm-15 15l5-15h-10z" fill="#e0f2fe"/></svg>`,
@@ -305,14 +294,12 @@ function startBGM(type) {
 
 function stopBGM() { if (bgmTimer) { clearInterval(bgmTimer); bgmTimer = null; } }
 
-// ⑧ 細分化最適化された魔導音色合成回路
 function playSE(type) {
   if (isMuted) return;
   try {
     initAudio();
     let now = audioCtx.currentTime;
     
-    // ⑧ ファイア：ノイズ低音爆発
     if (type === 'fire') {
       let bufferSize = audioCtx.sampleRate * 0.4;
       let buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
@@ -328,7 +315,6 @@ function playSE(type) {
       osc.connect(oscGain); oscGain.connect(audioCtx.destination);
       noise.start(now); osc.start(now); osc.stop(now + 0.4);
     } 
-    // ⑧ アイス：高周波パルス結晶音
     else if (type === 'ice') {
       let osc = audioCtx.createOscillator(); osc.type = 'square';
       osc.frequency.setValueAtTime(1600, now); osc.frequency.exponentialRampToValueAtTime(350, now + 0.38);
@@ -336,7 +322,6 @@ function playSE(type) {
       osc.connect(gain); gain.connect(audioCtx.destination);
       osc.start(now); osc.stop(now + 0.38);
     } 
-    // ⑧ ホーリー：光線上昇音
     else if (type === 'holy') {
       let osc = audioCtx.createOscillator(); osc.type = 'sine';
       osc.frequency.setValueAtTime(220, now); osc.frequency.exponentialRampToValueAtTime(2800, now + 0.42);
@@ -488,15 +473,23 @@ function nextStage() {
   startBGM("castle"); setTimeout(drawBricks, 50);
 }
 
-// 🔧 V1.97継承：消失時の縮小・透明スタイルを100%完全初期化して画像復活
+// 🔧 V2.02：開始時のDOMコンテナと白紙化リセットを限界まで徹底強化
 function startBattle() {
   const data = STAGES[curIdx];
   eHp = eMaxHp = data.hp; hideAll();
+  isBusy = false; // フラグの誤ロックを完全初期化
   
   const container = document.getElementById('e-sprite-container');
+  container.removeAttribute("style"); // 残留属性スタイルを完全消去
   container.style.setProperty('animation', 'floatE 2.2s infinite alternate ease-in-out', 'important');
   container.style.setProperty('opacity', '1', 'important');
   container.style.setProperty('transform', 'none', 'important');
+  container.style.setProperty('width', '160px', 'important');
+  container.style.setProperty('height', '160px', 'important');
+  container.style.setProperty('display', 'flex', 'important');
+  container.style.setProperty('justify-content', 'center', 'important');
+  container.style.setProperty('align-items', 'center', 'important');
+  container.style.setProperty('position', 'relative', 'important');
 
   const graphicBox = document.getElementById('e-sprite-graphic-box');
   graphicBox.style.setProperty('opacity', '1', 'important');
@@ -554,6 +547,7 @@ function updateHpUI() {
   }
 }
 
+// 🔧 V2.02：直列非同期タイムスレッドの完全同期一本化リファクタリング
 function turn(playerMove) {
   if (isBusy || pHp <= 0 || eHp <= 0) return;
   isBusy = true;
@@ -578,12 +572,13 @@ function turn(playerMove) {
     eDamage = eHp; pDamage = 0; shakeStyle = "critical_shake"; flashColor = "#000000";
     log = `☠️ デバグ術式起動！因果を消滅させた！`;
     mana = 1.0; auraLayer.style.display = "none";
+    
+    pHp = Math.max(0, pHp - pDamage); eHp = Math.max(0, eHp - eDamage); updateHpUI();
+    document.getElementById('battle-log').innerHTML = log;
+    setTimeout(() => { checkBattleEnd(playerMove); }, 450);
   } 
   else if (playerMove === 'fire' || playerMove === 'ice' || playerMove === 'holy') {
-    // ② 【新機能】対応属性の「追尾弾道（マジックミサイル）」SVGをレイヤーに射出・描画
     effectLayer.innerHTML = MISSILE_EFFECTS[playerMove];
-    
-    // 🧙‍♂️ 杖を前方へ突き出す詠唱前傾アクション
     pSprite.style.setProperty('transform', 'translateX(55px) scaleY(1.1) scaleX(1.15) rotate(5deg)', 'important');
     setTimeout(() => { pSprite.style.setProperty('transform', 'none', 'important'); }, 400);
 
@@ -592,34 +587,18 @@ function turn(playerMove) {
     if (playerMove === 'holy') { basePower = 12; spellName = "ホーリーランス"; flashColor = "#eab308"; }
 
     if (data.weakness === playerMove) {
-      isCritical = true;
-      basePower = Math.floor(basePower * 2.3);
-      shakeStyle = "critical_shake";
+      isCritical = true; basePower = Math.floor(basePower * 2.3); shakeStyle = "critical_shake";
     }
     eDamage = Math.floor(basePower * mana);
 
-    // ② 弾道飛翔のタイムラグ(360ms)を計算し、着弾の瞬間に合わせて本体魔法の隆起＆SE・多段ヒット震動を同期発動
-    setTimeout(() => {
-      // ⑧ 専用細分化魔導着弾サウンドの発生
-      playSE(playerMove);
-      effectLayer.innerHTML = HIT_LAND_EFFECTS[playerMove]; // 弾道➔本体グラフィックへ置換
-      triggerEnemyHitPulse(); // 多段打撃震動
-      
-      if (isCritical) { flashCritical(flashColor); } else { flashScreen(flashColor); }
-      
-      setTimeout(() => { effectLayer.innerHTML = ""; }, 350); // 演出終了後に消滅クリーンアップ
-    }, 360);
-
-    // 敵側の攻撃処理
     if (enemyMove.t === 'atk') {
       pDamage = data.atk;
       containerEl.style.setProperty('animation', 'enemyAssault 0.45s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards', 'important');
       setTimeout(() => { containerEl.style.setProperty('animation', 'floatE 2.2s infinite alternate ease-in-out', 'important'); }, 460);
-
       if (isCritical) {
         log = `<span style='color:#facc15; font-weight:900;'>【CRITICAL HIT!!】</span><br>追尾弾道が弱点コアに完全炸裂！『${spellName}』が内部破壊を起こし 【${eDamage}】 ダメージ！反撃の分身残像突進で ${pDamage} 被弾！`;
       } else {
-        log = `⚔️ 術式交錯！追尾魔導『${spellName}』が着弾！<br>敵に ${eDamage} ダメージ / あなたは ${pDamage} ダメージ！`;
+        log = `⚔️ 術式が激突！追尾魔導『${spellName}』が着弾！<br>敵に ${eDamage} ダメージ / あなたは ${pDamage} ダメージ！`;
       }
     } else if (enemyMove.t === 'def') {
       eDamage = Math.floor(eDamage * 0.3);
@@ -632,75 +611,86 @@ function turn(playerMove) {
         log = `🔥 無防備なチャージの瞬間を捉えた！『${spellName}』が直撃！<br>敵に 【${eDamage}】 ダメージ！`;
       }
     }
-    mana = 1.0; boardEl.style.setProperty('animation', 'none', 'important');
-    auraLayer.style.display = "none";
-  }
-  else if (playerMove === 'def') {
-    playSE('def'); flashColor = "#10b981";
-    if (enemyMove.t === 'atk') {
-      pDamage = Math.max(1, Math.floor(data.atk * 0.15));
-      shakeStyle = "defend_success";
-      containerEl.style.setProperty('animation', 'enemyAssault 0.45s ease-in-out forwards', 'important');
-      setTimeout(() => { containerEl.style.setProperty('animation', 'floatE 2.2s infinite alternate ease-in-out', 'important'); }, 460);
-      log = `🛡️ 魔導「シールド」を展開！敵の残像分身突進を受け流し、ダメージをわずか 【${pDamage}】 に封殺！`;
-    } else {
-      log = `🔮 シールドを構え身を護る。敵は魔力を不気味に練り上げている…`;
-    }
-    flashScreen(flashColor);
-  } 
-  else if (playerMove === 'chg') {
-    playSE('chg'); flashColor = "#4f46e5";
-    if (enemyMove.t === 'atk') {
-      pDamage = Math.floor(data.atk * 1.7);
-      shakeStyle = "big_damage";
-      containerEl.style.setProperty('animation', 'enemyAssault 0.45s ease-in-out forwards', 'important');
-      setTimeout(() => { containerEl.style.setProperty('animation', 'floatE 2.2s infinite alternate ease-in-out', 'important'); }, 460);
-      log = `🚨 魔素吸引の隙を残像突進で痛烈に狙われた！カウンター被弾により 【${pDamage}】 の大ダメージ！`;
-      mana = 1.0; boardEl.style.setProperty('animation', 'none', 'important');
-      auraLayer.style.display = "none";
-    } else {
-      mana = 2.5;
-      log = `⚡ 回路へ魔素を限界充填！<br>次ターンの属性魔法威力が <span style='color:#4f46e5;font-weight:900;'>【2.5倍】</span> に臨界突破！`;
-      boardEl.style.setProperty('animation', 'chargeAura 0.4s infinite alternate', 'important');
-      auraLayer.style.display = "block";
-    }
-    flashScreen(flashColor);
-  }
 
-  triggerShake(shakeStyle);
-  pHp = Math.max(0, pHp - pDamage); eHp = Math.max(0, eHp - eDamage); updateHpUI();
-  document.getElementById('battle-log').innerHTML = log;
-  document.getElementById('charge-badge').style.display = (mana > 1.0 ? 'block' : 'none');
-  
-  setTimeout(() => { 
-    if (pHp <= 0 || eHp <= 0) { 
-      stopBGM(); 
-      if (eHp <= 0) {
-        playSE('boom');
-        triggerShake('critical_shake');
-        flashCritical('#ffffff');
-        createExplosionParticles(playerMove); 
-        
-        containerEl.style.setProperty('animation', 'none', 'important');
-        containerEl.style.setProperty('transition', 'all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94)', 'important');
-        containerEl.style.setProperty('opacity', '0', 'important');
-        containerEl.style.setProperty('transform', 'scale(0.05) rotate(70deg) translateY(-50px)', 'important');
-        
-        if (data.isBoss || data.isMidBoss || data.fl.includes("BOSS")) {
-          setTimeout(() => {
-            playSE('boss_fanfare');
-            setTimeout(() => { endBattle(); }, 1450);
-          }, 350);
-        } else {
-          setTimeout(() => { endBattle(); }, 650);
-        }
+    // 🔧 着弾シーケンスを直列で保護
+    setTimeout(() => {
+      playSE(playerMove);
+      effectLayer.innerHTML = HIT_LAND_EFFECTS[playerMove]; 
+      triggerEnemyHitPulse(); 
+      triggerShake(shakeStyle);
+      if (isCritical) { flashCritical(flashColor); } else { flashScreen(flashColor); }
+      
+      pHp = Math.max(0, pHp - pDamage); eHp = Math.max(0, eHp - eDamage); updateHpUI();
+      document.getElementById('battle-log').innerHTML = log;
+      document.getElementById('charge-badge').style.display = (mana > 1.0 ? 'block' : 'none');
+
+      setTimeout(() => { effectLayer.innerHTML = ""; }, 320);
+      setTimeout(() => { checkBattleEnd(playerMove); }, 450);
+    }, 360);
+
+    mana = 1.0; boardEl.style.setProperty('animation', 'none', 'important'); auraLayer.style.display = "none";
+  }
+  else if (playerMove === 'def' || playerMove === 'chg') {
+    if (playerMove === 'def') {
+      playSE('def'); flashColor = "#10b981";
+      if (enemyMove.t === 'atk') {
+        pDamage = Math.max(1, Math.floor(data.atk * 0.15)); shakeStyle = "defend_success";
+        containerEl.style.setProperty('animation', 'enemyAssault 0.45s ease-in-out forwards', 'important');
+        setTimeout(() => { containerEl.style.setProperty('animation', 'floatE 2.2s infinite alternate ease-in-out', 'important'); }, 460);
+        log = `🛡️ 魔導「シールド」を展開！敵の残像分身突進を受け流し、ダメージをわずか 【${pDamage}】 に封殺！`;
       } else {
-        endBattle();
+        log = `🔮 シールドを構え身を護る。敵は魔力を不気味に練り上げている…`;
       }
-    } else { 
-      isBusy = false; 
-    } 
-  }, 450);
+    } else {
+      playSE('chg'); flashColor = "#4f46e5";
+      if (enemyMove.t === 'atk') {
+        pDamage = Math.floor(data.atk * 1.7); shakeStyle = "big_damage";
+        containerEl.style.setProperty('animation', 'enemyAssault 0.45s ease-in-out forwards', 'important');
+        setTimeout(() => { containerEl.style.setProperty('animation', 'floatE 2.2s infinite alternate ease-in-out', 'important'); }, 460);
+        log = `🚨 魔素吸引の隙を残像突進で痛烈に狙われた！カウンター被弾により 【${pDamage}】 の大ダメージ！`;
+        mana = 1.0; boardEl.style.setProperty('animation', 'none', 'important'); auraLayer.style.display = "none";
+      } else {
+        mana = 2.5;
+        log = `⚡ 回路へ魔素を限界充填！<br>次ターンの属性魔法威力が <span style='color:#4f46e5;font-weight:900;'>【2.5倍】</span> に臨界突破！`;
+        boardEl.style.setProperty('animation', 'chargeAura 0.4s infinite alternate', 'important');
+        auraLayer.style.display = "block";
+      }
+    }
+    triggerShake(shakeStyle); flashScreen(flashColor);
+    pHp = Math.max(0, pHp - pDamage); eHp = Math.max(0, eHp - eDamage); updateHpUI();
+    document.getElementById('battle-log').innerHTML = log;
+    document.getElementById('charge-badge').style.display = (mana > 1.0 ? 'block' : 'none');
+    setTimeout(() => { checkBattleEnd(playerMove); }, 450);
+  }
+}
+
+function checkBattleEnd(castType) {
+  const containerEl = document.getElementById('e-sprite-container');
+  if (pHp <= 0 || eHp <= 0) { 
+    stopBGM(); 
+    if (eHp <= 0) {
+      playSE('boom'); triggerShake('critical_shake'); flashCritical('#ffffff');
+      createExplosionParticles(castType); 
+      
+      containerEl.style.setProperty('animation', 'none', 'important');
+      containerEl.style.setProperty('transition', 'all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94)', 'important');
+      containerEl.style.setProperty('opacity', '0', 'important');
+      containerEl.style.setProperty('transform', 'scale(0.05) rotate(70deg) translateY(-50px)', 'important');
+      
+      if (STAGES[curIdx].isBoss || STAGES[curIdx].isMidBoss || STAGES[curIdx].fl.includes("BOSS")) {
+        setTimeout(() => {
+          playSE('boss_fanfare');
+          setTimeout(() => { endBattle(); }, 1450);
+        }, 350);
+      } else {
+        setTimeout(() => { endBattle(); }, 650);
+      }
+    } else {
+      endBattle();
+    }
+  } else { 
+    isBusy = false; 
+  }
 }
 
 function endBattle() {
