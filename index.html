@@ -197,8 +197,8 @@
     </div>
     
     <div style="width: 100% !important; max-width: 640px !important; display: flex !important; justify-content: space-between !important; color: #475569; font-size: 0.82rem; margin-top: 15px; font-weight: bold; z-index: 2; position: relative; padding: 0 5px; box-sizing: border-box; margin-left: auto; margin-right: auto;">
-        <span>改訂 V2.10（開発者モードコンソール完全復元・着弾点相対補正対応版）</span>
-        <span style="font-size: 0.78rem !important; font-weight: 700 !important; color: #64748b !important;">改訂時間: 2026年5月21日 23:53:03</span>
+        <span>改訂 V2.11（初期ビジー変数誤ロック全面解除・進行安全性保証版）</span>
+        <span style="font-size: 0.78rem !important; font-weight: 700 !important; color: #64748b !important;">改訂時間: 2026年5月22日 00:11:15</span>
     </div>
 </div>
 
@@ -227,7 +227,6 @@ function drawBricks() {
 setTimeout(drawBricks, 100);
 window.addEventListener("resize", drawBricks);
 
-// 🔧 開発者コンソールのパスワード監視ロジック
 function checkDevPassword() {
     const inputField = document.getElementById("dev-password-input");
     if (!inputField) return;
@@ -284,6 +283,10 @@ const STAGES = [
   { n: "無心の鉄巨人アイアンゴーレム", i: "⛓️", txt: "14階。あらゆる物理を弾く漆黒の超鉄躯。内部の制御装置を【炎(ファイア)】の超高熱で焼き溶かせ！", hp: 700, atk: 47, fl: "14階 (SEMI BOSS)", isMidBoss: true, eMod: "rgba(15,23,42,0.8)", weakness: "fire" },
   { n: "魔王ドラキュラ", i: "🧛", txt: "15階。螺旋の頂上に君臨する支配者。絶対の暗黒肉体は、賢者の集大成たる【聖(ホーリー)】の神光を恐れる！", hp: 880, atk: 54, fl: "15階 (FINAL LAST BOSS)", isBoss: true, eMod: "rgba(0,0,0,1)", weakness: "holy" }
 ];
+
+let curIdx = -1;
+let pMaxHp = 100, pHp = 100, eHp = 100, eMaxHp = 100, mana = 1.0;
+let isBusy = false, isMuted = false; // 🔧 起動時に確実なfalse（行動可能状態）をセット
 
 // --- オーディオシンセサイザー回路 ---
 let audioCtx = null; let bgmTimer = null; let bgmStep = 0; let currentBgmType = "title";
@@ -512,10 +515,11 @@ function nextStage() {
   startBGM("castle"); setTimeout(drawBricks, 50);
 }
 
+// 🔧 V2.11：戦闘開始時にBusyロックフラグを確実に初期化して完全解放
 function startBattle() {
   const data = STAGES[curIdx];
   eHp = eMaxHp = data.hp; hideAll();
-  isBusy = false; 
+  isBusy = false; // 🔧 確実な初期化
   
   const container = document.getElementById('e-sprite-container');
   container.removeAttribute("style"); 
@@ -551,7 +555,7 @@ function startBattle() {
   
   container.style.setProperty('filter', `drop-shadow(0 0 25px ${data.eMod})`, 'important');
   updateHpUI();
-  checkDevPassword(); // デバグ権限の再確認とデスボタン復元
+  checkDevPassword(); // 開発者権限の検証
   
   let floorMessage = "";
   if(data.weakness === 'fire') floorMessage = " <span style='color:#ef4444;'>[弱点: 炎]</span>";
@@ -638,9 +642,9 @@ function turn(playerMove) {
       containerEl.style.setProperty('animation', 'enemyAssault 0.45s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards', 'important');
       setTimeout(() => { containerEl.style.setProperty('animation', 'floatE 2.2s infinite alternate ease-in-out', 'important'); }, 460);
       if (isCritical) {
-        log = `<span style='color:#facc15; font-weight:900;'>【CRITICAL HIT!!】</span><br>追尾魔導が弱点に完全適合！『${spellName}』が敵の場所で炸裂し 【${eDamage}】 ダメージ！反撃の分身残像突進で ${pDamage} 被弾！`;
+        log = `<span style='color:#facc15; font-weight:900;'>【CRITICAL HIT!!】</span><br>追尾弾道が弱点コアに完全炸裂！『${spellName}』が内部破壊を起こし 【${eDamage}】 ダメージ！反撃の分身残像突進で ${pDamage} 被弾！`;
       } else {
-        log = `⚔️ 術式交錯！追尾魔導『${spellName}』が敵に命中！<br>敵に ${eDamage} ダメージ / あなたは ${pDamage} ダメージ！`;
+        log = `⚔️ 術式が激突！追尾魔導『${spellName}』が敵に命中！<br>敵に ${eDamage} ダメージ / あなたは ${pDamage} ダメージ！`;
       }
     } else if (enemyMove.t === 'def') {
       eDamage = Math.floor(eDamage * 0.3);
@@ -654,11 +658,10 @@ function turn(playerMove) {
       }
     }
 
-    // 着弾同期シーケンス
+    // 直列タイムシーケンス
     setTimeout(() => {
       playSE(playerMove);
       
-      // ① 敵の表示位置（コンテナ）を取得してその座標のド真ん中で炸裂させる
       const parentRect = document.getElementById('eff-scr').getBoundingClientRect();
       const targetRect = containerEl.getBoundingClientRect();
       const relativeX = (targetRect.left - parentRect.left) + targetRect.width / 2;
@@ -763,7 +766,7 @@ function endBattle() {
     rTitle.innerText = "VICTORY"; rTitle.style.setProperty('color', '#10b981', 'important');
     document.getElementById('res-icon').innerText = "🏆";
     if (STAGES[curIdx].isBoss && curIdx === STAGES.length - 1) {
-      rText.innerText = "🎉 ついに最上階15階にて、魔王ドラキュラを完全消滅！\n\n飛び散る黄金 of 魔力粒子とともに世界に光が戻った！\n\nあなたはこの世界の神話となる、究極の大魔導士となったのだ！";
+      rText.innerText = "🎉 ついに最上階15階にて、魔王ドラキュラを完全消滅！\n\n飛び散る黄金の魔力粒子とともに世界に光が戻った！\n\nあなたはこの世界の神話となる、究極の大魔導士となったのだ！";
       rBtn.innerText = "タイトル画面へ戻る";
     } else {
       rText.innerText = `激闘の末、${STAGES[curIdx].n}を魔力粒子の中に完全破砕した！\n\nさらに高層への階段が姿を現した。`;
@@ -784,6 +787,7 @@ function resetGame() {
   document.getElementById('sq-board').style.setProperty('animation', 'none', 'important');
   document.getElementById('p-aura-layer').style.display = "none";
   document.getElementById('battle-log').innerHTML = "戦闘準備完了。コマンドを選択せよ。";
+  isBusy = false; // 🔧 リセット時も完全解放
   stopBGM();
 }
 setTimeout(() => { startBGM("title"); drawBricks(); }, 500);
