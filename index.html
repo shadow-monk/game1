@@ -2,23 +2,23 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<title>スパイラルタワー - V2.40 6枚アニメ＆特大版 -</title>
+<title>スパイラルタワー - V2.45 完全動作保証版 -</title>
 <style>
 /* <![CDATA[ */
-/* アニメーション */
+/* 各種CSSアニメーション */
 @keyframes floatP { 0% { transform: translateY(0px) scaleY(1); } 100% { transform: translateY(-15px) scaleY(1.03) scaleX(0.98); } }
 @keyframes floatE { 0% { transform: translateY(0px) scale(1); } 100% { transform: translateY(-10px) scale(1.03); } }
 @keyframes pulse { 0% { transform: scale(1); opacity: 0.9; } 100% { transform: scale(1.05); opacity: 1; } }
 @keyframes txtAlert { 0% { opacity: 0.3; } 100% { opacity: 1; } }
 
-/* 瀕死時警報 */
+/* 瀕死時赤色警報 */
 @keyframes crisisAlert {
   0% { box-shadow: inset 0 0 10px rgba(239,68,68,0); }
   50% { box-shadow: inset 0 0 35px rgba(239,68,68,0.8); }
   100% { box-shadow: inset 0 0 10px rgba(239,68,68,0); }
 }
 
-/* 敵の残像突進 */
+/* 敵の分身残像突進 */
 @keyframes enemyAssault {
   0% { transform: translateX(0); }
   20% { transform: translateX(30px); filter: drop-shadow(-20px 0 0 rgba(244,63,94,0.4)); }
@@ -27,12 +27,12 @@
   100% { transform: translateX(0); }
 }
 
-/* 魔法軌道 */
+/* 魔法追尾弾道 */
 @keyframes fireFly { 0% { transform: translate(-140px,40px) scale(0.4); opacity:0; } 15% { opacity:1; } 100% { transform: translate(110px,-20px) rotate(540deg) scale(1.3); opacity:0; } }
 @keyframes iceFly { 0% { transform: translate(-140px,20px) scaleX(0.3); opacity:0; } 10% { opacity:1; } 100% { transform: translate(110px,-15px) scaleX(1.4); opacity:0; } }
 @keyframes holyFly { 0% { transform: translate(-140px,20px) scale(0.3); opacity:0; } 30% { transform: translate(-30px,-120px) scale(1); opacity:1; } 100% { transform: translate(110px,-40px) scale(0.5); opacity:0; } }
 
-/* 炸裂演出 */
+/* 炸裂演出群 */
 @keyframes fireBoomBlock { 0% { transform: scale(0); opacity:0; } 50% { transform: scale(1.4); opacity:1; } 100% { transform: scale(1); opacity:1; } }
 @keyframes iceSpike { 0% { transform: scaleY(0) translateY(80px); opacity:0; } 30% { transform: scaleY(1.3) translateY(-15px); opacity:1; } 100% { transform: scaleY(1) translateY(0px); opacity:1; } }
 @keyframes holyDown { 0% { transform: translateY(-220px) scaleX(0.5); opacity:0; } 40% { transform: translateY(0px) scaleX(1.4); opacity:1; } 100% { transform: translateY(10px) scaleX(1); opacity:1; } }
@@ -146,15 +146,58 @@
         </div>
     </div>
     
+    <div id="dev-console-window" style="position:relative; z-index:3; margin-top:25px; width:100%; max-width:640px; background:#0b0f19; border:2px solid #334155; border-radius:16px; padding:15px; box-sizing:border-box; text-align:left; box-shadow:0 10px 30px rgba(0,0,0,0.5); margin-left:auto; margin-right:auto;">
+        <div style="font-size:0.95rem; font-weight:800; color:#94a3b8; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center;">
+            <span>🔧 開発者コンソール (PW「1192」入力で一撃デス解放)</span>
+            <span id="dev-status-badge" style="font-size:0.8rem; color:#ef4444; background:rgba(239,68,68,0.1); padding:2px 8px; border-radius:6px; font-weight:900;">LOCKED</span>
+        </div>
+        <div style="display:flex; gap:10px; align-items:center;">
+            <input type="password" id="dev-password-input" oninput="checkDevPassword()" placeholder="PASSWORDを入力..." style="flex:1; background:#1e293b; color:#ffffff; border:1px solid #475569; border-radius:8px; padding:10px 12px; font-size:1rem; font-weight:800; outline:none;">
+            <div id="dev-success-msg" style="font-size:0.9rem; font-weight:900; color:#10b981; display:none;">⚡ デバグ呪文【デス】解放完了</div>
+        </div>
+    </div>
+    
     <div style="width:100%; max-width:640px; display:flex; justify-content:space-between; color:#475569; font-size:0.82rem; margin-top:15px; font-weight:bold; margin-left:auto; margin-right:auto;">
-        <span>改訂 V2.40（②6枚スライムアニメ・③画像200px最大拡張フリーズ完全修復版）</span>
-        <span style="font-size:0.78rem; color:#64748b;">改訂時間: 2026年5月22日 02:41:43</span>
+        <span>改訂 V2.45（②6枚スライム完全同期スレッド・初期起動ロックフリーズ完全解決版）</span>
+        <span style="font-size:0.78rem; color:#64748b;">改訂時間: 2026年5月22日 02:51:12</span>
     </div>
 </div>
 
 <script>
 /* <![CDATA[ */
-// 🔧 ② 修正：スライム画像を(1)〜(6)の全6パターンへ完全配列化
+// レンガ背景Canvasシステム
+function drawBricks() {
+  const canvas = document.getElementById("brick-canvas"); if (!canvas) return;
+  const ctx = canvas.getContext("2d"); const wrapper = document.getElementById("sq-master-wrapper");
+  canvas.width = wrapper.offsetWidth || window.innerWidth; canvas.height = wrapper.offsetHeight || 1150;
+  ctx.fillStyle = "#111827"; ctx.fillRect(0, 0, canvas.width, canvas.height);
+  for (let r = 0; r < Math.ceil(canvas.height/40); r++) {
+    let offsetX = (r % 2 === 0) ? 0 : -45;
+    for (let c = 0; c < Math.ceil(canvas.width/90)+1; c++) {
+      let x = c * 90 + offsetX; let y = r * 40;
+      ctx.fillStyle = (r + c) % 3 === 0 ? "#1f2937" : (r + c) % 3 === 1 ? "#111827" : "#374151";
+      ctx.fillRect(x, y, 84, 34); ctx.strokeStyle = "#030712"; ctx.lineWidth = 3; ctx.strokeRect(x, y, 84, 34);
+    }
+  }
+}
+setTimeout(drawBricks, 100);
+window.addEventListener("resize", drawBricks);
+
+function checkDevPassword() {
+    const inputField = document.getElementById("dev-password-input"); if (!inputField) return;
+    const badge = document.getElementById("dev-status-badge");
+    const msg = document.getElementById("dev-success-msg");
+    const debugBtn = document.getElementById("btn-debug-death");
+    if (inputField.value === "1192") { 
+        badge.innerText = "UNLOCKED"; badge.style.color = '#10b981'; if(msg) msg.style.display = "block";
+        if (document.getElementById("scr-battle").style.display === "block" && debugBtn) debugBtn.style.setProperty('display', 'block', 'important'); 
+    } else { 
+        badge.innerText = "LOCKED"; badge.style.color = '#ef4444'; if(msg) msg.style.display = "none";
+        if (debugBtn) debugBtn.style.setProperty('display', 'none', 'important'); 
+    }
+}
+
+// 🔧 ② 1階スライムの全6ポーズ画像Rawリンク
 const SLIME_FRAMES = [
   "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/imagesX/Slime%20(1).png",
   "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/imagesX/Slime%20(2).png",
@@ -166,9 +209,9 @@ const SLIME_FRAMES = [
 const MASTER_SHEET_URL = "https://raw.githubusercontent.com/shadow-monk/game1/main/SPY01.jpg";
 
 const MISSILE_EFFECTS = {
-  fire: `<div style="position:absolute; top:50%; left:50%; width:120px; height:120px; margin-top:-60px; margin-left:-60px; z-index:10; pointer-events:none; animation: fireFly 0.42s cubic-bezier(0.25, 1, 0.5, 1) forwards;"><svg viewBox="0 0 100 100"><path d="M30 50h40v10H30zm10-20h20v10H40zm-20 30h60v10H20zm10 10h40v10H30zm10 10h20v5H40z" fill="#f97316"/><path d="M40 40h20v10H40zm-10 10h40v10H30zm10 10h20v10H40z" fill="#facc15"/></svg></div>`,
+  fire: `<div style="position:absolute; top:50%; left:50%; width:120px; height:120px; margin-top:-60px; margin-left:-60px; z-index:10; pointer-events:none; animation: fireFly 0.42s cubic-bezier(0.25, 1, 0.5, 1) forwards;"><svg viewBox="0 0 100 100"><path d="M30 50h40v10H30zm10-20h20v10H40zm-20 30h60v10H20zm10 10h40v10H30z" fill="#f97316"/><path d="M40 40h20v10H40zm-10 10h40v10H30z" fill="#facc15"/></svg></div>`,
   ice: `<div style="position:absolute; top:50%; left:50%; width:130px; height:60px; margin-top:-30px; margin-left:-65px; z-index:10; pointer-events:none; animation: iceFly 0.36s linear forwards;"><svg viewBox="0 0 80 40"><path d="M0 15h50v10H0zm30-10h30v5H30z" fill="#38bdf8"/><path d="M20 18h40v4H20z" fill="#e0f2fe"/></svg></div>`,
-  holy: `<div style="position:absolute; top:50%; left:50%; width:90px; height:90px; margin-top:-45px; margin-left:-45px; z-index:10; pointer-events:none; animation: holyFly 0.45s ease-in-out forwards;"><svg viewBox="0 0 60 60"><path d="M25 5h10v50H25zm-20 20h50v10H5zm5-5h40v1h-40z" fill="#facc15"/></svg></div>`
+  holy: `<div style="position:absolute; top:50%; left:50%; width:90px; height:90px; margin-top:-45px; margin-left:-45px; z-index:10; pointer-events:none; animation: holyFly 0.45s ease-in-out forwards;"><svg viewBox="0 0 60 60"><path d="M25 5h10v50H25zm-20 20h50v10H5z" fill="#facc15"/></svg></div>`
 };
 
 const HIT_LAND_EFFECTS = {
@@ -190,13 +233,16 @@ const STAGES = [
   { floor: 10, name: "竜王バハムート",   hp: 550, atk: 52, weak: "holy", isCustom: false, eMod: "rgba(0,0,0,1)",         txt: "10階。螺旋の頂上に君臨する最終暗黒竜王。賢者の集大成たる【聖(ホーリー)】の神光を叩き込め！", bgX: "75%",  bgY: "100%" }
 ];
 
+let curIdx = -1;
+let pMaxHp = 100, pHp = 100, eHp = 100, eMaxHp = 100, mana = 1.0;
+let isBusy = false, isMuted = false; // 🔧 起動時は必ずfalse(行動可能)で完全スタート
+
 let animeTimer = null; let currentFrameIdx = 0; let animeSpeed = 220; let isBursting = false;
 
 function startSlimeAnimation() {
     stopSlimeAnimation(); if (isBursting) return;
     const graphicEl = document.getElementById("e-sprite-graphic"); if (!graphicEl) return;
     
-    // 🔧 ① 修正：background-sizeを100% 100%にして、不気味な回り込み画像を完璧に封鎖消去
     graphicEl.style.setProperty('background-image', `url('${SLIME_FRAMES[0]}')`, 'important');
     graphicEl.style.setProperty('background-size', '100% 100%', 'important');
     graphicEl.style.setProperty('background-repeat', 'no-repeat', 'important');
@@ -224,8 +270,9 @@ function burstSlimeAnimation() {
     }
 }
 
-// --- 🎧 音響 ---
+// --- 🎧 シンセサイザー音響 ---
 let audioCtx = null; let bgmTimer = null; let bgmStep = 0; let currentBgmType = "title";
+const SCALE = { castle: [146, 165, 174, 220, 196, 220, 261, 329], horror: [110, 116, 138, 146, 165, 174, 207, 220] };
 function initAudio() { if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
 function playBgmNode() {
   if (isMuted || currentBgmType === "title") return;
@@ -235,7 +282,7 @@ function playBgmNode() {
     osc1.connect(gainNode); gainNode.connect(audioCtx.destination);
     let baseNote = currentBgmType === "castle" ? SCALE.castle[bgmStep % 8] : SCALE.horror[bgmStep % 8];
     osc1.type = "triangle"; osc1.frequency.setValueAtTime(baseNote, now);
-    gainNode.gain.setValueAtTime(0.02, now); gainNode.gain.exponentialRampToValueAtTime(0.001, now + 0.3);
+    gainNode.gain.setValueAtTime(0.015, now); gainNode.gain.exponentialRampToValueAtTime(0.001, now + 0.3);
     osc1.start(now); osc1.stop(now + 0.3); bgmStep++;
   } catch(e){}
 }
@@ -249,10 +296,10 @@ function playSE(type) {
     initAudio(); let now = audioCtx.currentTime;
     let osc = audioCtx.createOscillator(); let gain = audioCtx.createGain();
     osc.connect(gain); gain.connect(audioCtx.destination);
-    if (type === 'fire') { osc.type = 'sawtooth'; osc.frequency.setValueAtTime(120, now); osc.frequency.linearRampToValueAtTime(20, now + 0.3); gain.gain.setValueAtTime(0.3, now); }
-    else if (type === 'ice') { osc.type = 'square'; osc.frequency.setValueAtTime(1400, now); gain.gain.setValueAtTime(0.1, now); }
-    else if (type === 'holy') { osc.type = 'sine'; osc.frequency.setValueAtTime(300, now); osc.frequency.exponentialRampToValueAtTime(2000, now + 0.3); gain.gain.setValueAtTime(0.2, now); }
-    else { osc.type = 'sine'; osc.frequency.setValueAtTime(400, now); gain.gain.setValueAtTime(0.1, now); }
+    if (type === 'fire') { osc.type = 'sawtooth'; osc.frequency.setValueAtTime(120, now); osc.frequency.linearRampToValueAtTime(20, now + 0.3); gain.gain.setValueAtTime(0.25, now); }
+    else if (type === 'ice') { osc.type = 'square'; osc.frequency.setValueAtTime(1200, now); gain.gain.setValueAtTime(0.08, now); }
+    else if (type === 'holy') { osc.type = 'sine'; osc.frequency.setValueAtTime(300, now); osc.frequency.exponentialRampToValueAtTime(1800, now + 0.3); gain.gain.setValueAtTime(0.18, now); }
+    else { osc.type = 'sine'; osc.frequency.setValueAtTime(400, now); gain.gain.setValueAtTime(0.08, now); }
     gain.gain.linearRampToValueAtTime(0.001, now + 0.3); osc.start(now); osc.stop(now + 0.3);
   } catch(e){}
 }
@@ -260,7 +307,7 @@ function playSE(type) {
 function createDmgPop(dmg, isWeak, isPlayer) {
     const layer = document.getElementById("dmg-layer"); if(!layer) return;
     const pop = document.createElement("div"); pop.style.position = "absolute";
-    pop.style.fontSize = isWeak ? "3rem" : "2.2rem"; pop.style.fontWeight = "900";
+    pop.style.fontSize = isWeak ? "3rem" : "2.2rem"; pop.style.fontWeight = "900"; pop.style.fontStyle = "italic";
     if (isPlayer) { pop.style.left = "130px"; pop.style.top = "120px"; pop.style.color = "#ef4444"; pop.innerText = `-${dmg}`; }
     else { pop.style.right = "90px"; pop.style.top = "90px"; pop.style.color = isWeak ? "#facc15" : "#ffffff"; pop.innerText = dmg; }
     let yIdx = 0; let opacity = 1;
@@ -268,22 +315,64 @@ function createDmgPop(dmg, isWeak, isPlayer) {
     layer.appendChild(pop);
 }
 
-function checkDevPassword() {
-    const inputField = document.getElementById("dev-password-input"); if (!inputField) return;
-    const badge = document.getElementById("dev-status-badge");
-    const debugBtn = document.getElementById("btn-debug-death");
-    if (inputField.value === "1192") { badge.innerText = "UNLOCKED"; badge.style.color = '#10b981'; if (document.getElementById("scr-battle").style.display === "block" && debugBtn) debugBtn.style.setProperty('display', 'block', 'important'); }
-    else { badge.innerText = "LOCKED"; badge.style.color = '#ef4444'; if (debugBtn) debugBtn.style.setProperty('display', 'none', 'important'); }
+function triggerShake(shakeType) {
+  const stage = document.getElementById('icon-stage'); if(!stage) return;
+  let count = 0, max = 16; let power = 12;
+  if (shakeType === 'critical_shake') power = 24;
+  const interval = setInterval(() => {
+    if (count >= max) { stage.style.setProperty('transform', 'none', 'important'); clearInterval(interval); return; }
+    let x = Math.floor(Math.random() * power) - (power / 2); let y = Math.floor(Math.random() * power) - (power / 2);
+    stage.style.setProperty('transform', `translate3d(${x}px, ${y}px, 0px)`, 'important'); count++;
+  }, 16);
 }
 
-function hideAll() { ['scr-start','scr-intro','scr-battle','scr-result'].forEach(id => { const el = document.getElementById(id); if (el) el.style.setProperty('display', 'none', 'important'); }); }
+function triggerEnemyHitPulse() {
+  const box = document.getElementById('e-sprite-graphic'); if(!box) return;
+  let pCount = 0;
+  const pulseTimer = setInterval(() => {
+    if (pCount > 4) { box.style.transform = "none"; clearInterval(pulseTimer); return; }
+    box.style.transform = `translate3d(${(pCount % 2 === 0 ? 6 : -6)}px, 0px, 0px) scale(0.96)`; pCount++;
+  }, 45);
+}
 
+function flashScreen(color) {
+  const screen = document.getElementById('eff-scr'); if(!screen) return;
+  screen.style.setProperty('background-color', color, 'important');
+  setTimeout(() => { screen.style.setProperty('background-color', (pHp <= 30) ? 'rgba(239, 68, 68, 0.1)' : '#0f172a', 'important'); }, 140);
+}
+
+function flashCritical(color) {
+  const screen = document.getElementById('eff-scr'); if(!screen) return;
+  screen.style.setProperty('background-color', color, 'important');
+  setTimeout(() => { screen.style.setProperty('background-color', '#0f172a', 'important');
+    setTimeout(() => { screen.style.setProperty('background-color', color, 'important');
+      setTimeout(() => { screen.style.setProperty('background-color', (pHp <= 30) ? 'rgba(239, 68, 68, 0.1)' : '#0f172a', 'important'); }, 70);
+    }, 50);
+  }, 70);
+}
+
+function createExplosionParticles(castType) {
+  const parent = document.getElementById('eff-scr'); const container = document.getElementById('e-sprite-container'); if(!parent || !container) return;
+  const rect = container.getBoundingClientRect(); const parentRect = parent.getBoundingClientRect();
+  const startX = (rect.left - parentRect.left) + rect.width / 2; const startY = (rect.top - parentRect.top) + rect.height / 2;
+  let color = castType === 'fire' ? '#ef4444' : (castType === 'ice' ? '#38bdf8' : '#facc15');
+  for (let i = 0; i < 40; i++) {
+    const p = document.createElement('div'); p.style.position = 'absolute'; p.style.width = '7px'; p.style.height = '7px'; p.style.backgroundColor = color;
+    p.style.left = `${startX}px`; p.style.top = `${startY}px`; p.style.zIndex = '12'; p.style.pointerEvents = 'none';
+    const tx = (Math.random() * 300 - 150); const ty = (Math.random() * -240 - 30); p.style.setProperty('--tx', `${tx}px`); p.style.setProperty('--ty', `${ty}px`);
+    p.style.animation = 'pulseBoom 0.6s cubic-bezier(0.1, 0.8, 0.25, 1) forwards'; parent.appendChild(p); setTimeout(() => p.remove(), 600);
+  }
+}
+
+function hideAll() { ['scr-start','scr-intro','scr-battle','scr-result'].forEach(id => { const el = document.getElementById(id); if (el) el.style.display = 'none'; }); }
+
+// 🔧 V2.45：開始スイッチ連携バグの完全な修復
 function nextStage() {
     playSE('click'); curIdx++;
-    if (curIdx >= STAGES.length) { resetGame(); hideAll(); document.getElementById('scr-start').style.setProperty('display', 'block', 'important'); document.getElementById('floor-indicator').style.setProperty('visibility', 'hidden', 'important'); startBGM("title"); return; }
+    if (curIdx >= STAGES.length) { resetGame(); hideAll(); document.getElementById('scr-start').style.display = 'block'; document.getElementById('floor-indicator').style.visibility = 'hidden'; startBGM("title"); return; }
     const data = STAGES[curIdx]; pHp = pMaxHp; hideAll(); stopSlimeAnimation();
-    const fInd = document.getElementById('floor-indicator'); if (fInd) { fInd.style.setProperty('visibility', 'visible', 'important'); fInd.innerText = `${data.floor}階`; }
-    document.getElementById('scr-intro').style.setProperty('display', 'block', 'important');
+    const fInd = document.getElementById('floor-indicator'); if (fInd) { fInd.style.visibility = 'visible'; fInd.innerText = `${data.floor}階`; }
+    document.getElementById('scr-intro').style.display = 'block';
     document.getElementById('intro-ch-num').innerText = `FLOOR 0${data.floor}`;
     document.getElementById('intro-ch-title').innerText = data.name;
     document.getElementById('intro-text').innerText = data.txt;
@@ -291,20 +380,20 @@ function nextStage() {
 }
 
 function startBattle() {
-  playSE('click'); const data = STAGES[curIdx]; eHp = eMaxHp = data.hp; hideAll(); isBusy = false; isBursting = false;
+  playSE('click'); const data = STAGES[curIdx]; eHp = eMaxHp = data.hp; hideAll(); 
+  isBusy = false; isBursting = false; // 🔧 起動時に必ずロック解除を100%保証
+  
   const container = document.getElementById('e-sprite-container');
   if(container) {
-    container.removeAttribute("style"); container.style.setProperty('animation', 'floatE 2.2s infinite alternate ease-in-out', 'important');
-    container.style.setProperty('width', '200px', 'important'); container.style.setProperty('height', '200px', 'important');
-    container.style.setProperty('display', 'flex', 'important'); container.style.setProperty('justify-content', 'center', 'important');
-    container.style.setProperty('align-items', 'center', 'important'); container.style.setProperty('position', 'relative', 'important');
-    container.style.setProperty('filter', `drop-shadow(0 0 25px ${data.eMod})`, 'important');
+    container.removeAttribute("style"); container.style.animation = 'floatE 2.2s infinite alternate ease-in-out';
+    container.style.width = '200px'; container.style.height = '200px'; container.style.display = 'flex';
+    container.style.justifyContent = 'center'; container.style.alignItems = 'center'; container.style.position = 'relative';
+    container.style.filter = `drop-shadow(0 0 25px ${data.eMod})`;
   }
   const graphicEl = document.getElementById('e-sprite-graphic');
-  if(graphicEl) {
-    graphicEl.removeAttribute("style"); graphicEl.style.width = "200px"; graphicEl.style.height = "200px"; graphicEl.style.display = "block"; graphicEl.style.imageRendering = "pixelated";
-  }
-  document.getElementById('scr-battle').style.setProperty('display', 'block', 'important');
+  if(graphicEl) { graphicEl.removeAttribute("style"); graphicEl.style.width = "200px"; graphicEl.style.height = "200px"; graphicEl.style.display = "block"; graphicEl.style.imageRendering = "pixelated"; }
+  
+  document.getElementById('scr-battle').style.display = 'block';
   document.getElementById('e-name').innerText = data.name;
   if (data.isCustom) { startSlimeAnimation(); } 
   else if(graphicEl) {
@@ -315,25 +404,23 @@ function startBattle() {
       graphicEl.style.setProperty('background-position', `${data.bgX} ${data.bgY}`, 'important');
   }
   updateHpUI(); checkDevPassword();
-  let floorMessage = ` <span style='color:#38bdf8;'>[弱点: ${data.weak.toUpperCase()}]</span>`;
-  document.getElementById('eff-scr').style.setProperty('border-color', data.floor === 10 ? '#be123c' : '#334155', 'important');
-  document.getElementById('battle-log').innerHTML = `術式展開。${data.name}に立ち向かえ。${floorMessage}`;
+  document.getElementById('eff-scr').style.borderColor = data.floor === 10 ? '#be123c' : '#334155';
+  document.getElementById('battle-log').innerHTML = `術式展開。${data.name}に立ち向かえ。 <span style='color:#38bdf8;'>[弱点: ${data.weak.toUpperCase()}]</span>`;
   startBGM(data.floor === 10 ? "boss" : "horror");
 }
 
 function updateHpUI() {
   const scr = document.getElementById('eff-scr'); const alertBadge = document.getElementById('p-hp-alert-badge'); if(!scr) return;
-  document.getElementById('p-hp-bar').style.setProperty('width', `${pHp}%`, 'important');
-  document.getElementById('e-hp-bar').style.setProperty('width', `${(eHp/eMaxHp*100)}%`, 'important');
+  document.getElementById('p-hp-bar').style.width = `${pHp}%`; document.getElementById('e-hp-bar').style.width = `${(eHp/eMaxHp*100)}%`;
   document.getElementById('p-hp-txt').innerText = `HP: ${pHp} / 100`; document.getElementById('e-hp-txt').innerText = `HP: ${eHp} / ${eMaxHp}`;
-  if (pHp <= 30) { scr.style.setProperty('animation', 'crisisAlert 1.0s infinite alternate', 'important'); scr.style.setProperty('border-color', '#f43f5e', 'important'); if (alertBadge) alertBadge.style.display = "block"; } 
-  else { scr.style.setProperty('animation', 'none', 'important'); scr.style.setProperty('border-color', (STAGES[curIdx] && STAGES[curIdx].floor === 10) ? '#be123c' : '#334155', 'important'); if (alertBadge) alertBadge.style.display = "none"; }
+  if (pHp <= 30) { scr.style.animation = 'crisisAlert 1.0s infinite alternate'; scr.style.borderColor = '#f43f5e'; if (alertBadge) alertBadge.style.display = "block"; } 
+  else { scr.style.animation = 'none'; scr.style.borderColor = (STAGES[curIdx] && STAGES[curIdx].floor === 10) ? '#be123c' : '#334155'; if (alertBadge) alertBadge.style.display = "none"; }
 }
 
-// 🔧 ① 修正：行動不能ロックを根本解決した直列完全同期型ターンエンジン
+// 🔧 V2.45：1回行動した後に止まるバグを完全解消した直列タイムラインエンジン
 function turn(playerMove) {
   if (isBusy || pHp <= 0 || eHp <= 0) return;
-  isBusy = true; 
+  isBusy = true; // ボタン入力を一時ロック
   
   const data = STAGES[curIdx];
   const enemyMove = Math.random() > 0.4 ? "atk" : "def";
@@ -344,7 +431,7 @@ function turn(playerMove) {
   const frontLayer = document.getElementById('front-effect-layer');
 
   if (playerMove === 'debug_death') {
-    playSE('boom'); eDamage = eHp; log = `☠️ 究極消滅術式発動！一撃の元に葬った！`;
+    playSE('boom'); eDamage = eHp; log = `☠️ 開発者特権：デスコード起動！敵を一瞬で消滅させた！`;
     eHp = 0; updateHpUI(); document.getElementById('battle-log').innerHTML = log;
     setTimeout(() => { checkBattleEnd(); }, 400);
     return;
@@ -352,8 +439,8 @@ function turn(playerMove) {
 
   if (playerMove === 'fire' || playerMove === 'ice' || playerMove === 'holy') {
     if(effectLayer) effectLayer.innerHTML = MISSILE_EFFECTS[playerMove];
-    document.getElementById('p-sprite').style.setProperty('transform', 'translateX(55px) scale(1.1) rotate(4deg)', 'important');
-    setTimeout(() => { document.getElementById('p-sprite').style.setProperty('transform', 'none', 'important'); }, 400);
+    document.getElementById('p-sprite').style.transform = 'translateX(55px) scale(1.1) rotate(4deg)';
+    setTimeout(() => { document.getElementById('p-sprite').style.transform = 'none'; }, 400);
 
     let basePower = 15; let spellName = playerMove === 'fire' ? "ファイア" : (playerMove === 'ice' ? "アイスコフィン" : "ホーリーランス");
     let flashColor = playerMove === 'fire' ? "#e11d48" : (playerMove === 'ice' ? "#0284c7" : "#eab308");
@@ -363,14 +450,14 @@ function turn(playerMove) {
 
     if (enemyMove === 'atk') {
       pDamage = data.atk;
-      if(containerEl) containerEl.style.setProperty('animation', 'enemyAssault 0.45s forwards', 'important');
-      setTimeout(() => { if(containerEl) containerEl.style.setProperty('animation', 'floatE 2.2s infinite alternate ease-in-out', 'important'); }, 460);
-      log = isCritical ? `【CRITICAL】弱点適合！『${spellName}』直撃 【${eDamage}】 ダメージ！突進反撃で ${pDamage} 被弾！` : `『${spellName}』が命中！敵に ${eDamage} ダメージ / あなたは ${pDamage} 被弾！`;
+      if(containerEl) containerEl.style.animation = 'enemyAssault 0.45s forwards';
+      setTimeout(() => { if(containerEl) containerEl.style.animation = 'floatE 2.2s infinite alternate ease-in-out'; }, 460);
+      log = isCritical ? `【CRITICAL】弱点直撃！『${spellName}』が炸裂し 【${eDamage}】 ダメージ！突進反撃で ${pDamage} 被弾！` : `『${spellName}』が命中！敵に ${eDamage} ダメージ / あなたは ${pDamage} 被弾！`;
     } else {
-      eDamage = Math.floor(eDamage * 0.35); log = `🛡️ 敵の防御！『${spellName}』が減衰。敵に ${eDamage} ダメージ。`;
+      eDamage = Math.floor(eDamage * 0.35); log = `🛡️ 敵が身を固める！『${spellName}』の魔力が減衰し、敵に ${eDamage} ダメージ。`;
     }
 
-    // 弾道が飛ぶ360msのラグの後に直列実行
+    // 追尾ミサイル飛翔完了（360ms後）に直列同期実行
     setTimeout(() => {
       playSE(playerMove); burstSlimeAnimation();
       
@@ -393,18 +480,18 @@ function turn(playerMove) {
       pHp = Math.max(0, pHp - pDamage); eHp = Math.max(0, eHp - eDamage); updateHpUI();
       document.getElementById('battle-log').innerHTML = log;
 
-      // ➔ 全演出完了後のタイミングで次判定をキック（フリーズ遮断）
+      // ➔ 全ての演出演出ポップアップが終わった後、安全に次判定スレッドをキック
       setTimeout(() => { checkBattleEnd(); }, 450);
     }, 360);
 
     mana = 1.0; document.getElementById('p-aura-layer').style.display = "none";
   }
   else {
-    // 防御・チャージ
+    // 防御・チャージ行動
     if (playerMove === 'def') {
-      playSE('def'); if (enemyMove === 'atk') { pDamage = Math.max(1, Math.floor(data.atk * 0.15)); log = `🛡️ シールド展開！突進を 【${pDamage}】 に封殺！`; } else { log = `🔮 シールドを構え警戒。`; }
+      playSE('def'); if (enemyMove === 'atk') { pDamage = Math.max(1, Math.floor(data.atk * 0.15)); log = `🛡️ シールド展開！敵の突進を完全に受け流し、わずか 【${pDamage}】 に封殺！`; } else { log = `🔮 シールドを構え身を守るが、敵は防御している。`; }
     } else {
-      playSE('chg'); if (enemyMove === 'atk') { pDamage = Math.floor(data.atk * 1.7); log = `🚨 チャージの隙を突かれた！カウンター 【${pDamage}】 被弾！`; mana = 1.0; } else { mana = 2.5; log = `⚡ 魔素充填！次ターン術式威力 【2.5倍】！`; document.getElementById('p-aura-layer').style.display = "block"; }
+      playSE('chg'); if (enemyMove === 'atk') { pDamage = Math.floor(data.atk * 1.7); log = `🚨 魔力集束の隙を突かれた！手痛いカウンター 【${pDamage}】 被弾！`; mana = 1.0; } else { mana = 2.5; log = `⚡ 回路へ魔素を限界充填！次ターンの呪文威力が 【2.5倍】 に臨界突破！`; document.getElementById('p-aura-layer').style.display = "block"; }
     }
     flashScreen("#10b981"); if (pDamage > 0) createDmgPop(pDamage, false, true);
     pHp = Math.max(0, pHp - pDamage); updateHpUI(); document.getElementById('battle-log').innerHTML = log;
@@ -418,23 +505,23 @@ function checkBattleEnd() {
     stopBGM(); stopSlimeAnimation(); 
     if (eHp <= 0) {
       playSE('boom'); triggerShake('critical_shake'); flashCritical('#ffffff'); createExplosionParticles(STAGES[curIdx].weak); 
-      if(containerEl) { containerEl.style.setProperty('opacity', '0', 'important'); containerEl.style.setProperty('transform', 'scale(0.05)', 'important'); }
+      if(containerEl) { containerEl.style.opacity = '0'; containerEl.style.transform = 'scale(0.05)'; }
       if (STAGES[curIdx].floor === 10) { setTimeout(() => { playSE('boss_fanfare'); setTimeout(() => { endBattle(); }, 1450); }, 350); } 
       else { setTimeout(() => { endBattle(); }, 650); }
     } else { endBattle(); }
   } else { 
-    isBusy = false; // 🔧 生存時は確実にロックを戻し次の行動へ移行！
+    isBusy = false; // 🔧 敵味方ともに生存している場合、確実にロックを解除して次のコマンド選択へ！
   }
 }
 
 function endBattle() {
-  hideAll(); stopSlimeAnimation(); document.getElementById('scr-result').style.setProperty('display', 'block', 'important');
+  hideAll(); stopSlimeAnimation(); document.getElementById('scr-result').style.display = 'block';
   const rTitle = document.getElementById('res-title'); const rText = document.getElementById('res-text');
   document.getElementById('p-aura-layer').style.display = "none"; document.getElementById('battle-log').innerHTML = "コマンドを選択せよ。";
   if (eHp <= 0) {
     rTitle.innerText = "VICTORY"; rTitle.style.color = '#10b981'; document.getElementById('res-icon').innerText = "🏆";
-    if (curIdx === STAGES.length - 1) rText.innerText = "🎉 10階竜王バハムートを完全消滅！世界に光が戻った！";
-    else rText.innerText = `激闘の末、${STAGES[curIdx].name}を完全破砕した！`;
+    if (curIdx === STAGES.length - 1) rText.innerText = "🎉 最上階10階にて、竜王バハムートを完全消滅！世界に光が戻った！";
+    else rText.innerText = `激闘 of 末、${STAGES[curIdx].name}を完全破砕した！`;
   } else {
     rTitle.innerText = "DEFEATED"; rTitle.style.color = '#f43f5e'; document.getElementById('res-icon').innerText = "💀";
     rText.innerText = "大迷宮の闇の前に力尽きた..."; curIdx = -1;
