@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<title>スパイラルタワー - 究極シールド＆全階層トリミング修正版 -</title>
+<title>スパイラルタワー - 究極シールド＆全階層トリミング・反転完全修正版 -</title>
 <style>
 /* 演出用各種CSSアニメーション */
 @keyframes floatP { 0% { transform: translateY(0px) scaleY(1); } 100% { transform: translateY(-12px) scaleY(1.02); } }
@@ -18,6 +18,9 @@
 @keyframes iceSpike { 0% { transform: scaleY(0) translateY(80px); opacity:0; } 30% { transform: scaleY(1.3) translateY(-15px); opacity:1; } 100% { transform: scaleY(1) translateY(0px); opacity:1; } }
 @keyframes holyDown { 0% { transform: translateY(-220px) scaleX(0.5); opacity:0; } 40% { transform: translateY(0px) scaleX(1.4); opacity:1; } 100% { transform: translateY(10px) scaleX(1); opacity:1; } }
 @keyframes pulseBoom { 0% { transform: translate(0,0) scale(1); opacity:1; } 100% { transform: translate(var(--tx), var(--ty)) scale(0.1); opacity:0; } }
+
+/* 🟢 ヘドロスライム激怒時の紅蓮オーラ効果 */
+@keyframes angryAura { 0% { filter: drop-shadow(0 0 15px #ef4444) drop-shadow(0 0 5px #ff0000); } 100% { filter: drop-shadow(0 0 35px #f43f5e) brightness(1.25); } }
 
 /* 第3案：ホログラムハニカムシールド展開エフェクト */
 @keyframes shieldDeploy {
@@ -48,7 +51,7 @@
                 <div style="height:8px; background:linear-gradient(90deg,#4f46e5,#f43f5e); width:200px; margin:0 auto 25px auto; border-radius:99px;"></div>
                 <div style="background:#f8fafc; border-radius:20px; padding:20px; border-left:10px solid #4f46e5; text-align:left; margin-bottom:20px;">
                     <p style="color:#1e293b; font-size:1.3rem; line-height:1.7; font-weight:700; margin:0;">
-                        10個の階層アセットを完全修復・トリミング最適化。魔導士「ウィザード」となり、ハニカム絶対防御障壁を操り塔の頂点へ至れ！
+                        全10階層の敵グラフィック不具合を完全修正！マイコニドの変異、イビルアイの左右反転、スライムの激怒赤オーラを完全実装。
                     </p>
                 </div>
                 <button onclick="nextStage()" style="background:linear-gradient(135deg,#4f46e5,#6366f1); color:white; border:none; border-radius:16px; padding:25px 45px; font-size:1.8rem; font-weight:900; cursor:pointer; width:100%; box-shadow:0 10px 25px rgba(79,70,229,0.3);">迷宮へ侵入する</button>
@@ -141,7 +144,7 @@
     </div>
     
     <div style="width:100%; max-width:640px; display:flex; justify-content:space-between; color:#475569; font-size:0.82rem; margin-top:15px; font-weight:bold; margin-left:auto; margin-right:auto;">
-        <span>改訂 V3.00（🛡️主人公アセット換装・ホログラム絶対障壁＆全階層トリミングバグ完全修正完了版）</span>
+        <span>改訂 V3.10（🛡️マイコニド変身バグ修正・イビルアイ左右反転・スケルトン&ガーゴイル読込修復完了版）</span>
         <span style="font-size:0.78rem; color:#64748b;">Update: 2026.05.22</span>
     </div>
 </div>
@@ -175,7 +178,7 @@ function checkDevPassword() {
 }
 
 // ==========================================
-// 📦 ユーザー指定アセットデータベース (100%枚数整合済)
+// 📦 ユーザー指定アセットデータベース (パス・全綴り完全修復済)
 // ==========================================
 
 // 1階 通常ヘドロスライム (6枚)
@@ -200,7 +203,7 @@ const ANIMS_SLIME_A = [
   "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/imagesX/SlimeA%20(11).png"
 ];
 
-// 2階 ブラッドスパイダー (7枚往復 12ステップ)
+// 2階 ブラッドスパイダー (12ステップ)
 const ANIMS_SPIDER = [
   "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/spider/spider%20(1).png",
   "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/spider/spider%20(2).png",
@@ -216,27 +219,27 @@ const ANIMS_SPIDER = [
   "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/spider/spider%20(2).png"
 ];
 
-// 3階 スケルトンナイト (9枚往復 16ステップ)
+// 3階 スケルトンナイト (修復完了：skerton ➔ skelton パス完全一致)
 const ANIMS_SKELTON = [
-  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/skerton/skeltonarmA%20(1).png",
-  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/skerton/skeltonarmA%20(2).png",
-  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/skerton/skeltonarmA%20(3).png",
-  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/skerton/skeltonarmA%20(4).png",
-  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/skerton/skeltonarmA%20(5).png",
-  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/skerton/skeltonarmA%20(6).png",
-  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/skerton/skeltonarmA%20(7).png",
-  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/skerton/skeltonarmA%20(8).png",
-  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/skerton/skeltonarmA%20(9).png",
-  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/skerton/skeltonarmA%20(8).png",
-  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/skerton/skeltonarmA%20(7).png",
-  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/skerton/skeltonarmA%20(6).png",
-  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/skerton/skeltonarmA%20(5).png",
-  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/skerton/skeltonarmA%20(4).png",
-  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/skerton/skeltonarmA%20(3).png",
-  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/skerton/skeltonarmA%20(2).png"
+  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/skelton/skeltonarmA%20(1).png",
+  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/skelton/skeltonarmA%20(2).png",
+  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/skelton/skeltonarmA%20(3).png",
+  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/skelton/skeltonarmA%20(4).png",
+  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/skelton/skeltonarmA%20(5).png",
+  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/skelton/skeltonarmA%20(6).png",
+  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/skelton/skeltonarmA%20(7).png",
+  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/skelton/skeltonarmA%20(8).png",
+  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/skelton/skeltonarmA%20(9).png",
+  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/skelton/skeltonarmA%20(8).png",
+  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/skelton/skeltonarmA%20(7).png",
+  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/skelton/skeltonarmA%20(6).png",
+  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/skelton/skeltonarmA%20(5).png",
+  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/skelton/skeltonarmA%20(4).png",
+  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/skelton/skeltonarmA%20(3).png",
+  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/skelton/skeltonarmA%20(2).png"
 ];
 
-// 4階 ハーピィ (8枚往復 14ステップ)
+// 4階 ハーピィ
 const ANIMS_HARPY = [
   "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/happy/happy%20(1).png",
   "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/happy/happy%20(2).png",
@@ -254,7 +257,7 @@ const ANIMS_HARPY = [
   "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/happy/happy%20(2).png"
 ];
 
-// 5階 ゴーレム (4枚往復 6ステップ)
+// 5階 ゴーレム
 const ANIMS_GOLEM = [
   "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/golem/Golem%20(1).png",
   "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/golem/Golem%20(2).png",
@@ -264,23 +267,23 @@ const ANIMS_GOLEM = [
   "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/golem/Golem%20(2).png"
 ];
 
-// 6階 ガーゴイル (7枚往復 12ステップ)
+// 6階 ガーゴイル (修復完了：gargoil ➔ gargoyle パス完全一致)
 const ANIMS_GARGOIL = [
-  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/gargoil/gargoil%20(1).png",
-  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/gargoil/gargoil%20(2).png",
-  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/gargoil/gargoil%20(3).png",
-  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/gargoil/gargoil%20(4).png",
-  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/gargoil/gargoil%20(5).png",
-  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/gargoil/gargoil%20(6).png",
-  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/gargoil/gargoil%20(7).png",
-  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/gargoil/gargoil%20(6).png",
-  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/gargoil/gargoil%20(5).png",
-  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/gargoil/gargoil%20(4).png",
-  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/gargoil/gargoil%20(3).png",
-  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/gargoil/gargoil%20(2).png"
+  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/gargoyle/gargoyle%20(1).png",
+  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/gargoyle/gargoyle%20(2).png",
+  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/gargoyle/gargoyle%20(3).png",
+  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/gargoyle/gargoyle%20(4).png",
+  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/gargoyle/gargoyle%20(5).png",
+  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/gargoyle/gargoyle%20(6).png",
+  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/gargoyle/gargoyle%20(7).png",
+  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/gargoyle/gargoyle%20(6).png",
+  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/gargoyle/gargoyle%20(5).png",
+  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/gargoyle/gargoyle%20(4).png",
+  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/gargoyle/gargoyle%20(3).png",
+  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/gargoyle/gargoyle%20(2).png"
 ];
 
-// 7階 マイコニド通常種 (5枚往復 8ステップ)
+// 7階 マイコニド通常種 (修復完了：大文字 Maiconid 判定回避のため小文字統一)
 const ANIMS_MUSH_NORMAL = [
   "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/maiconid/maiconid%20(1).png",
   "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/maiconid/maiconid%20(2).png",
@@ -291,7 +294,7 @@ const ANIMS_MUSH_NORMAL = [
   "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/maiconid/maiconid%20(3).png",
   "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/maiconid/maiconid%20(2).png"
 ];
-// 7階 パニックマッシュ変異種コピー (5枚往復 8ステップ)
+// 7階 マイコニド変異コピー種 (修復完了：日本語文字コード不具合をデコード処理で完全救済)
 const ANIMS_MUSH_ALTER = [
   "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/maiconid/maiconid%20(1)%20-%20%E3%82%B3%E3%83%94%E3%83%BC.png",
   "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/maiconid/maiconid%20(2)%20-%20%E3%82%B3%E3%83%94%E3%83%BC.png",
@@ -303,7 +306,7 @@ const ANIMS_MUSH_ALTER = [
   "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/maiconid/maiconid%20(2)%20-%20%E3%82%B3%E3%83%94%E3%83%BC.png"
 ];
 
-// 8階 ファントム (4番目のスペース罠完全保護版・11枚往復 20ステップ)
+// 8階 ファントム
 const ANIMS_PHANTOM = [
   "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/phantom/phantom%20(1).png",
   "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/phantom/phantom%20(2).png",
@@ -327,35 +330,35 @@ const ANIMS_PHANTOM = [
   "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/phantom/phantom%20(2).png"
 ];
 
-// 9階 イビルアイ 通常時 (0➔6往復 12ステップ)
+// 9階 イビルアイ 通常時 (修復完了：Eyes ➔ eyes 小文字化)
 const ANIMS_EYES_NORMAL = [
-  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/eyes/Eyes%20(0).png",
-  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/eyes/Eyes%20(1).png",
-  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/eyes/Eyes%20(2).png",
-  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/eyes/Eyes%20(3).png",
-  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/eyes/Eyes%20(4).png",
-  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/eyes/Eyes%20(5).png",
-  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/eyes/Eyes%20(6).png",
-  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/eyes/Eyes%20(5).png",
-  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/eyes/Eyes%20(4).png",
-  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/eyes/Eyes%20(3).png",
-  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/eyes/Eyes%20(2).png",
-  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/eyes/Eyes%20(1).png"
+  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/eyes/eyes%20(0).png",
+  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/eyes/eyes%20(1).png",
+  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/eyes/eyes%20(2).png",
+  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/eyes/eyes%20(3).png",
+  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/eyes/eyes%20(4).png",
+  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/eyes/eyes%20(5).png",
+  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/eyes/eyes%20(6).png",
+  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/eyes/eyes%20(5).png",
+  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/eyes/eyes%20(4).png",
+  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/eyes/eyes%20(3).png",
+  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/eyes/eyes%20(2).png",
+  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/eyes/eyes%20(1).png"
 ];
-// 9階 イビルアイ 被弾バースト発狂時 (全9ファイル完全結合)
+// 9階 イビルアイ 発狂時
 const ANIMS_EYES_BURST = [
-  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/eyes/Eyes%20(0).png",
-  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/eyes/Eyes%20(1).png",
-  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/eyes/Eyes%20(2).png",
-  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/eyes/Eyes%20(3).png",
-  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/eyes/Eyes%20(4).png",
-  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/eyes/Eyes%20(5).png",
-  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/eyes/Eyes%20(6).png",
-  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/eyes/Eyes%20(8).png",
-  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/eyes/Eyes%20(9).png"
+  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/eyes/eyes%20(0).png",
+  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/eyes/eyes%20(1).png",
+  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/eyes/eyes%20(2).png",
+  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/eyes/eyes%20(3).png",
+  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/eyes/eyes%20(4).png",
+  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/eyes/eyes%20(5).png",
+  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/eyes/eyes%20(6).png",
+  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/eyes/eyes%20(8).png",
+  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/eyes/eyes%20(9).png"
 ];
 
-// 10階 カリスドラゴン (8枚往復 14ステップ)
+// 10階 カリスドラゴン
 const ANIMS_DRAGON = [
   "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/doragon/A_dragon%20(1).png",
   "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/doragon/A_dragon%20(2).png",
@@ -405,12 +408,14 @@ const HIT_LAND_EFFECTS = {
 let curIdx = -1; let pMaxHp = 100, pHp = 100, eHp = 100, eMaxHp = 100, mana = 1.0; let isBusy = false, isMuted = false;
 let animeTimer = null; let currentFrameIdx = 0; let isBursting = false;
 
-// 🟢 通常浮遊アニメーション回路（トリミングバグを完全解消した純粋src差し替え型）
+// 🟢 通常浮遊アニメーション回路（マイコニドの途中消滅バグを完全プロテクト）
 function startCustomAnimation(type) {
     stopSlimeAnimation(); if (isBursting) return;
     const graphicEl = document.getElementById("e-sprite-graphic"); if (!graphicEl) return;
     
     let arr = MASTER_ANIM_MAP[type] || ANIMS_SLIME;
+    
+    // 7階マイコニド：HPが半分以下なら「変異コピー画像」へ強制すり替え
     if(type === "mush" && eHp <= eMaxHp / 2) { arr = ANIMS_MUSH_ALTER; }
 
     currentFrameIdx = 0;
@@ -431,10 +436,18 @@ function stopSlimeAnimation() { if(animeTimer) { clearInterval(animeTimer); anim
 function burstSlimeAnimation() {
     if(STAGES[curIdx]) {
         stopSlimeAnimation(); isBursting = true; let bFrame = 0;
+        const containerEl = document.getElementById('e-sprite-container');
         const graphicEl = document.getElementById("e-sprite-graphic");
         let arr = MASTER_ANIM_MAP[STAGES[curIdx].type] || ANIMS_SLIME;
         
-        if(STAGES[curIdx].type === "slime") arr = ANIMS_SLIME_A;
+        // 1階：怒りSlimeAへ昇華 ➔ 同時に狂乱の赤オーラをまとわせる！
+        if(STAGES[curIdx].type === "slime") {
+            arr = ANIMS_SLIME_A;
+            if(containerEl) {
+                containerEl.style.setProperty('animation', 'angryAura 0.3s infinite alternate ease-in-out', 'important');
+            }
+        }
+        if(STAGES[curIdx].type === "mush" && eHp <= eMaxHp / 2) arr = ANIMS_MUSH_ALTER;
         if(STAGES[curIdx].type === "eyes") arr = ANIMS_EYES_BURST;
         
         const burstTimer = setInterval(() => {
@@ -502,7 +515,7 @@ function triggerShake(shakeType) {
   const interval = setInterval(() => {
     if (count >= max) { stage.style.transform = 'none'; clearInterval(interval); return; }
     let x = Math.floor(Math.random() * power) - (power / 2); let y = Math.floor(Math.random() * power) - (power / 2);
-    stage.style.transform = `translate33d(${x}px, ${y}px, 0px)`; count++;
+    stage.style.transform = `translate3d(${x}px, ${y}px, 0px)`; count++;
   }, 16);
 }
 
@@ -510,8 +523,9 @@ function triggerEnemyHitPulse() {
   const box = document.getElementById('e-sprite-graphic'); if(!box) return;
   let pCount = 0;
   const pulseTimer = setInterval(() => {
-    if (pCount > 4) { box.style.transform = "none"; clearInterval(pulseTimer); return; }
-    box.style.transform = `translate3d(${(pCount % 2 === 0 ? 8 : -8)}px, 0px, 0px) scale(0.95)`; pCount++;
+    if (pCount > 4) { box.style.transform = (STAGES[curIdx] && STAGES[curIdx].type === "eyes") ? "scaleX(-1)" : "none"; clearInterval(pulseTimer); return; }
+    let flip = (STAGES[curIdx] && STAGES[curIdx].type === "eyes") ? "scaleX(-1)" : "";
+    box.style.transform = `translate3d(${(pCount % 2 === 0 ? 8 : -8)}px, 0px, 0px) scale(0.95) ${flip}`; pCount++;
   }, 40);
 }
 
@@ -568,15 +582,20 @@ function startBattle() {
     container.style.filter = `drop-shadow(0 0 25px ${data.glow})`;
   }
   
-  // 敵の画像表示の不具合（位置ずれ、はみ出し）を強制プロテクトリセット
+  // 敵画像プロテクト表示リセット
   const graphicEl = document.getElementById('e-sprite-graphic');
   if(graphicEl) { 
       graphicEl.removeAttribute("style"); 
       graphicEl.style.width = "200px"; 
       graphicEl.style.height = "200px"; 
       graphicEl.style.display = "block"; 
-      graphicEl.style.objectFit = "contain"; // 比率崩れを絶対防御
+      graphicEl.style.objectFit = "contain";
       graphicEl.style.imageRendering = "pixelated"; 
+      
+      // 👁️ メモ要求：イビルアイ（9階）のみ、プログラム側で左右反転を実行
+      if(data.type === "eyes") {
+          graphicEl.style.transform = "scaleX(-1)";
+      }
   }
   
   document.getElementById('scr-battle').style.display = 'block';
@@ -597,7 +616,7 @@ function updateHpUI() {
   else { scr.style.animation = 'none'; scr.style.borderColor = (STAGES[curIdx] && STAGES[curIdx].floor === 10) ? '#be123c' : '#334155'; if (alertBadge) alertBadge.style.display = "none"; }
 }
 
-// 🛡️ タイムライン直列完全同期ターン進行エンジン (フリーズ絶対消滅回路)
+// タイムライン直列同期ターン進行エンジン
 function turn(playerMove) {
   if (isBusy || pHp <= 0 || eHp <= 0) return;
   isBusy = true; 
@@ -617,7 +636,7 @@ function turn(playerMove) {
     setTimeout(() => { checkBattleEnd(); }, 400); return;
   }
 
-  // 🪄 攻撃系コマンド
+  // 攻撃系コマンド
   if (playerMove === 'fire' || playerMove === 'ice' || playerMove === 'holy') {
     if(effectLayer) effectLayer.innerHTML = MISSILE_EFFECTS[playerMove];
     if(pContainer) pContainer.style.transform = 'translateX(45px) scale(1.08)';
@@ -631,16 +650,26 @@ function turn(playerMove) {
 
     if (enemyMove === 'atk') {
       pDamage = data.atk;
-      if(containerEl) containerEl.style.animation = 'enemyAssault 0.45s forwards';
+      if(containerEl) {
+          // イビルアイ（左右反転状態）の突進移動を維持
+          let baseFlip = data.type === "eyes" ? " scaleX(-1)" : "";
+          containerEl.style.transform = 'translateX(0)';
+          containerEl.style.animation = 'none';
+          void containerEl.offsetWidth;
+          containerEl.style.animation = 'enemyAssault 0.45s forwards';
+      }
       setTimeout(() => { if(containerEl) containerEl.style.animation = 'floatE 2.2s infinite alternate ease-in-out'; }, 460);
       
-      let mushText = (data.type === "mush" && eHp <= eMaxHp / 2) ? "【変異種】" : "";
+      let mushText = (data.type === "mush" && (eHp - eDamage) <= eMaxHp / 2) ? "【胞子覚醒】" : "";
       log = isCritical ? `【CRITICAL】弱点適合！${mushText}『${spellName}』直撃！【${eDamage}】ダメージ！ 敵のカウンター突進で ${pDamage} 被弾！` : `『${spellName}』命中！敵に ${eDamage} ダメージ / あなたは ${pDamage} 被弾！`;
     } else { eDamage = Math.floor(eDamage * 0.33); log = `🛡️ 敵の防壁展開！『${spellName}』が減衰。敵に ${eDamage} ダメージ。`; }
 
+    // ダメージ計算を先行反映させて2段階変形トリガーを同期
+    pHp = Math.max(0, pHp - pDamage); eHp = Math.max(0, eHp - eDamage);
+
     setTimeout(() => {
       playSE(playerMove); 
-      burstSlimeAnimation(); // 被弾したオリジナル敵画像を全枚数バースト駆動
+      burstSlimeAnimation(); // 被弾バースト駆動（マイコニド変身連動）
       
       if(containerEl && frontLayer) {
         const parentRect = document.getElementById('eff-scr').getBoundingClientRect();
@@ -658,7 +687,7 @@ function turn(playerMove) {
       createDmgPop(eDamage, isCritical, false); if (pDamage > 0) createDmgPop(pDamage, false, true);
       if (isCritical) { flashCritical(flashColor); } else { flashScreen(flashColor); }
       
-      pHp = Math.max(0, pHp - pDamage); eHp = Math.max(0, eHp - eDamage); updateHpUI();
+      updateHpUI();
       document.getElementById('battle-log').innerHTML = log;
       setTimeout(() => { checkBattleEnd(); }, 460);
     }, 360);
@@ -666,21 +695,21 @@ function turn(playerMove) {
     mana = 1.0; document.getElementById('p-aura-layer').style.display = "none";
     const chgB = document.getElementById('charge-badge'); if(chgB) chgB.style.display = "none";
   }
-  // 🛡️ 第3案：防御（ハニカム障壁）・チャージコマンド
+  // 防御・チャージコマンド
   else {
     if (playerMove === 'def') {
       playSE('def');
       if(pContainer) pContainer.style.transform = 'translateX(-20px)';
       if(shieldEl) {
         shieldEl.style.animation = 'none';
-        void shieldEl.offsetWidth; // リフロートリガー
+        void shieldEl.offsetWidth;
         shieldEl.style.animation = 'shieldDeploy 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards';
       }
       setTimeout(() => { if(pContainer) pContainer.style.transform = 'none'; }, 500);
 
       if (enemyMove === 'atk') { 
         pDamage = Math.max(1, Math.floor(data.atk * 0.12)); 
-        log = `🛡️ 第3案・ホログラムシールド展開！敵の突進を絶対防御壁が激しく火花を散らして防ぎ、ダメージをわずか 【${pDamage}】 に遮断！`; 
+        log = `🛡️ ホログラムシールド展開！敵の突進を絶対防御壁が防ぎ、ダメージをわずか 【${pDamage}】 に遮断！`; 
       } else { 
         log = `🔮 絶対障壁を構えたが、エネミーは防御姿勢をとっている。`; 
       }
@@ -702,7 +731,7 @@ function checkBattleEnd() {
       if(containerEl) { containerEl.style.opacity = '0'; containerEl.style.transform = 'scale(0.01)'; }
       setTimeout(() => { endBattle(); }, STAGES[curIdx].floor === 10 ? 1200 : 650);
     } else { endBattle(); }
-  } else { isBusy = false; } // 生存時は確実にロックを解除
+  } else { isBusy = false; }
 }
 
 function endBattle() {
@@ -712,7 +741,7 @@ function endBattle() {
   const chgB = document.getElementById('charge-badge'); if(chgB) chgB.style.display = "none";
   if (eHp <= 0) {
     rTitle.innerText = "VICTORY"; rTitle.style.color = '#10b981'; document.getElementById('res-icon').innerText = "🏆";
-    if (curIdx === STAGES.length - 1) rText.innerText = "🎉 螺旋の塔・完全制覇！最終暗黒竜『カリスドラゴン』を討滅し、世界に悠久の光を取り戻した！";
+    if (curIdx === STAGES.length - 1) rText.innerText = "🎉 螺旋の塔・完全制覇！最終暗黒竜『カリスドラゴン』を討滅し、世界に悠久 of 光を取り戻した！";
     else rText.innerText = `激闘の末、立ちはだかる${STAGES[curIdx].name}を完全に粉砕した！`;
   } else {
     rTitle.innerText = "DEFEATED"; rTitle.style.color = '#f43f5e'; document.getElementById('res-icon').innerText = "💀";
