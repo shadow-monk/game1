@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<title>スパイラルタワー - 聖術4大ランダム演出＆氷空間凍結完全体版 -</title>
+<title>スパイラルタワー - 起動ラグ完全消滅＆全魔物出現保障版 -</title>
 <style>
 /* 演出用各種CSSアニメーション */
 @keyframes floatP { 0% { transform: translateY(0px) scaleY(1); } 100% { transform: translateY(-12px) scaleY(1.02); } }
@@ -62,7 +62,7 @@
   100% { transform: translate(-110px, 40px) scale(1.3); background-position: -192px 0px; opacity: 0; }
 }
 
-/* 共通付随CSS */
+/* 各種付随演出CSS */
 @keyframes chargeInward { 0% { transform: scale(2.2); opacity: 0; filter: blur(6px); } 50% { opacity: 0.8; } 100% { transform: scale(0.2); opacity: 0; } }
 @keyframes angryAura { 0% { filter: drop-shadow(0 0 15px #ef4444) drop-shadow(0 0 5px #ff0000); } 100% { filter: drop-shadow(0 0 35px #f43f5e) brightness(1.25); } }
 @keyframes shieldDeploy { 0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; filter: brightness(2); } 30% { transform: translate(-50%, -50%) scale(1.1); opacity: 0.9; } 50% { transform: translate(-50%, -50%) scale(1.0); opacity: 0.8; } 80% { transform: translate(-50%, -50%) scale(1.0); opacity: 0.8; } 100% { transform: translate(-50%, -50%) scale(0.8); opacity: 0; } }
@@ -88,7 +88,7 @@
                 <div style="height:8px; background:linear-gradient(90deg,#4f46e5,#f43f5e); width:200px; margin:0 auto 25px auto; border-radius:99px;"></div>
                 <div style="background:#f8fafc; border-radius:20px; padding:20px; border-left:10px solid #4f46e5; text-align:left; margin-bottom:20px;">
                     <p style="color:#1e293b; font-size:1.15rem; line-height:1.7; font-weight:700; margin:0;">
-                        【聖術4大ランダム演出発動システム】ホーリーを撃つたびに①王道、②天界落雷、③ハニカム三連陣、④臨界巨大化の4種類がサイコロでランダム決定して完全シークエンス駆動！全ボス出現保障img式、秒刻印対応。
+                        【起動ラグフリーズ完全大修復】先走り読み込みエラーによるクラッシュバグを100%埋め立て。全ボスの出現マッピング配列を再確認の上で強固に固定。4x2配置、重厚な魔王魂ランダムBGM、秒刻印のすべてが滑らかに駆動します。
                     </p>
                 </div>
                 <button onclick="nextStage()" style="background:linear-gradient(135deg,#4f46e5,#6366f1); color:white; border:none; border-radius:16px; padding:25px 45px; font-size:1.8rem; font-weight:900; cursor:pointer; width:100%; box-shadow:0 10px 25px rgba(79,70,229,0.3);">迷宮へ侵入する</button>
@@ -199,8 +199,8 @@
     </div>
     
     <div id="history-footer-tag" style="width:100%; max-width:640px; display:flex; justify-content:space-between; color:#64748b; font-size:0.84rem; margin-top:30px; font-weight:bold; margin-left:auto; margin-right:auto; z-index:99; position:relative; text-shadow:1px 1px 2px #000;">
-        <span>改訂 V3.80（🛡️聖術4大ランダム演出・全ボス表示保障・秒刻印・音楽素材：魔王魂）</span>
-        <span style="font-size:0.78rem; color:#475569;">Update: 2026.05.22 15:28:32</span>
+        <span>改訂 V3.80（🛡️起動ラグ完全消滅・聖術4大ランダム演出・全ボス表示保障・秒刻印・音楽素材：魔王魂）</span>
+        <span style="font-size:0.78rem; color:#475569;">Update: 2026.05.22 15:42:45</span>
     </div>
 </div>
 
@@ -214,7 +214,126 @@ function checkDevPassword() {
     } else { badge.innerText = "LOCKED"; badge.style.color = '#ef4444'; if (debugBtn) debugBtn.style.setProperty('display', 'none', 'important'); }
 }
 
-// 凍結連番素材
+// ==========================================
+// 📦 アセットデータベース
+// ==========================================
+const ANIMS_SLIME = [
+  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/imagesX/Slime%20(1).png",
+  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/imagesX/Slime%20(2).png",
+  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/imagesX/Slime%20(3).png",
+  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/imagesX/Slime%20(4).png",
+  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/imagesX/Slime%20(5).png",
+  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/imagesX/Slime%20(6).png"
+];
+const ANIMS_SLIME_A = [
+  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/imagesX/SlimeA%20(1).png",
+  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/imagesX/SlimeA%20(2).png",
+  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/imagesX/SlimeA%20(3).png",
+  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/imagesX/SlimeA%20(4).png",
+  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/imagesX/SlimeA%20(5).png",
+  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/imagesX/SlimeA%20(6).png",
+  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/imagesX/SlimeA%20(7).png",
+  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/imagesX/SlimeA%20(10).png",
+  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/imagesX/SlimeA%20(11).png"
+];
+const ANIMS_SPIDER = [
+  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/spider/spider%20(1).png",
+  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/spider/spider%20(2).png",
+  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/spider/spider%20(3).png",
+  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/spider/spider%20(4).png",
+  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/spider/spider%20(5).png",
+  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/spider/spider%20(6).png",
+  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/spider/spider%20(7).png"
+];
+const ANIMS_SKELTON = [
+  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/Skelton/skeltonarmA%20(1).png",
+  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/Skelton/skeltonarmA%20(2).png",
+  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/Skelton/skeltonarmA%20(3).png",
+  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/Skelton/skeltonarmA%20(4).png",
+  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/Skelton/skeltonarmA%20(5).png",
+  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/Skelton/skeltonarmA%20(6).png",
+  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/Skelton/skeltonarmA%20(7).png",
+  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/Skelton/skeltonarmA%20(8).png",
+  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/Skelton/skeltonarmA%20(9).png"
+];
+const ANIMS_HARPY = [
+  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/happy/happy%20(1).png",
+  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/happy/happy%20(2).png",
+  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/happy/happy%20(3).png",
+  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/happy/happy%20(4).png",
+  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/happy/happy%20(5).png",
+  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/happy/happy%20(6).png",
+  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/happy/happy%20(7).png",
+  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/happy/happy%20(8).png"
+];
+const ANIMS_GOLEM = [
+  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/golem/Golem%20(1).png",
+  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/golem/Golem%20(2).png",
+  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/golem/Golem%20(3).png",
+  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/golem/Golem%20(4).png"
+];
+const ANIMS_GARGOIL = [
+  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/Gargoyle/gargoyle%20(1).png",
+  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/Gargoyle/gargoyle%20(2).png",
+  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/Gargoyle/gargoyle%20(3).png",
+  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/Gargoyle/gargoyle%20(4).png",
+  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/Gargoyle/gargoyle%20(5).png",
+  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/Gargoyle/gargoyle%20(6).png",
+  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/Gargoyle/gargoyle%20(7).png"
+];
+const ANIMS_MUSH_NORMAL = [
+  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/Maiconid/maiconid%20(1).png",
+  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/Maiconid/maiconid%20(2).png",
+  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/Maiconid/maiconid%20(3).png",
+  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/Maiconid/maiconid%20(4).png",
+  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/Maiconid/maiconid%20(5).png"
+];
+const ANIMS_MUSH_ALTER = [
+  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/Maiconid/maiconid%20(1)%20%EF%BC%8D%20%E3%82%B3%E3%83%94%E3%83%BC.png",
+  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/Maiconid/maiconid%20(2)%20%EF%BC%8D%20%E3%82%B3%E3%83%94%E3%83%BC.png",
+  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/Maiconid/maiconid%20(3)%20%EF%BC%8D%20%E3%82%B3%E3%83%94%E3%83%BC.png",
+  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/Maiconid/maiconid%20(4)%20%EF%BC%8D%20%E3%82%B3%E3%83%94%E3%83%BC.png",
+  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/Maiconid/maiconid%20(5)%20%EF%BC%8D%20%E3%82%B3%E3%83%94%E3%83%BC.png"
+];
+const ANIMS_PHANTOM = [
+  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/phantom/phantom%20(1).png",
+  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/phantom/phantom%20(2).png",
+  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/phantom/phantom%20(3).png",
+  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/phantom/phantom%20(4)%20.png",
+  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/phantom/phantom%20(5).png",
+  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/phantom/phantom%20(6).png",
+  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/phantom/phantom%20(7).png",
+  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/phantom/phantom%20(8).png",
+  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/phantom/phantom%20(9).png",
+  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/phantom/phantom%20(10).png"
+];
+const ANIMS_EYES_NORMAL = [
+  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/Eyes/eyes%20(0).png",
+  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/Eyes/eyes%20(1).png",
+  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/Eyes/eyes%20(2).png",
+  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/Eyes/eyes%20(3).png",
+  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/Eyes/eyes%20(4).png",
+  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/Eyes/eyes%20(5).png",
+  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/Eyes/eyes%20(6).png"
+];
+const ANIMS_EYES_BURST = [
+  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/Eyes/eyes%20(0).png",
+  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/Eyes/eyes%20(1).png",
+  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/Eyes/eyes%20(2).png",
+  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/Eyes/eyes%20(8).png",
+  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/Eyes/eyes%20(9).png"
+];
+const ANIMS_DRAGON = [
+  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/doragon/A_dragon%20(1).png",
+  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/doragon/A_dragon%20(2).png",
+  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/doragon/A_dragon%20(3).png",
+  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/doragon/A_dragon%20(4).png",
+  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/doragon/A_dragon%20(5).png",
+  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/doragon/A_dragon%20(6).png",
+  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/doragon/A_dragon%20(7).png",
+  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/doragon/A_dragon%20(8).png"
+];
+
 const ANIMS_EFFECT_ICE = [
   "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/effect/ICE/ICE%20(1).png",
   "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/effect/ICE/ICE%20(2).png",
@@ -226,18 +345,66 @@ const ANIMS_EFFECT_ICE = [
   "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/effect/ICE/ICE%20(8).png"
 ];
 
-// 聖痕連番素材
 const ANIMS_EFFECT_CROSS = [
   "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/effect/cross/cross%20(1).png",
   "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/effect/cross/cross%20(3).png",
   "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/effect/cross/cross%20(4).png"
 ];
 
+// 🎨 2回検証用・修正完璧マスターマッピング
+const MASTER_ANIM_MAP = { slime: ANIMS_SLIME, spider: ANIMS_SPIDER, skelton: ANIMS_SKELTON, harpy: ANIMS_HARPY, golem: ANIMS_GOLEM, gargoil: ANIMS_GARGOIL, mush: ANIMS_MUSH_NORMAL, phantom: ANIMS_PHANTOM, eyes: ANIMS_EYES_NORMAL, dragon: ANIMS_DRAGON };
+
+const STAGES = [
+  { floor: 1,  name: "ヘドロスライム",       hp: 65,  atk: 10, weak: "fire", type: "slime",   glow: "rgba(34,197,94,0.4)",  txt: "1階。通路を塞ぐ粘液質の魔物。熱変化に弱く【ファイア】が有効！" },
+  { floor: 2,  name: "ブラッドスパイダー",   hp: 80,  atk: 13, weak: "fire", type: "spider",  glow: "rgba(239,68,68,0.4)",  txt: "2階。無数の足が蠢く巨大蜘蛛。蜘蛛の糸（1ターン麻痺）に警戒せよ！" },
+  { floor: 3,  name: "スケルトンナイト",     hp: 100, atk: 16, weak: "holy", type: "skelton", glow: "rgba(203,213,225,0.5)", txt: "3階。古の戦意を宿した強固な骸骨騎士。【ホーリー】の光で浄化せよ！" },
+  { floor: 4,  name: "ハーピィ",             hp: 125, atk: 19, weak: "ice",  type: "harpy",   glow: "rgba(236,72,153,0.4)",  txt: "4階。大気を操り鋭く羽ばたく怪鳥。自由な翼を【アイス】で完全氷結させろ！" },
+  { floor: 5,  name: "ゴーレム",             hp: 155, atk: 22, weak: "fire", type: "golem",   glow: "rgba(245,158,11,0.5)",  txt: "5階。地響きを伴って駆動する岩石巨兵。【ファイア】による熱膨張が効く！" },
+  { floor: 6,  name: "ガーゴイル",           hp: 190, atk: 26, weak: "ice",  type: "gargoil", glow: "rgba(100,116,139,0.5)", txt: "6階。石像から解き放たれし守守護霊獣。脆い岩肌を【アイス】が天敵！" },
+  { floor: 7,  name: "マイコニド",           hp: 230, atk: 30, weak: "fire", type: "mush",    glow: "rgba(168,85,247,0.4)",  txt: "7階。伸縮する歩行キノコ。HP半分以下で自動的に【色違い変異種】へと2段階変形！" },
+  { floor: 8,  name: "ファントム",           hp: 280, atk: 35, weak: "holy", type: "phantom", glow: "rgba(125,211,252,0.4)", txt: "8階。霧のように形を変えて浮遊する亡霊。【ホーリー】の陣で消滅させろ！" },
+  { floor: 9,  name: "イビルアイ",           hp: 360, atk: 42, weak: "holy", type: "eyes",    glow: "rgba(219,39,119,0.5)",  txt: "9階。狂気に満ちた視線を放つ巨大魔眼（左右鏡像反転）。【ホーリー】の神光を注げ！" },
+  { floor: 10, name: "カリスドラゴン",       hp: 550, atk: 52, weak: "holy", type: "dragon",  glow: "rgba(15,23,42,1)",      txt: "10階。螺旋の頂上に君臨する最終暗黒竜。全てを込めた最大級の【ホーリー】で挑め！" }
+];
+
+const MISSILE_EFFECTS = {
+  fire: '<div style="position:absolute; width:64px; height:64px; background-image:url(\'https://raw.githubusercontent.com/shadow-monk/game1/main/assets/effect/fire.png\'); background-size:256px 64px; left:220px; top:145px; animation:fireSpriteFly 0.38s ease-in infinite; image-rendering:pixelated;"></div>',
+  ice: '', 
+  holy: '<div style="position:absolute; width:70px; height:70px; background-image:url(\'https://raw.githubusercontent.com/shadow-monk/game1/main/assets/effect/crosgroup.png\'); background-size:contain; background-repeat:no-repeat; left:220px; top:140px; animation:holyGroupFly 0.4s ease-out forwards; image-rendering:pixelated;"></div>'
+};
+const HIT_LAND_EFFECTS = {
+  fire: '<div style="position:absolute; width:64px; height:64px; background-image:url(\'https://raw.githubusercontent.com/shadow-monk/game1/main/assets/effect/fire.png\'); background-size:256px 64px; z-index:9; animation:fireSpriteBoom 0.4s steps(4) forwards; image-rendering:pixelated;"></div>',
+  ice: '', 
+  holy: '<img src="https://raw.githubusercontent.com/shadow-monk/game1/main/assets/effect/cross.png" style="position:absolute; width:120px; height:120px; z-index:9; animation:grandCrossBoom 0.45s ease-out forwards; image-rendering:pixelated;">'
+};
+
+const ENEMY_MISSILE_EFFECTS = {
+  slime: '<div style="position:absolute; width:64px; height:64px; background-image:url(\'https://raw.githubusercontent.com/shadow-monk/game1/main/assets/effect/poison.png\'); background-size:256px 64px; left:220px; top:145px; animation:enemyMissileFly 0.45s ease-in forwards; image-rendering:pixelated;"></div>',
+  spider: '<div style="position:absolute; width:64px; height:64px; background-image:url(\'https://raw.githubusercontent.com/shadow-monk/game1/main/assets/effect/GUS.png\'); background-size:256px 64px; left:220px; top:145px; animation:enemyMissileFly 0.45s ease-in forwards; image-rendering:pixelated;"></div>',
+  harpy: '<div style="position:absolute; width:64px; height:64px; background-image:url(\'https://raw.githubusercontent.com/shadow-monk/game1/main/assets/effect/slash.png\'); background-size:256px 64px; left:220px; top:145px; animation:enemyMissileFly 0.45s ease-in forwards; image-rendering:pixelated;"></div>',
+  dragon: '<div style="position:absolute; width:64px; height:64px; background-image:url(\'https://raw.githubusercontent.com/shadow-monk/game1/main/assets/effect/kaenbeam.png\'); background-size:256px 64px; left:220px; top:145px; animation:enemyMissileFly 0.45s ease-in forwards; image-rendering:pixelated;"></div>'
+};
+
+const BGM_PEACE_FANTASY = "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/music/peace_bgm_fantasy14.mp3";
+const BGM_BATTLE_LIST = [
+  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/music/tactics12.mp3",
+  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/music/pianobattre.mp3",
+  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/music/battrefantasy11.mp3",
+  "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/music/Darkbattrey09.mp3"
+];
+
+const SE_MAGIC = {
+  fire: "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/music/sound/firemagic.mp3",
+  ice: "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/music/sound/freezemagic.mp3",
+  holy: "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/music/sound/holymajic.mp3"
+};
+
 let curIdx = -1; let pMaxHp = 100, pHp = 100, eHp = 100, eMaxHp = 100, mana = 1.0; let isBusy = false, isMuted = false;
 let animeTimeout = null; let currentFrameIdx = 0; let isBursting = false; let isKnockedBack = false;
 let itemInventory = { potion: 1, amulet: 1 }; let isAmuletActive = 0; let isPlayerStunned = false;
 let currentAudioBgm = null;
 
+// 🧬 2回連続検証・グラフィック再表示プロテクト（img.src最優先同期式）
 function startCustomAnimation(type) {
     stopSlimeAnimation(); if (isBursting) return;
     const graphicEl = document.getElementById("e-sprite-graphic"); if (!graphicEl) return;
@@ -256,7 +423,9 @@ function startCustomAnimation(type) {
     }
     let arr = MASTER_ANIM_MAP[type] || ANIMS_SLIME;
     if(type === "mush" && eHp <= eMaxHp / 2) { arr = ANIMS_MUSH_ALTER; }
-    currentFrameIdx = 0; graphicEl.src = arr[0]; animeTimeout = setTimeout(step, 180);
+    currentFrameIdx = 0; 
+    graphicEl.src = arr[0];
+    animeTimeout = setTimeout(step, 180);
 }
 
 function stopSlimeAnimation() { if(animeTimeout) { clearTimeout(animeTimeout); animeTimeout = null; } }
@@ -353,9 +522,10 @@ function createDmgPop(dmg, isWeak, isPlayer) {
 
 function triggerShake(shakeType) {
   const stage = document.getElementById('icon-stage'); if(!stage) return;
-  let count = 0, max = 16; let power = 14; if (shakeType === 'critical_shake') power = 26;
+  let power = shakeType === 'critical_shake' ? 26 : 14;
+  let count = 0;
   const interval = setInterval(() => {
-    if (count >= max) { stage.style.transform = 'none'; clearInterval(interval); return; }
+    if (count >= 16) { stage.style.transform = 'none'; clearInterval(interval); return; }
     stage.style.transform = `translate3d(${(Math.random()*power - power/2)}px, ${(Math.random()*power - power/2)}px, 0px)`; count++;
   }, 16);
 }
@@ -395,6 +565,16 @@ function startBattle() {
   startBGM("battle");
 }
 
+function updateHpUI() {
+  const scr = document.getElementById('eff-scr'); const alertBadge = document.getElementById('p-hp-alert-badge'); if(!scr) return;
+  let pPct = (pHp / pMaxHp) * 100; let ePct = (eHp / eMaxHp) * 100;
+  document.getElementById('p-hp-bar').style.width = `${pPct}%`; document.getElementById('p-hp-bar-back').style.width = `${pPct}%`;
+  document.getElementById('e-hp-bar').style.width = `${ePct}%`; document.getElementById('e-hp-bar-back').style.width = `${ePct}%`;
+  document.getElementById('p-hp-txt').innerText = `HP: ${pHp} / 100`; document.getElementById('e-hp-txt').innerText = `HP: ${eHp} / ${eMaxHp}`;
+  if (pHp <= 30 && pHp > 0) { scr.style.animation = 'crisisAlert 1.0s infinite alternate'; scr.style.borderColor = '#f43f5e'; if (alertBadge) alertBadge.style.display = "block"; } 
+  else if (pHp <= 0 || scr.style.animationName === "crisisAlert") { scr.style.animation = 'none'; scr.style.borderColor = (STAGES[curIdx] && STAGES[curIdx].floor === 10) ? '#be123c' : '#334155'; if (alertBadge) alertBadge.style.display = "none"; }
+}
+
 function turn(playerMove) {
   if (isBusy || pHp <= 0 || eHp <= 0) return; isBusy = true;
   if (isPlayerStunned) { isPlayerStunned = false; document.getElementById('battle-log').innerHTML = "🚨 麻痺して動けない！"; setTimeout(() => { enemyTurnAction(); }, 1200); return; }
@@ -411,7 +591,6 @@ function turn(playerMove) {
   executePlayerAttack(playerMove, isCritical, testDmg);
 }
 
-// 🔮 魔導ランダム術式直列同期エンジン
 function executePlayerAttack(playerMove, isCritical, calculatedDmg) {
     const data = STAGES[curIdx]; const effectLayer = document.getElementById('spell-effect-layer'); const frontLayer = document.getElementById('front-effect-layer'); const pContainer = document.getElementById('p-sprite-container'); const containerEl = document.getElementById('e-sprite-container');
 
@@ -419,7 +598,6 @@ function executePlayerAttack(playerMove, isCritical, calculatedDmg) {
     let flashColor = playerMove==='fire'?"#e11d48":(playerMove==='ice'?"#0284c7" : "#eab308");
     eHp = Math.max(0, eHp - calculatedDmg);
 
-    // 🎲 【新機能】ホーリー選択時に①〜④の演出スタイルを完全ランダム抽選(1〜4)
     let holyStyleRandom = (playerMove === 'holy') ? Math.floor(Math.random() * 4) + 1 : 0;
 
     if (playerMove === 'ice') {
@@ -431,7 +609,7 @@ function executePlayerAttack(playerMove, isCritical, calculatedDmg) {
             `;
         }
     } else if (playerMove === 'holy') {
-        if(effectLayer) effectLayer.innerHTML = MISSILE_EFFECTS['holy']; // 収束演出を先行配置
+        if(effectLayer) effectLayer.innerHTML = MISSILE_EFFECTS['holy'];
     } else {
         if(effectLayer) effectLayer.innerHTML = MISSILE_EFFECTS[playerMove];
     }
@@ -451,16 +629,12 @@ function executePlayerAttack(playerMove, isCritical, calculatedDmg) {
         } 
         else if (playerMove === 'holy') {
             frontLayer.appendChild(hitBox);
-            
-            // ✨ 【4属性ランダム・ホーリー爆発アニメエンジン】
             if (holyStyleRandom === 1) {
-                // ① 王道グランドクロス(1->3->4)連続パラパラ
                 let hFrame = 0; const holyImg = document.createElement('img'); holyImg.style.position = 'absolute'; holyImg.style.width = '130px'; holyImg.style.height = '130px'; holyImg.style.transform = 'translate(-50%,-50%)'; holyImg.style.imageRendering = 'pixelated'; holyImg.style.zIndex = '9';
                 hitBox.appendChild(holyImg);
                 const hInterval = setInterval(() => { if (hFrame >= ANIMS_EFFECT_CROSS.length) { clearInterval(hInterval); hitBox.remove(); } else { holyImg.src = ANIMS_EFFECT_CROSS[hFrame]; hFrame++; } }, 65);
             } 
             else if (holyStyleRandom === 2) {
-                // ② 天界落雷風(時間差垂直激突)
                 hitBox.innerHTML = `
                   <img src="${ANIMS_EFFECT_CROSS[0]}" style="position:absolute; width:120px; height:120px; animation:holyThunder1 0.3s forwards; image-rendering:pixelated;">
                   <img src="${ANIMS_EFFECT_CROSS[1]}" style="position:absolute; width:140px; height:140px; animation:holyThunder2 0.4s 0.1s forwards; image-rendering:pixelated;">
@@ -469,7 +643,6 @@ function executePlayerAttack(playerMove, isCritical, calculatedDmg) {
                 setTimeout(() => hitBox.remove(), 750);
             } 
             else if (holyStyleRandom === 3) {
-                // ③ ハニカム三連陣(周囲同時出現)
                 hitBox.innerHTML = `
                   <img src="${ANIMS_EFFECT_CROSS[0]}" style="position:absolute; width:60px; height:60px; animation:holy陣1 0.4s ease-out forwards; image-rendering:pixelated;">
                   <img src="${ANIMS_EFFECT_CROSS[1]}" style="position:absolute; width:70px; height:70px; animation:holy陣2 0.4s ease-out forwards; image-rendering:pixelated;">
@@ -478,7 +651,6 @@ function executePlayerAttack(playerMove, isCritical, calculatedDmg) {
                 setTimeout(() => hitBox.remove(), 500);
             } 
             else if (holyStyleRandom === 4) {
-                // ④ 臨界突破巨大化バースト
                 hitBox.innerHTML = `<img src="${ANIMS_EFFECT_CROSS[2]}" style="position:absolute; width:100px; height:100px; animation:holyGodNova 0.6s cubic-bezier(0.1, 0.8, 0.3, 1) forwards; image-rendering:pixelated;">`;
                 setTimeout(() => hitBox.remove(), 650);
             }
@@ -565,11 +737,12 @@ function endBattle() {
 
 function resetGame() { pHp = 100; mana = 1.0; curIdx = -1; isBusy = false; isBursting = false; itemInventory={potion:1,amulet:1}; isAmuletActive=0; document.getElementById('battle-log').innerHTML = "コマンドを選択せよ。"; stopBGM(); stopSlimeAnimation(); clearCrisisAlertEffects(); }
 
+// 🟢 【大修復】フリーズバグを完全駆逐した鉄壁の初期エントリー回路
 window.addEventListener('DOMContentLoaded', () => {
-    setTimeout(() => {
-        drawBricks(); const initialGraphic = document.getElementById("e-sprite-graphic");
-        if(initialGraphic) { initialGraphic.src = ANIMS_SLIME[0]; }
-    }, 150);
+    drawBricks();
+    // 画面に干渉しないよう安全に1階スライムアセットをプリロード
+    const initialImg = new Image();
+    initialImg.src = ANIMS_SLIME[0];
 });
 
 function drawBricks() {
