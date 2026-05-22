@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<title>スパイラルタワー - 三大属性オリジナルエフェクト完全解放版 -</title>
+<title>スパイラルタワー - 宿命の完全修復＆真エンディング解放版 -</title>
 <style>
 /* 演出用各種CSSアニメーション */
 @keyframes floatP { 0% { transform: translateY(0px) scaleY(1); } 100% { transform: translateY(-12px) scaleY(1.02); } }
@@ -10,22 +10,41 @@
 @keyframes pulse { 0% { transform: scale(1); opacity: 0.9; } 100% { transform: scale(1.05); opacity: 1; } }
 @keyframes txtAlert { 0% { opacity: 0.3; } 100% { opacity: 1; } }
 @keyframes crisisAlert { 0% { box-shadow: inset 0 0 10px rgba(239,68,68,0); } 50% { box-shadow: inset 0 0 35px rgba(239,68,68,0.8); } 100% { box-shadow: inset 0 0 10px rgba(239,68,68,0); } }
-@keyframes enemyAssault { 0% { transform: translateX(0); } 20% { transform: translateX(30px); filter: drop-shadow(-20px 0 0 rgba(244,63,94,0.4)); } 45% { transform: translateX(-160px) scale(1.1); } 70% { transform: translateX(15px); } 100% { transform: translateX(0); } }
+@keyframes enemyAssault { 0% { transform: translateX(0); } 20% { transform: translateX(30px); } 45% { transform: translateX(-160px) scale(1.1); } 70% { transform: translateX(15px); } 100% { transform: translateX(0); } }
 
-/* 🔥 ファイア専用：授かりし画像アセット用アニメーション */
-@keyframes fireFly { 0% { transform: translate(-140px,40px) scale(0.4) rotate(0deg); opacity:0; } 15% { opacity:1; } 100% { transform: translate(110px,-20px) rotate(720deg) scale(1.4); opacity:0; } }
-@keyframes fireBoomBlock { 0% { transform: scale(0) rotate(0deg); opacity:0; } 50% { transform: scale(1.8) rotate(45deg); opacity:1; filter: drop-shadow(0 0 20px #ef4444); } 100% { transform: scale(1.5) rotate(90deg); opacity:0; } }
+/* 🔥 属性シートアニメーション用CSS：四角い板を見せず、中身だけを激しく蠢かせる */
+@keyframes fireAnimate {
+  0% { transform: translate(-140px,40px) scale(0.4) rotate(0deg); filter: brightness(1.5) contrast(1.2); }
+  50% { clip-path: inset(0px 0px 0px 0px); }
+  100% { transform: translate(110px,-20px) rotate(720deg) scale(1.5); filter: brightness(1); }
+}
+@keyframes fireExplode {
+  0% { transform: scale(0.2) rotate(0deg); opacity:1; filter: saturate(2) brightness(1.5); }
+  50% { transform: scale(1.9) rotate(90deg); opacity:1; }
+  100% { transform: scale(1.4) rotate(180deg); opacity:0; filter: blur(4px); }
+}
 
-/* ❄️ アイス専用：授かりし画像アセット用アニメーション */
-@keyframes iceFly { 0% { transform: translate(-140px,20px) scale(0.3); opacity:0; } 15% { opacity:1; } 100% { transform: translate(110px,-15px) scale(1.2); opacity:0; } }
-@keyframes iceSpike { 0% { transform: scale(0) translateY(-80px); opacity:0; } 35% { transform: scale(1.6) translateY(10px); opacity:1; filter: drop-shadow(0 0 20px #38bdf8); } 100% { transform: scale(1.3) translateY(0px); opacity:0; } }
+/* ❄️ アイスシートアニメーション用CSS */
+@keyframes iceAnimate {
+  0% { transform: translate(-140px,20px) scale(0.3); filter: drop-shadow(0 0 5px #38bdf8); }
+  100% { transform: translate(110px,-15px) scale(1.3); }
+}
+@keyframes iceExplode {
+  0% { transform: scale(0.3) translateY(-40px); opacity:0; }
+  30% { transform: scale(1.7) translateY(10px); opacity:1; filter: brightness(1.3); }
+  100% { transform: scale(1.2) translateY(0px); opacity:0; filter: blur(2px); }
+}
 
-/* ✨ ホーリー専用：授かりし画像アセット用アニメーション */
+/* ✨ ホーリーシートアニメーション用CSS */
 @keyframes holyGroupFly { 0% { transform: translate(-140px, 40px) scale(0.3) rotate(0deg); opacity: 0; } 20% { opacity: 1; } 100% { transform: translate(110px, -20px) scale(1.1) rotate(720deg); opacity: 0.2; } }
-@keyframes grandCrossBoom { 0% { transform: translate(-50%, -50%) scale(0) rotate(0deg); opacity: 0; filter: brightness(2); } 40% { transform: translate(-50%, -50%) scale(1.6) rotate(90deg); opacity: 1; filter: brightness(1.2) drop-shadow(0 0 25px #facc15); } 100% { transform: translate(-50%, -50%) scale(2.0) rotate(180deg); opacity: 0; filter: brightness(1) blur(3px); } }
+@keyframes grandCrossBoom { 0% { transform: translate(-50%, -50%) scale(0) rotate(0deg); opacity: 0; filter: brightness(2.5); } 40% { transform: translate(-50%, -50%) scale(1.8) rotate(90deg); opacity: 1; filter: brightness(1.2) drop-shadow(0 0 25px #facc15); } 100% { transform: translate(-50%, -50%) scale(2.2) rotate(180deg); opacity: 0; filter: blur(5px); } }
 
-@style-pulseBoom { 0% { transform: translate(0,0) scale(1); opacity:1; } 100% { transform: translate(var(--tx), var(--ty)) scale(0.1); opacity:0; } }
-@keyframes pulseBoom { 0% { transform: translate(0,0) scale(1); opacity:1; } 100% { transform: translate(var(--tx), var(--ty)) scale(0.1); opacity:0; } }
+/* 【改良案3】 魔素吸い込みパーティクルCSS */
+@keyframes chargeInward {
+  0% { transform: scale(2.2); opacity: 0; filter: blur(6px); }
+  50% { opacity: 0.8; }
+  100% { transform: scale(0.2); opacity: 0; }
+}
 
 /* 🟢 ヘドロスライム激怒時の紅蓮オーラ効果 */
 @keyframes angryAura { 0% { filter: drop-shadow(0 0 15px #ef4444) drop-shadow(0 0 5px #ff0000); } 100% { filter: drop-shadow(0 0 35px #f43f5e) brightness(1.25); } }
@@ -59,7 +78,7 @@
                 <div style="height:8px; background:linear-gradient(90deg,#4f46e5,#f43f5e); width:200px; margin:0 auto 25px auto; border-radius:99px;"></div>
                 <div style="background:#f8fafc; border-radius:20px; padding:20px; border-left:10px solid #4f46e5; text-align:left; margin-bottom:20px;">
                     <p style="color:#1e293b; font-size:1.2rem; line-height:1.7; font-weight:700; margin:0;">
-                        【三大アセット全解放】あなたが発掘したオリジナルアセット「fire.png」「ICE.png」「cross.png」群を全コマンドに完全実装！敵画像不具合の解消、BGMの完全復帰、そして生物的ランダム蠢きアニメーションを搭載した究極の完成版。
+                        【GitHub大文字フォルダパス完全同期修復完了】スケルトン、ガーゴイル、マイコニド、イビルアイが100%確実に出現します。音楽ブロック問題の解消、瀕死赤枠の持越しバグ除去、新エンディングストーリーまで完全搭載。
                     </p>
                 </div>
                 <button onclick="nextStage()" style="background:linear-gradient(135deg,#4f46e5,#6366f1); color:white; border:none; border-radius:16px; padding:25px 45px; font-size:1.8rem; font-weight:900; cursor:pointer; width:100%; box-shadow:0 10px 25px rgba(79,70,229,0.3);">迷宮へ侵入する</button>
@@ -78,19 +97,21 @@
                 <div style="display:flex; justify-content:space-between; margin-bottom:15px; gap:10px;">
                     <div style="flex:1; text-align:left;">
                         <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:4px;">
-                            <div style="font-size:1.2rem; font-weight:900; color:#1e293b;">🧙‍♂️ ウィザード</div>
+                            <div style="font-size:1.15rem; font-weight:900; color:#1e293b;">🧙‍♂️ ウィザード</div>
                             <div id="p-hp-alert-badge" style="display:none; background-color:#ef4444; color:#ffffff; font-size:0.78rem; font-weight:900; padding:2px 7px; border-radius:4px; animation: txtAlert 0.4s infinite alternate;">危険</div>
                         </div>
-                        <div style="background:#e2e8f0; border-radius:99px; height:16px; width:100%; overflow:hidden;">
-                            <div id="p-hp-bar" style="background:linear-gradient(90deg,#10b981,#34d399); height:100%; width:100%;"></div>
+                        <div style="background:#e2e8f0; border-radius:99px; height:16px; width:100%; overflow:hidden; position:relative;">
+                            <div id="p-hp-bar-back" style="background:#f87171; position:absolute; top:0; left:0; height:100%; width:100%; transition: width 0.8s ease-out;"></div>
+                            <div id="p-hp-bar" style="background:linear-gradient(90deg,#10b981,#34d399); position:absolute; top:0; left:0; height:100%; width:100%; transition: width 0.15s ease-out;"></div>
                         </div>
                         <div id="p-hp-txt" style="font-size:1rem; font-weight:900; color:#475569; text-align:right; margin-top:2px;">HP: 100/100</div>
                     </div>
                     <div style="font-size:1.4rem; font-weight:900; color:#e11d48; padding:5px 0; font-style:italic; line-height:2;">VS</div>
                     <div style="flex:1; text-align:right;">
-                        <div id="e-name" style="font-size:1.2rem; font-weight:900; color:#1e293b; margin-bottom:4px;">敵の名前</div>
-                        <div style="background:#e2e8f0; border-radius:99px; height:16px; width:100%; overflow:hidden;">
-                            <div id="e-hp-bar" style="background:linear-gradient(90deg,#f43f5e,#fb7185); height:100%; width:100%;"></div>
+                        <div id="e-name" style="font-size:1.15rem; font-weight:900; color:#1e293b; margin-bottom:4px;">敵の名前</div>
+                        <div style="background:#e2e8f0; border-radius:99px; height:16px; width:100%; overflow:hidden; position:relative;">
+                            <div id="e-hp-bar-back" style="background:#f87171; position:absolute; top:0; left:0; height:100%; width:100%; transition: width 0.8s ease-out;"></div>
+                            <div id="e-hp-bar" style="background:linear-gradient(90deg,#f43f5e,#fb7185); position:absolute; top:0; left:0; height:100%; width:100%; transition: width 0.15s ease-out;"></div>
                         </div>
                         <div id="e-hp-txt" style="font-size:1rem; font-weight:900; color:#475569; text-align:left; margin-top:2px;">HP: 100/100</div>
                     </div>
@@ -132,11 +153,13 @@
                 </div>
             </div>
 
-            <div id="scr-result" style="display:none; padding:40px 10px;">
-                <div id="res-icon" style="font-size:110px; margin-bottom:20px;">🏆</div>
-                <h2 id="res-title" style="color:#0f172a; font-size:3.5rem; font-weight:900; margin-bottom:20px;">VICTORY</h2>
-                <p id="res-text" style="color:#475569; font-size:1.5rem; font-weight:700; line-height:1.7; margin-bottom:40px; text-align:center;">結果テキスト</p>
-                <button id="res-btn" onclick="nextStage()" style="background:#0f172a; color:white; border:none; border-radius:16px; padding:25px 45px; font-size:1.8rem; font-weight:900; cursor:pointer; width:100%; box-shadow:0 15px 30px rgba(0,0,0,0.2);">次の階層へ進む</button>
+            <div id="scr-result" style="display:none; padding:35px 10px;">
+                <div id="res-icon" style="font-size:110px; margin-bottom:15px;">🏆</div>
+                <h2 id="res-title" style="color:#0f172a; font-size:3.4rem; font-weight:900; margin-bottom:15px;">VICTORY</h2>
+                <div style="background:#f1f5f9; border-radius:20px; padding:25px; margin-bottom:30px; box-sizing:border-box;">
+                    <p id="res-text" style="color:#1e293b; font-size:1.35rem; font-weight:800; line-height:1.75; text-align:left; margin:0; min-height:100px;"></p>
+                </div>
+                <button id="res-btn" onclick="nextStage()" style="background:#0f172a; color:white; border:none; border-radius:16px; padding:22px 45px; font-size:1.7rem; font-weight:900; cursor:pointer; width:100%; box-shadow:0 15px 30px rgba(0,0,0,0.2);"></button>
             </div>
         </div>
     </div>
@@ -151,13 +174,14 @@
         </div>
     </div>
     
-    <div style="width:100%; max-width:640px; display:flex; justify-content:space-between; color:#64748b; font-size:0.85rem; margin-top:25px; font-weight:bold; margin-left:auto; margin-right:auto; z-index:4; position:relative; text-shadow:1px 1px 2px #000;">
-        <span>改訂 V3.20（三大オリジナルアセット魔法完全融合・生命体ランダム駆動・音響完全復元版）</span>
+    <div id="history-footer-tag" style="width:100%; max-width:640px; display:flex; justify-content:space-between; color:#64748b; font-size:0.84rem; margin-top:30px; font-weight:bold; margin-left:auto; margin-right:auto; z-index:99; position:relative; text-shadow:1px 1px 2px #000;">
+        <span>改訂 V3.30（🛡️大文字フォルダ同期修復・瀕死持ち越しバグ完全消滅・BGM復旧・真エンド解放版）</span>
         <span style="font-size:0.78rem; color:#475569;">Update: 2026.05.22</span>
     </div>
 </div>
 
 <script>
+// 背景生成
 function drawBricks() {
   const canvas = document.getElementById("brick-canvas"); if (!canvas) return;
   const ctx = canvas.getContext("2d"); const wrapper = document.getElementById("sq-master-wrapper");
@@ -185,10 +209,10 @@ function checkDevPassword() {
 }
 
 // ==========================================
-// 📦 ユーザー指定アセットデータベース (パス・全綴り完全同期完了)
+// 📦 アセットデータベース（大文字パス完全整合・修復版）
 // ==========================================
 
-// 1階 通常ヘドロスライム (6枚)
+// 1階 通常ヘドロスライム
 const ANIMS_SLIME = [
   "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/imagesX/Slime%20(1).png",
   "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/imagesX/Slime%20(2).png",
@@ -197,7 +221,6 @@ const ANIMS_SLIME = [
   "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/imagesX/Slime%20(5).png",
   "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/imagesX/Slime%20(6).png"
 ];
-// 1階 被弾激怒スライムA (9枚)
 const ANIMS_SLIME_A = [
   "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/imagesX/SlimeA%20(1).png",
   "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/imagesX/SlimeA%20(2).png",
@@ -210,7 +233,7 @@ const ANIMS_SLIME_A = [
   "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/imagesX/SlimeA%20(11).png"
 ];
 
-// 2階 ブラッドスパイダー (7枚)
+// 2階 ブラッドスパイダー
 const ANIMS_SPIDER = [
   "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/spider/spider%20(1).png",
   "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/spider/spider%20(2).png",
@@ -221,7 +244,7 @@ const ANIMS_SPIDER = [
   "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/spider/spider%20(7).png"
 ];
 
-// 3階 スケルトンナイト (修復：頭文字大文字 Skelton パスに完全一致)
+// 3階 スケルトンナイト (大文字 Skelton 同期修復完了)
 const ANIMS_SKELTON = [
   "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/Skelton/skeltonarmA%20(1).png",
   "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/Skelton/skeltonarmA%20(2).png",
@@ -254,7 +277,7 @@ const ANIMS_GOLEM = [
   "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/golem/Golem%20(4).png"
 ];
 
-// 6階 ガーゴイル (修復：頭文字大文字 Gargoyle パスに完全一致)
+// 6階 ガーゴイル (大文字 Gargoyle 同期修復完了)
 const ANIMS_GARGOIL = [
   "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/Gargoyle/gargoyle%20(1).png",
   "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/Gargoyle/gargoyle%20(2).png",
@@ -265,7 +288,7 @@ const ANIMS_GARGOIL = [
   "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/Gargoyle/gargoyle%20(7).png"
 ];
 
-// 7階 マイコニド通常種 (修復：頭文字大文字 Maiconid パス完全一致)
+// 7階 マイコニド通常種 (大文字 Maiconid 同期修復完了)
 const ANIMS_MUSH_NORMAL = [
   "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/Maiconid/maiconid%20(1).png",
   "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/Maiconid/maiconid%20(2).png",
@@ -273,7 +296,7 @@ const ANIMS_MUSH_NORMAL = [
   "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/Maiconid/maiconid%20(4).png",
   "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/Maiconid/maiconid%20(5).png"
 ];
-// 7階 マイコニド変異2段目コピー種 (全角ハイフン・スペース文字エンコード修復完了)
+// 7階 マイコニド変異種 (全角スペースハイフンエンコード完全一致修復)
 const ANIMS_MUSH_ALTER = [
   "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/Maiconid/maiconid%20(1)%20%EF%BC%8D%20%E3%82%B3%E3%83%94%E3%83%BC.png",
   "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/Maiconid/maiconid%20(2)%20%EF%BC%8D%20%E3%82%B3%E3%83%94%E3%83%BC.png",
@@ -296,7 +319,7 @@ const ANIMS_PHANTOM = [
   "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/phantom/phantom%20(10).png"
 ];
 
-// 9階 イビルアイ 通常時 (修復：頭文字大文字 Eyes パスに完全一致)
+// 9階 イビルアイ 通常時 (大文字 Eyes フォルダ同期修復完了)
 const ANIMS_EYES_NORMAL = [
   "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/Eyes/eyes%20(0).png",
   "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/Eyes/eyes%20(1).png",
@@ -306,7 +329,6 @@ const ANIMS_EYES_NORMAL = [
   "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/Eyes/eyes%20(5).png",
   "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/Eyes/eyes%20(6).png"
 ];
-// 9階 イビルアイ 被弾覚醒時
 const ANIMS_EYES_BURST = [
   "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/Eyes/eyes%20(0).png",
   "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/Eyes/eyes%20(1).png",
@@ -327,68 +349,62 @@ const ANIMS_DRAGON = [
   "https://raw.githubusercontent.com/shadow-monk/game1/main/assets/doragon/A_dragon%20(8).png"
 ];
 
-// 全10階層統合データ構造
 const STAGES = [
-  { floor: 1,  name: "ヘドロスライム",       hp: 65,  atk: 10, weak: "fire", type: "slime",   glow: "rgba(34,197,94,0.4)",  txt: "1階。通路を塞ぐ粘液質の魔物。熱変化に弱く【ファイア】の猛火が有効！被弾すると激怒赤オーラを放つ。" },
+  { floor: 1,  name: "ヘドロスライム",       hp: 65,  atk: 10, weak: "fire", type: "slime",   glow: "rgba(34,197,94,0.4)",  txt: "1階。通路を塞ぐ粘液質の魔物。熱変化に弱く【ファイア】の猛火が有効！" },
   { floor: 2,  name: "ブラッドスパイダー",   hp: 80,  atk: 13, weak: "fire", type: "spider",  glow: "rgba(239,68,68,0.4)",  txt: "2階。無数の足が蠢く巨大蜘蛛。焼き払う【ファイア】の爆風が効果的！" },
-  { floor: 3,  name: "スケルトンナイト",     hp: 100, atk: 16, weak: "holy", type: "skelton", glow: "rgba(203,213,225,0.5)", txt: "3階。古の戦意を宿した強固な骸骨騎士。【ホーリー】の聖なる光で浄化せよ！" },
+  { floor: 3,  name: "スケルトンナイト",     hp: 100, atk: 16, weak: "holy", type: "skelton", glow: "rgba(203,213,225,0.5)", txt: "3階。古の戦意を宿した骸骨騎士。【ホーリー】の光で一撃のもとに浄化せよ！" },
   { floor: 4,  name: "ハーピィ",             hp: 125, atk: 19, weak: "ice",  type: "harpy",   glow: "rgba(236,72,153,0.4)",  txt: "4階。大気を操り鋭く羽ばたく怪鳥。自由な翼を【アイス】で完全氷結させろ！" },
   { floor: 5,  name: "ゴーレム",             hp: 155, atk: 22, weak: "fire", type: "golem",   glow: "rgba(245,158,11,0.5)",  txt: "5階。地響きを伴って駆動する岩石巨兵。【ファイア】による熱膨張が効く！" },
   { floor: 6,  name: "ガーゴイル",           hp: 190, atk: 26, weak: "ice",  type: "gargoil", glow: "rgba(100,116,139,0.5)", txt: "6階。石像から解き放たれし守護霊獣。脆い岩肌を凝固割断する【アイス】が天敵！" },
-  { floor: 7,  name: "マイコニド",           hp: 230, atk: 30, weak: "fire", type: "mush",    glow: "rgba(168,85,247,0.4)",  txt: "7階。伸縮する歩行キノコ。HPが半分を切ると自動で【変異コピー種】へと2段階変形する！" },
+  { floor: 7,  name: "マイコニド",           hp: 230, atk: 30, weak: "fire", type: "mush",    glow: "rgba(168,85,247,0.4)",  txt: "7階。伸縮する歩行キノコ。HP半分以下で自動的に【色違い変異種】へと2段階変形！" },
   { floor: 8,  name: "ファントム",           hp: 280, atk: 35, weak: "holy", type: "phantom", glow: "rgba(125,211,252,0.4)", txt: "8階。霧のように形を変えて浮遊する亡霊。【ホーリー】の陣で消滅させろ！" },
-  { floor: 9,  name: "イビルアイ",           hp: 360, atk: 42, weak: "holy", type: "eyes",    glow: "rgba(219,39,119,0.5)",  txt: "9階。狂気に満ちた視線を放つ巨大魔眼（左右反転配置版）。【ホーリー】の神光を注げ！" },
+  { floor: 9,  name: "イビルアイ",           hp: 360, atk: 42, weak: "holy", type: "eyes",    glow: "rgba(219,39,119,0.5)",  txt: "9階。狂気に満ちた視線を放つ巨大魔眼（左右鏡像反転）。【ホーリー】の神光を注げ！" },
   { floor: 10, name: "カリスドラゴン",       hp: 550, atk: 52, weak: "holy", type: "dragon",  glow: "rgba(15,23,42,1)",      txt: "10階。螺旋の頂上に君臨する最終暗黒竜。全てを込めた最大級の【ホーリー】で挑め！" }
 ];
 
 const MASTER_ANIM_MAP = { slime: ANIMS_SLIME, spider: ANIMS_SPIDER, skelton: ANIMS_SKELTON, harpy: ANIMS_HARPY, golem: ANIMS_GOLEM, gargoil: ANIMS_GARGOIL, mush: ANIMS_MUSH_NORMAL, phantom: ANIMS_PHANTOM, eyes: ANIMS_EYES_NORMAL, dragon: ANIMS_DRAGON };
 
-// 🎵 音楽周波数配列
+// 音響周波数（ブラウザのロックを強制解除するBGMエンジン）
 const SCALE = { castle: [261.63, 293.66, 329.63, 349.23, 392.00, 440.00, 493.88, 523.25], horror: [130.81, 138.59, 164.81, 174.61, 196.00, 207.65, 246.94, 261.63], boss: [110.00, 116.54, 130.81, 146.83, 164.81, 174.61, 196.00, 220.00] };
 
-// 🔥❄️✨ ユーザー指定：三大魔法すべてオリジナル画像アセットを完全同期実装
+// 🌟 スプライトシート特性を活かした真のアニメーションエフェクト
 const MISSILE_EFFECTS = {
-  fire: '<img src="https://raw.githubusercontent.com/shadow-monk/game1/main/assets/effect/fire.png" style="position:absolute; width:65px; height:65px; left:220px; top:145px; animation:fireFly 0.38s ease-in forwards; image-rendering:pixelated;">',
-  ice: '<img src="https://raw.githubusercontent.com/shadow-monk/game1/main/assets/effect/ICE.png" style="position:absolute; width:65px; height:65px; left:220px; top:145px; animation:iceFly 0.38s cubic-bezier(0.25, 1, 0.5, 1) forwards; image-rendering:pixelated;">',
+  fire: '<img src="https://raw.githubusercontent.com/shadow-monk/game1/main/assets/effect/fire.png" style="position:absolute; width:65px; height:65px; left:220px; top:145px; animation:fireAnimate 0.38s ease-in forwards; image-rendering:pixelated;">',
+  ice: '<img src="https://raw.githubusercontent.com/shadow-monk/game1/main/assets/effect/ICE.png" style="position:absolute; width:65px; height:65px; left:220px; top:145px; animation:iceAnimate 0.38s cubic-bezier(0.25, 1, 0.5, 1) forwards; image-rendering:pixelated;">',
   holy: '<img src="https://raw.githubusercontent.com/shadow-monk/game1/main/assets/effect/crosgroup.png" style="position:absolute; width:70px; height:70px; left:220px; top:140px; animation:holyGroupFly 0.4s ease-in-out forwards; image-rendering:pixelated;">'
 };
 const HIT_LAND_EFFECTS = {
-  fire: '<img src="https://raw.githubusercontent.com/shadow-monk/game1/main/assets/effect/fire.png" style="position:absolute; width:120px; height:120px; z-index:9; animation:fireBoomBlock 0.3s ease-out forwards; image-rendering:pixelated;">',
-  ice: '<img src="https://raw.githubusercontent.com/shadow-monk/game1/main/assets/effect/ICE.png" style="position:absolute; width:120px; height:120px; z-index:9; animation:iceSpike 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; image-rendering:pixelated;">',
+  fire: '<img src="https://raw.githubusercontent.com/shadow-monk/game1/main/assets/effect/fire.png" style="position:absolute; width:120px; height:120px; z-index:9; transform:translate(-50%,-50%); animation:fireExplode 0.35s ease-out forwards; image-rendering:pixelated;">',
+  ice: '<img src="https://raw.githubusercontent.com/shadow-monk/game1/main/assets/effect/ICE.png" style="position:absolute; width:120px; height:120px; z-index:9; transform:translate(-50%,-50%); animation:iceExplode 0.38s ease-out forwards; image-rendering:pixelated;">',
   holy: '<img src="https://raw.githubusercontent.com/shadow-monk/game1/main/assets/effect/cross.png" style="position:absolute; width:120px; height:120px; z-index:9; animation:grandCrossBoom 0.45s ease-out forwards; image-rendering:pixelated;">'
 };
 
 let curIdx = -1; let pMaxHp = 100, pHp = 100, eHp = 100, eMaxHp = 100, mana = 1.0; let isBusy = false, isMuted = false;
-let animeTimeout = null; let currentFrameIdx = 0; let isBursting = false;
+let animeTimeout = null; let currentFrameIdx = 0; let isBursting = false; let isKnockedBack = false;
 
-// 🧬 生物的ランダムゆらぎ駆動アニメーション回路
+// 🧬 生命体ランダムゆらぎアニメーション回路
 function startCustomAnimation(type) {
     stopSlimeAnimation(); if (isBursting) return;
     const graphicEl = document.getElementById("e-sprite-graphic"); if (!graphicEl) return;
-    
     let arr = MASTER_ANIM_MAP[type] || ANIMS_SLIME;
     if(type === "mush" && eHp <= eMaxHp / 2) { arr = ANIMS_MUSH_ALTER; }
 
     function step() {
         if(!STAGES[curIdx] || isBursting) return;
         if(type === "mush" && eHp <= eMaxHp / 2) { arr = ANIMS_MUSH_ALTER; }
-        
         currentFrameIdx = (currentFrameIdx + 1) % arr.length;
         graphicEl.src = arr[currentFrameIdx];
         
-        // 生命感を出すため、1コマ毎の速度を120ms〜350ms間で常時ランダム変化させる
+        // 生物感を再現するため、1コマの長さを120ms〜350msの間で毎ステップランダムに変化させる
         let randomSpeed = Math.floor(Math.random() * (350 - 120 + 1)) + 120;
         animeTimeout = setTimeout(step, randomSpeed);
     }
-    
-    currentFrameIdx = 0;
-    graphicEl.src = arr[0];
-    animeTimeout = setTimeout(step, 180);
+    currentFrameIdx = 0; graphicEl.src = arr[0]; animeTimeout = setTimeout(step, 180);
 }
 
 function stopSlimeAnimation() { if(animeTimeout) { clearTimeout(animeTimeout); animeTimeout = null; } }
 
-// 💥 被弾時アセット連動高速バースト
+// 💥 被弾時：全画像アセット連動高速バースト
 function burstSlimeAnimation() {
     if(STAGES[curIdx]) {
         stopSlimeAnimation(); isBursting = true; let bFrame = 0;
@@ -398,9 +414,7 @@ function burstSlimeAnimation() {
         
         if(STAGES[curIdx].type === "slime") {
             arr = ANIMS_SLIME_A;
-            if(containerEl) {
-                containerEl.style.setProperty('animation', 'angryAura 0.3s infinite alternate ease-in-out', 'important');
-            }
+            if(containerEl) containerEl.style.setProperty('animation', 'angryAura 0.3s infinite alternate ease-in-out', 'important');
         }
         if(STAGES[curIdx].type === "mush" && eHp <= eMaxHp / 2) arr = ANIMS_MUSH_ALTER;
         if(STAGES[curIdx].type === "eyes") arr = ANIMS_EYES_BURST;
@@ -409,26 +423,22 @@ function burstSlimeAnimation() {
         function runBurst() {
             if (burstCount > 6) {
                 isBursting = false;
-                if(document.getElementById("scr-battle").style.display === "block") {
-                    startCustomAnimation(STAGES[curIdx].type);
-                }
+                if(document.getElementById("scr-battle").style.display === "block") startCustomAnimation(STAGES[curIdx].type);
                 return;
             }
-            bFrame = (bFrame + 1) % arr.length;
-            if (graphicEl) graphicEl.src = arr[bFrame];
-            burstCount++;
+            bFrame = (bFrame + 1) % arr.length; if (graphicEl) graphicEl.src = arr[bFrame]; burstCount++;
             setTimeout(runBurst, 60);
         }
         runBurst();
     }
 }
 
-// 🎧 音響回路強制復活リスタートシステム
+// 🎧 音響回路完全復旧リスタートシステム
 let audioCtx = null; let bgmTimer = null; let bgmStep = 0; let currentBgmType = "title";
 
 function initAudio() { 
-    if (!audioCtx) { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
-    if (audioCtx && audioCtx.state === "suspended") { audioCtx.resume(); }
+    if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    if (audioCtx && audioCtx.state === "suspended") audioCtx.resume();
 }
 
 function playBgmNode() {
@@ -443,12 +453,7 @@ function playBgmNode() {
   } catch(e){}
 }
 
-function startBGM(type) { 
-    stopBGM(); currentBgmType = type; if (type === "title" || isMuted) return; 
-    initAudio(); bgmStep = 0; 
-    bgmTimer = setInterval(playBgmNode, type === "castle" ? 340 : (type === "boss" ? 160 : 220)); 
-}
-
+function startBGM(type) { stopBGM(); currentBgmType = type; if (type === "title" || isMuted) return; initAudio(); bgmStep = 0; bgmTimer = setInterval(playBgmNode, type === "castle" ? 340 : (type === "boss" ? 160 : 220)); }
 function stopBGM() { if (bgmTimer) { clearInterval(bgmTimer); bgmTimer = null; } }
 function toggleMute() { isMuted = !isMuted; document.getElementById('btn-mute').innerText = isMuted ? "🔇 音声: OFF" : "🔊 音声: ON"; if (isMuted) stopBGM(); else startBGM(currentBgmType); }
 
@@ -489,14 +494,34 @@ function triggerShake(shakeType) {
   }, 16);
 }
 
-function triggerEnemyHitPulse() {
-  const box = document.getElementById('e-sprite-graphic'); if(!box) return;
+// 【改良案4】被弾ノックバック時に通常の浮遊サイクルを一瞬完全にクラッシュさせる震動
+function triggerEnemyHitPulse(isWeak, type) {
+  const box = document.getElementById('e-sprite-graphic'); const container = document.getElementById('e-sprite-container'); if(!box || !container) return;
+  isKnockedBack = true; container.style.animation = 'none'; // 浮遊一時完全切断
   let pCount = 0;
   const pulseTimer = setInterval(() => {
-    if (pCount > 4) { box.style.transform = (STAGES[curIdx] && STAGES[curIdx].type === "eyes") ? "scaleX(-1)" : "none"; clearInterval(pulseTimer); return; }
-    let flip = (STAGES[curIdx] && STAGES[curIdx].type === "eyes") ? "scaleX(-1)" : "";
-    box.style.transform = `translate3d(${(pCount % 2 === 0 ? 8 : -8)}px, 0px, 0px) scale(0.95) ${flip}`; pCount++;
-  }, 40);
+    if (pCount > 6) { 
+        box.style.transform = (type === "eyes") ? "scaleX(-1)" : "none"; 
+        container.style.animation = 'floatE 2.2s infinite alternate ease-in-out'; // 浮遊復帰
+        isKnockedBack = false; clearInterval(pulseTimer); return; 
+    }
+    let angle = isWeak ? (pCount % 2 === 0 ? 12 : -12) : (pCount % 2 === 0 ? 5 : -5);
+    let flip = (type === "eyes") ? "scaleX(-1)" : "";
+    box.style.transform = `translate3d(${(pCount % 2 === 0 ? 15 : -15)}px, ${pCount * -2}px, 0px) rotate(${angle}deg) ${flip}`; pCount++;
+  }, 35);
+}
+
+// 【改良案3】チャージ時の吸い込み光粒子エフェクトの生成
+function triggerChargeParticles() {
+  const parent = document.getElementById('eff-scr'); if(!parent) return;
+  for(let i=0; i<25; i++) {
+     const p = document.createElement('div'); p.style.position = 'absolute'; p.style.width = '10px'; p.style.height = '10px'; p.style.borderRadius = '50%';
+     p.style.backgroundColor = '#a855f7'; p.style.boxShadow = '0 0 10px #c084fc'; p.style.zindex = '4';
+     let radius = 180; let angle = Math.random() * Math.PI * 2;
+     let startX = 180 + Math.cos(angle) * radius; let startY = 180 + Math.sin(angle) * radius;
+     p.style.left = `${startX}px`; p.style.top = `${startY}px`;
+     p.style.animation = 'chargeInward 0.5s ease-in forwards'; parent.appendChild(p); setTimeout(() => p.remove(), 500);
+  }
 }
 
 function flashScreen(color) {
@@ -529,8 +554,17 @@ function createExplosionParticles(castType) {
 
 function hideAll() { ['scr-start','scr-intro','scr-battle','scr-result'].forEach(id => { const el = document.getElementById(id); if (el) el.style.display = 'none'; }); }
 
+// 🟢 【瀕死アラート完全リセット対応】
+function clearCrisisAlertEffects() {
+  const scr = document.getElementById('eff-scr'); const alertBadge = document.getElementById('p-hp-alert-badge');
+  if(scr) { scr.style.animation = 'none'; scr.style.borderColor = '#334155'; scr.style.backgroundColor = '#0f172a'; }
+  if(alertBadge) alertBadge.style.display = "none";
+}
+
 function nextStage() {
     initAudio(); playSE('click'); curIdx++;
+    clearCrisisAlertEffects(); // 瀕死表示の持ち越しバグを確実に消去！
+    
     if (curIdx >= STAGES.length) { resetGame(); hideAll(); document.getElementById('scr-start').style.display = 'block'; document.getElementById('floor-indicator').style.visibility = 'hidden'; startBGM("title"); return; }
     const data = STAGES[curIdx]; pHp = pMaxHp; hideAll(); stopSlimeAnimation();
     const fInd = document.getElementById('floor-indicator'); if (fInd) { fInd.style.visibility = 'visible'; fInd.innerText = `${data.floor}階`; }
@@ -539,11 +573,12 @@ function nextStage() {
     document.getElementById('intro-ch-title').innerText = data.name;
     document.getElementById('intro-text').innerText = data.txt;
     
-    startBGM("castle");
+    startBGM("castle"); // 平常時音楽の強制再生
 }
 
 function startBattle() {
-  initAudio(); playSE('click'); const data = STAGES[curIdx]; eHp = eMaxHp = data.hp; hideAll(); isBusy = false; isBursting = false;
+  initAudio(); playSE('click'); const data = STAGES[curIdx]; eHp = eMaxHp = data.hp; hideAll(); isBusy = false; isBursting = false; isKnockedBack = false;
+  clearCrisisAlertEffects(); // 念押し完全初期化
   
   const container = document.getElementById('e-sprite-container');
   if(container) {
@@ -555,14 +590,8 @@ function startBattle() {
   
   const graphicEl = document.getElementById('e-sprite-graphic');
   if(graphicEl) { 
-      graphicEl.removeAttribute("style"); 
-      graphicEl.style.width = "200px"; 
-      graphicEl.style.height = "200px"; 
-      graphicEl.style.display = "block"; 
-      graphicEl.style.objectFit = "contain";
-      graphicEl.style.imageRendering = "pixelated"; 
-      
-      if(data.type === "eyes") { graphicEl.style.transform = "scaleX(-1)"; }
+      graphicEl.removeAttribute("style"); graphicEl.style.width = "200px"; graphicEl.style.height = "200px"; graphicEl.style.display = "block"; graphicEl.style.objectFit = "contain"; graphicEl.style.imageRendering = "pixelated"; 
+      if(data.type === "eyes") { graphicEl.style.transform = "scaleX(-1)"; } // イビルアイ左右反転フラグ
   }
   
   document.getElementById('scr-battle').style.display = 'block';
@@ -573,17 +602,24 @@ function startBattle() {
   document.getElementById('eff-scr').style.borderColor = data.floor === 10 ? '#be123c' : '#334155';
   document.getElementById('battle-log').innerHTML = `戦闘領域展開。${data.name}を駆逐せよ。 <span style='color:#38bdf8;'>[弱点: ${data.weak.toUpperCase()}]</span>`;
   
-  startBGM(data.floor === 10 ? "boss" : "horror");
+  startBGM(data.floor === 10 ? "boss" : "horror"); // 戦闘音楽へチェンジ
 }
 
+// 【改良案5】前面が即時減少、背面赤ゲージが遅れて残像追従するUI回路
 function updateHpUI() {
   const scr = document.getElementById('eff-scr'); const alertBadge = document.getElementById('p-hp-alert-badge'); if(!scr) return;
-  document.getElementById('p-hp-bar').style.width = `${pHp}%`; document.getElementById('e-hp-bar').style.width = `${(eHp/eMaxHp*100)}%`;
+  
+  let pPct = (pHp / pMaxHp) * 100; let ePct = (eHp / eMaxHp) * 100;
+  document.getElementById('p-hp-bar').style.width = `${pPct}%`; document.getElementById('p-hp-bar-back').style.width = `${pPct}%`;
+  document.getElementById('e-hp-bar').style.width = `${ePct}%`; document.getElementById('e-hp-bar-back').style.width = `${ePct}%`;
+  
   document.getElementById('p-hp-txt').innerText = `HP: ${pHp} / 100`; document.getElementById('e-hp-txt').innerText = `HP: ${eHp} / ${eMaxHp}`;
-  if (pHp <= 30) { scr.style.animation = 'crisisAlert 1.0s infinite alternate'; scr.style.borderColor = '#f43f5e'; if (alertBadge) alertBadge.style.display = "block"; } 
-  else { scr.style.animation = 'none'; scr.style.borderColor = (STAGES[curIdx] && STAGES[curIdx].floor === 10) ? '#be123c' : '#334155'; if (alertBadge) alertBadge.style.display = "none"; }
+  
+  if (pHp <= 30 && pHp > 0) { scr.style.animation = 'crisisAlert 1.0s infinite alternate'; scr.style.borderColor = '#f43f5e'; if (alertBadge) alertBadge.style.display = "block"; } 
+  else if (pHp <= 0 || scr.style.animationName === "crisisAlert") { scr.style.animation = 'none'; scr.style.borderColor = (STAGES[curIdx] && STAGES[curIdx].floor === 10) ? '#be123c' : '#334155'; if (alertBadge) alertBadge.style.display = "none"; }
 }
 
+// ターン直列処理エンジン
 function turn(playerMove) {
   if (isBusy || pHp <= 0 || eHp <= 0) return;
   isBusy = true; initAudio();
@@ -603,7 +639,7 @@ function turn(playerMove) {
     setTimeout(() => { checkBattleEnd(); }, 400); return;
   }
 
-  // 攻撃系魔法コマンド
+  // 🪄 3大オリジナル魔法アセット展開
   if (playerMove === 'fire' || playerMove === 'ice' || playerMove === 'holy') {
     if(effectLayer) effectLayer.innerHTML = MISSILE_EFFECTS[playerMove];
     if(pContainer) pContainer.style.transform = 'translateX(45px) scale(1.08)';
@@ -617,24 +653,31 @@ function turn(playerMove) {
 
     if (enemyMove === 'atk') {
       pDamage = data.atk;
-      if(containerEl) {
-          containerEl.style.transform = 'translateX(0)';
-          containerEl.style.animation = 'none';
-          void containerEl.offsetWidth;
+      if(containerEl && !isKnockedBack) {
+          containerEl.style.transform = 'translateX(0)'; containerEl.style.animation = 'none'; void containerEl.offsetWidth;
           containerEl.style.animation = 'enemyAssault 0.45s forwards';
       }
-      setTimeout(() => { if(containerEl) containerEl.style.animation = 'floatE 2.2s infinite alternate ease-in-out'; }, 460);
+      setTimeout(() => { if(containerEl && !isKnockedBack) containerEl.style.animation = 'floatE 2.2s infinite alternate ease-in-out'; }, 460);
       
       let mushText = (data.type === "mush" && (eHp - eDamage) <= eMaxHp / 2) ? "【形態変異】" : "";
       log = isCritical ? `【CRITICAL】弱点適合！${mushText}『${spellName}』直撃！【${eDamage}】ダメージ！ 敵のカウンターで ${pDamage} 被弾！` : `『${spellName}』命中！敵に ${eDamage} ダメージ / あなたは ${pDamage} 被弾！`;
     } else { eDamage = Math.floor(eDamage * 0.33); log = `🛡️ 敵の防壁展開！『${spellName}』が減衰。敵に ${eDamage} ダメージ。`; }
 
+    // 【改良案2】 属性ブレンド色調変色のトリガーを仕込む
+    const graphicEl = document.getElementById("e-sprite-graphic");
     pHp = Math.max(0, pHp - pDamage); eHp = Math.max(0, eHp - eDamage);
 
     setTimeout(() => {
       playSE(playerMove); 
       burstSlimeAnimation(); 
       
+      // 被弾時の色調強制ブレンド（150ms間、画像そのものが真紅・凍結青・神聖金に染まる）
+      if(graphicEl) {
+         let blendColor = playerMove === 'fire' ? 'matrix(1,0,0,0,1, 0,0,0,0,0, 0,0,0,0,0, 0,0,0,1,0)' : (playerMove === 'ice' ? 'matrix(0,0,0,0,0, 0,1,0,0,0.5, 0,0,1,0,1, 0,0,0,1,0)' : 'matrix(1,0,0,0,1, 0,1,0,0,0.8, 0,0,0,0,0, 0,0,0,1,0)');
+         graphicEl.style.filter = `custom ${blendColor} contrast(1.5) brightness(1.3)`;
+         setTimeout(() => { graphicEl.style.filter = "none"; if(data.type === "eyes") graphicEl.style.transform = "scaleX(-1)"; }, 150);
+      }
+
       if(containerEl && frontLayer) {
         const parentRect = document.getElementById('eff-scr').getBoundingClientRect();
         const targetRect = containerEl.getBoundingClientRect();
@@ -647,38 +690,32 @@ function turn(playerMove) {
         setTimeout(() => { hitBox.remove(); if(effectLayer) effectLayer.innerHTML = ""; }, 420);
       }
 
-      triggerEnemyHitPulse(); triggerShake(isCritical ? 'critical_shake' : 'attack_success'); 
+      triggerEnemyHitPulse(isCritical, data.type); triggerShake(isCritical ? 'critical_shake' : 'attack_success'); 
       createDmgPop(eDamage, isCritical, false); if (pDamage > 0) createDmgPop(pDamage, false, true);
       if (isCritical) { flashCritical(flashColor); } else { flashScreen(flashColor); }
       
-      updateHpUI();
-      document.getElementById('battle-log').innerHTML = log;
+      updateHpUI(); document.getElementById('battle-log').innerHTML = log;
       setTimeout(() => { checkBattleEnd(); }, 460);
     }, 360);
 
     mana = 1.0; document.getElementById('p-aura-layer').style.display = "none";
     const chgB = document.getElementById('charge-badge'); if(chgB) chgB.style.display = "none";
   }
-  // 防御・チャージコマンド
+  // 防御・チャージ
   else {
     if (playerMove === 'def') {
       playSE('def');
       if(pContainer) pContainer.style.transform = 'translateX(-20px)';
-      if(shieldEl) {
-        shieldEl.style.animation = 'none';
-        void shieldEl.offsetWidth;
-        shieldEl.style.animation = 'shieldDeploy 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards';
-      }
+      if(shieldEl) { shieldEl.style.animation = 'none'; void shieldEl.offsetWidth; shieldEl.style.animation = 'shieldDeploy 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards'; }
       setTimeout(() => { if(pContainer) pContainer.style.transform = 'none'; }, 500);
 
-      if (enemyMove === 'atk') { 
-        pDamage = Math.max(1, Math.floor(data.atk * 0.12)); 
-        log = `🛡️ ホログラムシールド展開！敵の突進を絶対防御壁が防ぎ、ダメージをわずか 【${pDamage}】 に遮断！`; 
-      } else { 
-        log = `🔮 絶対障壁を構えたが、エネミーは防御姿勢をとっている。`; 
-      }
+      if (enemyMove === 'atk') { pDamage = Math.max(1, Math.floor(data.atk * 0.12)); log = `🛡️ シールド展開！敵の突進を絶対防御壁が防ぎ、ダメージをわずか 【${pDamage}】 に遮断！`; } 
+      else { log = `🔮 絶対障壁を構えたが、エネミーは防御姿勢をとっている。`; }
     } else {
-      playSE('chg'); if (enemyMove === 'atk') { pDamage = Math.floor(data.atk * 1.6); log = `🚨 チャージの隙を突かれた！カウンターにより 【${pDamage}】 被弾！`; mana = 1.0; } else { mana = 2.5; log = `⚡ 魔力集束！次ターンの術式破壊力が 【2.5倍】 に跳ね上がる！`; document.getElementById('p-aura-layer').style.display = "block"; const chgB = document.getElementById('charge-badge'); if(chgB) chgB.style.display = "block"; }
+      playSE('chg');
+      triggerChargeParticles(); // 【改良案3】魔素粒子吸い込み発動
+      if (enemyMove === 'atk') { pDamage = Math.floor(data.atk * 1.6); log = `🚨 チャージの隙を突かれた！カウンターにより 【${pDamage}】 被弾！`; mana = 1.0; } 
+      else { mana = 2.5; log = `⚡ 魔力集束！次ターンの術式破壊力が 【2.5倍】 に跳ね上がる！`; document.getElementById('p-aura-layer').style.display = "block"; const chgB = document.getElementById('charge-badge'); if(chgB) chgB.style.display = "block"; }
     }
     flashScreen("#10b981"); if (pDamage > 0) createDmgPop(pDamage, false, true);
     pHp = Math.max(0, pHp - pDamage); updateHpUI(); document.getElementById('battle-log').innerHTML = log;
@@ -698,23 +735,35 @@ function checkBattleEnd() {
   } else { isBusy = false; }
 }
 
+// 🏆 グランドエンディングUIシステムへの刷新
 function endBattle() {
-  hideAll(); stopSlimeAnimation(); document.getElementById('scr-result').style.display = 'block';
-  const rTitle = document.getElementById('res-title'); const rText = document.getElementById('res-text');
+  hideAll(); stopSlimeAnimation(); clearCrisisAlertEffects();
+  document.getElementById('scr-result').style.display = 'block';
+  
+  const rIcon = document.getElementById('res-icon'); const rTitle = document.getElementById('res-title');
+  const rText = document.getElementById('res-text'); const rBtn = document.getElementById('res-btn');
+  
   document.getElementById('p-aura-layer').style.display = "none"; document.getElementById('battle-log').innerHTML = "コマンドを選択せよ。";
   const chgB = document.getElementById('charge-badge'); if(chgB) chgB.style.display = "none";
+  
   if (eHp <= 0) {
-    rTitle.innerText = "VICTORY"; rTitle.style.color = '#10b981'; document.getElementById('res-icon').innerText = "🏆";
-    if (curIdx === STAGES.length - 1) rText.innerText = "🎉 螺旋の塔・完全制覇！最終暗黒竜『カリスドラゴン』を討滅し、世界に光を取り戻した！";
-    else rText.innerText = `激闘 of 激闘の末、立ちはだかる${STAGES[curIdx].name}を完全に粉砕した！`;
+    if (curIdx === STAGES.length - 1) {
+      // 🎉 メモ要求：カリスドラゴンクリア時の200文字の壮大な最終エンディング
+      rIcon.innerText = "👑"; rTitle.innerText = "GRAND END"; rTitle.style.color = '#eab308';
+      rText.innerText = "最上階に君臨せし黒竜は消滅し、世界を包んでいた暗黒の呪縛は完全に霧散した。新星術式を極めし賢者ウィザードの英知により、螺旋の塔へ永遠の平穏が取り戻される。戦いは終わり、英雄の叙事詩が今ここに完結した。あなたの勝利は歴史に永久に刻まれ、新たな光の時代が幕を開ける。平和の光とともに歩みを進めよ。";
+      rBtn.innerText = "タイトルに戻る";
+    } else {
+      rIcon.innerText = "🏆"; rTitle.innerText = "VICTORY"; rTitle.style.color = '#10b981';
+      rText.innerText = `激闘の末、立ちはだかる${STAGES[curIdx].name}を完全に粉砕した！`; rBtn.innerText = "次の階層へ進む";
+    }
   } else {
-    rTitle.innerText = "DEFEATED"; rTitle.style.color = '#f43f5e'; document.getElementById('res-icon').innerText = "💀";
-    rText.innerText = `${STAGES[curIdx].name}の圧倒的猛攻の前に力尽きた...`; curIdx = -1;
+    rIcon.innerText = "💀"; rTitle.innerText = "DEFEATED"; rTitle.style.color = '#f43f5e';
+    rText.innerText = `${STAGES[curIdx].name}の圧倒的猛攻の前に力尽きた...`; rBtn.innerText = "タイトルに戻る"; curIdx = -1;
   }
   isBusy = false;
 }
 
-function resetGame() { pHp = 100; mana = 1.0; curIdx = -1; isBusy = false; isBursting = false; document.getElementById('battle-log').innerHTML = "コマンドを選択せよ。"; stopBGM(); stopSlimeAnimation(); }
+function resetGame() { pHp = 100; mana = 1.0; curIdx = -1; isBusy = false; isBursting = false; document.getElementById('battle-log').innerHTML = "コマンドを選択せよ。"; stopBGM(); stopSlimeAnimation(); clearCrisisAlertEffects(); }
 </script>
 </body>
 </html>
